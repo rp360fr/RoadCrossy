@@ -74,3 +74,4 @@ void GameObject::setOwner(Scene* s)
 void GameObject::Destroy() {
     markedForDestruction = true;
 }
+

@@ -10,7 +10,7 @@ class Component;
 class GameObject
 {
 private:
-
+	
 	Scene* owner;
 	std::string name;
 	bool active;
@@ -47,7 +47,6 @@ public:
 	}
 
 
-	
 
 	//Set
 	void setClickable(bool B) { clickable = B; }

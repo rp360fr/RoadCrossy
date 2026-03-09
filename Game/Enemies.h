@@ -13,11 +13,13 @@ struct EnnemiData {
     int type;
     int spanwx;
 };
-
+const float tile_width = 64;
+const float tile_height = 64;
+sf::Vector2f isometri(int x, int y);
 extern std::vector<EnnemiData> enemiesToSpawn;
 GameObject* CreateGrass(sf::Vector2f vector);
 GameObject* CreateTree(sf::Vector2f vector);
-GameObject* CreateRock(sf::Vector2f vector,sf::Angle angle);
+GameObject* CreateRock(int x,int y,sf::Angle angle);
 GameObject* CreateRiver(sf::Vector2f vector);
 GameObject* CreateBoat(sf::Vector2f vector);
 GameObject* CreateCar(sf::Vector2f vector);

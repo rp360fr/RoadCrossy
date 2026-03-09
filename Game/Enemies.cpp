@@ -8,8 +8,8 @@ GameObject* CreateTree(sf::Vector2f vector) {
 }
 
 
-GameObject* CreateRock(sf::Vector2f vector,sf::Angle angle) {
-    GameObject* rock = new GameObject({ vector });
+GameObject* CreateRock(int x,int y,sf::Angle angle) {
+    GameObject* rock = new GameObject({isometri(x,y)});
     SpriteRenderer* sr = new SpriteRenderer("rock.png", { 64,64 }, { 1,1 });
     sr->setRotation(angle);
     rock->AddComponent(sr);
@@ -135,7 +135,12 @@ void SpawnEnemies(int type, float spawnx, Scene* scene)
         Boss->Start();
     }
 }
-
+sf::Vector2f isometri(int x, int y)
+{
+    float screenX = (x - y) * tile_width / 2;
+    float screenY = (x + y) * tile_height / 2;
+    return sf::Vector2f(screenX, screenY);
+}
 
 
 void BotAi(GameObject* Bot,Scene* LvL)
