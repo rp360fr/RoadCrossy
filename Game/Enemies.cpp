@@ -1,7 +1,20 @@
 #include "Enemies.h"
 
+GameObject* CreateTree(sf::Vector2f vector) {
+    GameObject* tree = new GameObject({ vector });
+    SpriteRenderer* sr = new SpriteRenderer("tree.png", { 64,64 }, { 1,1 });
+    tree->AddComponent(sr);
+    return tree;
+}
 
 
+GameObject* CreateRock(sf::Vector2f vector,sf::Angle angle) {
+    GameObject* rock = new GameObject({ vector });
+    SpriteRenderer* sr = new SpriteRenderer("rock.png", { 64,64 }, { 1,1 });
+    sr->setRotation(angle);
+    rock->AddComponent(sr);
+    return rock;
+}
 
 GameObject* CreateEnemiesType1()
 {
@@ -17,6 +30,14 @@ GameObject* CreateEnemiesType1()
     enemies->AddComponent(variable); 
 
     return enemies;
+}
+
+GameObject* CreateGrass(sf::Vector2f vector) {
+    GameObject* grass = new GameObject({vector});
+    SpriteRenderer* sr = new SpriteRenderer("grass.png", { 64,64 }, { 1,1 });
+    grass->AddComponent(sr);
+
+    return grass;
 }
 
 GameObject* CreateEnemiesType2()

@@ -86,6 +86,16 @@ Scene* CreateGameLvL()
     ad->SetLoop(true);
     lvlObject->AddComponent(ad);
     GameObject* player = createPlayer();
+    GameObject* grass_1 = CreateGrass({0,0});
+    GameObject* grass_2 = CreateGrass({ 64,0 });
+    GameObject* fond = createFond();
+    GameObject* rock = CreateRock({ 128,0 },sf::degrees(45));
+   
+    
+    lvl1->AddGameObject(fond);
+    lvl1->AddGameObject(grass_1);
+    lvl1->AddGameObject(grass_2);
+    lvl1->AddGameObject(rock);
     GameObject* Enemie = CreateEnemiesType1();
     lvl1->AddGameObject(Enemie);
     lvl1->AddGameObject(player);

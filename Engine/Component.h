@@ -52,6 +52,7 @@ public:
 	//Set
 	void setDirection(Direction d) { direction = d; }
 	void setFond(bool B);
+	void setRotation(sf::Angle angle) { sprite.setRotation(angle); }
 	void setAnimated(bool B) { animated = B; }
 	void setVisible(bool B) { visible = B; }
 	void UpFrame() { currentFrame ++; }
