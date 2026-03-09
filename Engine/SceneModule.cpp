@@ -13,6 +13,7 @@ SceneModule::SceneModule()
 
 SceneModule::SceneModule(sf::Vector2u size,std::string name)
 {
+	this->size = size;
 	this->name = name;
 	window = sf::RenderWindow(sf::VideoMode(size),name);
 }

@@ -1,23 +1,17 @@
 ﻿// InputHandler.cpp
 #include "InputHandler.h"
-
-Scene* InputHandler::pauseScene = nullptr;
-Scene* InputHandler::tempPauseScene = nullptr;
 Engine* InputHandler::engineRef = nullptr;
 std::vector<Scene*>* InputHandler::scenesRef = nullptr;
 bool InputHandler::eventsCreated = false;
 
-void InputHandler::Initialize(Engine* engine, std::vector<Scene*>* scenes, Scene* pause)
+void InputHandler::Initialize(Engine* engine, std::vector<Scene*>* scenes)
 {
     engineRef = engine;
     scenesRef = scenes;
-    pauseScene = pause;
     if (engineRef == nullptr)
         std::cout << " Erreur Engine " << std::endl;
     else if (scenesRef == nullptr)
         std::cout << " Erreur LstScene " << std::endl;
-    else if (pauseScene == nullptr)
-        std::cout << " Erreur Pause " << std::endl;
     else
         std::cout << "InputHandler initialise" << std::endl;
 }
@@ -30,6 +24,7 @@ void InputHandler::SetupSceneInputs(Scene* scene, std::string sceneName)
         return;
     }
     ClearSceneInputs();
+  
 
     if (sceneName == "LaunchMenu")
     {
@@ -46,6 +41,7 @@ void InputHandler::SetupSceneInputs(Scene* scene, std::string sceneName)
 void InputHandler::ClearSceneInputs()
 {
     InputManager::ClearKeyCallbacks();
+    Event::ClearAllEvents();
     std::cout << "Tous les callbacks d'input ont ete nettoyes" << std::endl;
 }
 
@@ -68,28 +64,13 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
 
     // Configuration des mouvements du joueur pour CE niveau spécifique
     MovePlayer(lvl);
+    
 
-    // Gestion de la pause
-    InputManager::RegisterKeyPress("Escape", []()
+    InputManager::RegisterKeyPress("F10", []()
         {
-            if (engineRef->getSceneModule()->GetActiveScene() == pauseScene)
-            {
-                pauseScene->getThisObjByText("Resume")->setClickable(false);
-                pauseScene->getThisObjByText("Quit")->setClickable(false);
-                pauseScene->GetLvLData()->GetComponent<AudioManager>(1)->Play();
-                engineRef->getSceneModule()->SetActiveScene(tempPauseScene);
-                tempPauseScene->GetLvLData()->GetComponent<AudioManager>()->Play();
-            }
-            else
-            {
-                pauseScene->getThisObjByText("Resume")->setClickable(true);
-                pauseScene->getThisObjByText("Quit")->setClickable(true);
-                tempPauseScene = engineRef->getSceneModule()->GetActiveScene();
-                tempPauseScene->GetLvLData()->GetComponent<AudioManager>()->Pause();
-                engineRef->getSceneModule()->SetActiveScene(pauseScene);
-                pauseScene->Start();
-            }
+            Debug::ChangeDebug(10);
         });
+
 
     // Gestion des collisions
 
@@ -97,6 +78,14 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
     {
         std::cout << "Creation des events de collision et IA" << std::endl;
 
+
+        Event::CreateEvent(-1, [lvl]()
+            {
+                for (GameObject* obj : lvl->getLstObj())
+                {
+                    obj->getTransform().pos.y += 0.005f;
+                }
+            });
         // Gestion des collisions
         Event::CreateEvent(-2, []()
             {
@@ -111,35 +100,6 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
                 
             });
 
-        // IA des ennemis
-        Event::CreateEvent(-3, []()
-            {
-                Scene* currentScene = engineRef->getSceneModule()->GetActiveScene();
-                if (currentScene == nullptr || currentScene->getName() == "Pause" ||
-                    currentScene->getName() == "Menu" || currentScene->getName() == "GameOver")
-                    return;
-
-
-
-                static sf::Clock EShootClock;
-                if (EShootClock.getElapsedTime().asSeconds() > 0.5)
-                {
-                    for (GameObject* obj : currentScene->getLstObj())
-                    {
-                        if (obj->GetComponent<Ennemie>() != nullptr)
-                        {
-                            if (obj->GetComponent<Variables>() != nullptr && obj->GetComponent<Variables>()->getInt("PV") == 0)
-                            {
-                                obj->Destroy();
-                                std::cout << "Vaisseau detruit" << std::endl;
-                            }
-                            else
-                                BotAi(obj, currentScene);
-                        }
-                    }
-                    EShootClock.restart();
-                }
-            });
 
         eventsCreated = true;
     }
@@ -317,6 +277,8 @@ Scene* InputHandler::getThisScene(std::vector<Scene*>* lstScene, std::string nam
     return nullptr;
 }
 
+
+
 void InputHandler::RestartGame()
 {
     std::cout << "=== RESTART DU JEU ===\n\n\n\n" << std::endl;
@@ -339,21 +301,15 @@ void InputHandler::RestartGame()
     scenesRef->clear();
 
     Scene* Menu = CreateMenuDepart(scenesRef);
-    Scene* LvL1 = CreateLvL1();
-    Scene* LvL2 = CreateLvL2();
-    Scene* LvL3 = CreateLvL3();
-    Scene* Pause = CreatePause();
+    Scene* LvL = CreateGameLvL();
+
     Scene* GameOver = CreateGameOver();
 
     scenesRef->push_back(Menu);
-    scenesRef->push_back(LvL1);
-    scenesRef->push_back(LvL2);
-    scenesRef->push_back(LvL3);
-    scenesRef->push_back(Pause);
+    scenesRef->push_back(LvL);
     scenesRef->push_back(GameOver);
     
 
-    pauseScene = Pause;
 
     engineRef->getSceneModule()->SetActiveScene(Menu);
     InputHandler::SetupSceneInputs(Menu, "LaunchMenu");

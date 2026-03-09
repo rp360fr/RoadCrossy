@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include "Event.h"
+#include "Debug.h"
 
 enum class Direction
 {

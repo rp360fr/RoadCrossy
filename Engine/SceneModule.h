@@ -11,8 +11,10 @@ private:
 	Scene* activeScene;
 	sf::RenderWindow window;
 	std::string name;
+
 public:
 
+	sf::Vector2u size;
 	//Constructeurs
 	SceneModule();
 	SceneModule(sf::Vector2u size,std::string name);

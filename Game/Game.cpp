@@ -18,19 +18,13 @@ int main()
     Engine engine({ 800, 600 }, "ShootEmUp");
 
     Scene* Menu = CreateMenuDepart(lstScene);
-    Scene* LvL1 = CreateLvL1();
-    Scene* LvL2 = CreateLvL2();
-    Scene* LvL3 = CreateLvL2();
-    Scene* Pause = CreatePause();
+    Scene* LvL = CreateGameLvL();
     Scene* GameOver = CreateGameOver();
 
-    InputHandler::Initialize(&engine, lstScene, Pause);
+    InputHandler::Initialize(&engine, lstScene);
 
     lstScene->push_back(Menu);
-    lstScene->push_back(LvL1);
-    lstScene->push_back(LvL2);
-    lstScene->push_back(LvL3);
-    lstScene->push_back(Pause);
+    lstScene->push_back(LvL);
     lstScene->push_back(GameOver);
 
 

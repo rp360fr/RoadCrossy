@@ -8,14 +8,12 @@ GameObject* CreateEnemiesType1()
     GameObject* enemies = new GameObject({ 200.0f, 200.0f });
     Variables* variable = new Variables();
     SpriteRenderer* sr = new SpriteRenderer("Mechant1.png", { 64,64 }, { 1,1 });
-    Movement* mv = new Movement(0.02f);
     Ennemie* en = new Ennemie();
     Collider* cl = new Collider();
     variable->addInt("Type", 1); 
     variable->addInt("PV", 5);
     enemies->AddComponent(en);
     enemies->AddComponent(sr); 
-    enemies->AddComponent(mv);
     enemies->AddComponent(variable); 
 
     return enemies;
