@@ -5,6 +5,7 @@ GameObject* createPlayer()
 {
 	GameObject* player = new GameObject({ 200, 200 });
 	SpriteRenderer* sr = new SpriteRenderer("Spaceship-Sheet.png", { 64,64 }, { 3,3 });
+	sr->setRotation(sf::degrees(45));
 	SpriteRenderer* HP = new SpriteRenderer("HP.png", { 32,32 }, { 5,1 },true,1);
 	HP->setScale(4.5);
 	AudioManager* ad = new AudioManager("Shoot.wav");
