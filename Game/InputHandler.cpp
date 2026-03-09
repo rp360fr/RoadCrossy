@@ -1,0 +1,364 @@
+﻿// InputHandler.cpp
+#include "InputHandler.h"
+
+Scene* InputHandler::pauseScene = nullptr;
+Scene* InputHandler::tempPauseScene = nullptr;
+Engine* InputHandler::engineRef = nullptr;
+std::vector<Scene*>* InputHandler::scenesRef = nullptr;
+bool InputHandler::eventsCreated = false;
+
+void InputHandler::Initialize(Engine* engine, std::vector<Scene*>* scenes, Scene* pause)
+{
+    engineRef = engine;
+    scenesRef = scenes;
+    pauseScene = pause;
+    if (engineRef == nullptr)
+        std::cout << " Erreur Engine " << std::endl;
+    else if (scenesRef == nullptr)
+        std::cout << " Erreur LstScene " << std::endl;
+    else if (pauseScene == nullptr)
+        std::cout << " Erreur Pause " << std::endl;
+    else
+        std::cout << "InputHandler initialise" << std::endl;
+}
+
+void InputHandler::SetupSceneInputs(Scene* scene, std::string sceneName)
+{
+    if (scene == nullptr)
+    {
+        std::cout << "ERREUR: scene est nullptr dans SetupSceneInputs" << std::endl;
+        return;
+    }
+    ClearSceneInputs();
+
+    if (sceneName == "LaunchMenu")
+    {
+        SetupMenuInputs(scene);
+    }
+    else if (sceneName == "LvL1" || sceneName == "LvL2" || sceneName == "LvL")
+    {
+        SetupLvLInputs(scene);
+    }
+
+    std::cout << "Inputs configures pour: " << sceneName << std::endl;
+}
+
+void InputHandler::ClearSceneInputs()
+{
+    InputManager::ClearKeyCallbacks();
+    std::cout << "Tous les callbacks d'input ont ete nettoyes" << std::endl;
+}
+
+void InputHandler::SetupMenuInputs(Scene* menu)
+{
+    InputManager::RegisterKeyPress("Escape", []()
+        {
+            std::cout << "Quitter le jeu..." << std::endl;
+            exit(0);
+        });
+}
+
+void InputHandler::SetupLvLInputs(Scene* lvl)
+{
+    if (lvl == nullptr)
+    {
+        std::cout << "ERREUR: lvl est nullptr dans SetupLvLInputs" << std::endl;
+        return;
+    }
+
+    // Configuration des mouvements du joueur pour CE niveau spécifique
+    MovePlayer(lvl);
+
+    // Gestion de la pause
+    InputManager::RegisterKeyPress("Escape", []()
+        {
+            if (engineRef->getSceneModule()->GetActiveScene() == pauseScene)
+            {
+                pauseScene->getThisObjByText("Resume")->setClickable(false);
+                pauseScene->getThisObjByText("Quit")->setClickable(false);
+                pauseScene->GetLvLData()->GetComponent<AudioManager>(1)->Play();
+                engineRef->getSceneModule()->SetActiveScene(tempPauseScene);
+                tempPauseScene->GetLvLData()->GetComponent<AudioManager>()->Play();
+            }
+            else
+            {
+                pauseScene->getThisObjByText("Resume")->setClickable(true);
+                pauseScene->getThisObjByText("Quit")->setClickable(true);
+                tempPauseScene = engineRef->getSceneModule()->GetActiveScene();
+                tempPauseScene->GetLvLData()->GetComponent<AudioManager>()->Pause();
+                engineRef->getSceneModule()->SetActiveScene(pauseScene);
+                pauseScene->Start();
+            }
+        });
+
+    // Gestion des collisions
+
+    if (!eventsCreated)
+    {
+        std::cout << "Creation des events de collision et IA" << std::endl;
+
+        // Gestion des collisions
+        Event::CreateEvent(-2, []()
+            {
+                Scene* currentScene = engineRef->getSceneModule()->GetActiveScene();
+                if (currentScene == nullptr || currentScene->getName() == "Pause" ||
+                    currentScene->getName() == "Menu" || currentScene->getName() == "GameOver")
+                    return;
+                InputHandler::CollisionProjectiles();
+                InputHandler::CollisionVaisseau(); 
+                InputHandler::CollisionBonusMalus();
+                InputHandler::TestDeath();
+                
+            });
+
+        // IA des ennemis
+        Event::CreateEvent(-3, []()
+            {
+                Scene* currentScene = engineRef->getSceneModule()->GetActiveScene();
+                if (currentScene == nullptr || currentScene->getName() == "Pause" ||
+                    currentScene->getName() == "Menu" || currentScene->getName() == "GameOver")
+                    return;
+
+
+
+                static sf::Clock EShootClock;
+                if (EShootClock.getElapsedTime().asSeconds() > 0.5)
+                {
+                    for (GameObject* obj : currentScene->getLstObj())
+                    {
+                        if (obj->GetComponent<Ennemie>() != nullptr)
+                        {
+                            if (obj->GetComponent<Variables>() != nullptr && obj->GetComponent<Variables>()->getInt("PV") == 0)
+                            {
+                                obj->Destroy();
+                                std::cout << "Vaisseau detruit" << std::endl;
+                            }
+                            else
+                                BotAi(obj, currentScene);
+                        }
+                    }
+                    EShootClock.restart();
+                }
+            });
+
+        eventsCreated = true;
+    }
+}
+
+
+void InputHandler::CollisionProjectiles()
+{
+    for (GameObject* obj : engineRef->getSceneModule()->GetActiveScene()->getLstObj())
+    {
+        if (obj->GetComponent<Collider>() != nullptr && obj->GetComponent<Collider>()->getCollide() == true)
+        {
+            for (GameObject* target : engineRef->getSceneModule()->GetActiveScene()->getLstObj())
+            {
+                if (target->GetComponent<Projectile>() != nullptr)
+                {
+                    if (obj->GetComponent<Collider>()->DoesCollide(target) && target->GetComponent<Projectile>()->getShooter() != obj)
+                    {
+                        obj->GetComponent<Variables>()->MinusInt("PV", 1);
+                        if (obj == engineRef->getSceneModule()->GetActiveScene()->GetPlayer())
+                            engineRef->getSceneModule()->GetActiveScene()->GetPlayer()->GetComponent<SpriteRenderer>(1)->UpFrame();
+                        std::cout << "touche, Pv : " << obj->GetComponent<Variables>()->getInt("PV") << std::endl;
+                        target->Destroy();
+                    }
+                }
+            }
+        }
+    }
+}
+
+void InputHandler::TestDeath()
+{
+    for (GameObject* obj : engineRef->getSceneModule()->GetActiveScene()->getLstObj())
+    {
+        if (obj->GetComponent<Collider>() != nullptr)
+        {
+            if (obj->GetComponent<Variables>()->getInt("PV") == 0)
+            {
+                if (obj == engineRef->getSceneModule()->GetActiveScene()->GetPlayer())
+                {
+                    Scene* GameOver = InputHandler::getThisScene(scenesRef, "GameOver");
+                    engineRef->getSceneModule()->GetActiveScene()->GetLvLData()->GetComponent<AudioManager>()->Pause();
+                    if (engineRef != nullptr)
+                    {
+                        GameOver->getThisObjByText("Retry")->setClickable(true);
+                        GameOver->getThisObjByText("Quit")->setClickable(true);
+                        engineRef->getSceneModule()->SetActiveScene(GameOver);
+                        GameOver->Start();
+                        engineRef->setGameState(false);
+                    }
+                }
+                else
+                {
+                    int Bonus = rand() % 10 + 1;
+                    if (Bonus >= 6)
+                    {
+                        GameObject* pUp = CreateHpUp(obj);
+                        engineRef->getSceneModule()->GetActiveScene()->AddGameObject(pUp);
+                        pUp->Start();
+                    }
+                    obj->GetComponent<Collider>()->setCollide(false);
+                    std::cout << "mort" << std::endl;
+                    obj->GetComponent<SpriteRenderer>()->setVisible(false);
+                    obj->Destroy();
+                } 
+            }
+        }
+    }
+}
+
+void InputHandler::CollisionVaisseau()
+{
+    for (GameObject* obj : engineRef->getSceneModule()->GetActiveScene()->getLstObj())
+    {
+        if (obj->GetComponent<Collider>() != nullptr && obj->GetComponent<Collider>()->getCollide() == true && obj->GetComponent<Ennemie>() != nullptr)
+        {
+            for (GameObject* target : engineRef->getSceneModule()->GetActiveScene()->getLstObj())
+            {
+                if (target == engineRef->getSceneModule()->GetActiveScene()->GetPlayer())
+                {
+                    if (obj->GetComponent<Collider>()->DoesCollide(target))
+                        target->GetComponent<Variables>()->addInt("PV", 0);
+                        
+                }
+            }
+        }
+    }
+}
+
+void InputHandler::CollisionBonusMalus()
+{
+    for (GameObject* obj : engineRef->getSceneModule()->GetActiveScene()->getLstObj())
+    {
+        if (obj->GetComponent<Collider>() != nullptr && obj->GetComponent<Collider>()->getCollide() == true && obj->GetComponent<Variables>() != nullptr && obj->GetComponent<Variables>()->getString("Up")== "+1HP")
+        {
+            for (GameObject* target : engineRef->getSceneModule()->GetActiveScene()->getLstObj())
+            {
+                if (target == engineRef->getSceneModule()->GetActiveScene()->GetPlayer())
+                {
+                    if (obj->GetComponent<Collider>()->DoesCollide(target) && target->GetComponent<Variables>()->getInt("PV") <= 4)
+                    {
+                        target->GetComponent<Variables>()->PlusInt("PV", 1);
+                        target->GetComponent<SpriteRenderer>(1)->DownFrame();
+                        obj->Destroy();
+                    }
+                        
+                }
+            }
+        }
+    }
+}
+
+
+
+void InputHandler::MovePlayer(Scene* lvl)
+{
+    if (lvl == nullptr || lvl->GetPlayer() == nullptr)
+    {
+        std::cout << "ERREUR: lvl ou player est nullptr dans MovePlayer" << std::endl;
+        return;
+    }
+
+    // Capturer le pointeur du joueur pour cette scène spécifique
+    GameObject* player = lvl->GetPlayer();
+
+    InputManager::RegisterKeyPress("Z", [player]()
+        {
+            if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
+            {
+                SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
+                player->getTransform().pos.y -= 64.f;
+                sprite->setDirection(Direction::Up);
+            }
+        });
+
+    InputManager::RegisterKeyPress("S", [player]()
+        {
+            if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
+            {
+                SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
+                player->getTransform().pos.y += 64.f;
+                sprite->setDirection(Direction::Down);
+            }
+        });
+
+    InputManager::RegisterKeyPress("Q", [player]()
+        {
+            if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
+            {
+                SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
+                player->getTransform().pos.x -= 64.f;
+                sprite->setDirection(Direction::Left);
+            }
+        });
+
+    InputManager::RegisterKeyPress("D", [player]()
+        {
+            if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
+            {
+                SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
+                player->getTransform().pos.x += 64.f;
+                sprite->setDirection(Direction::Right);
+            }
+        });
+}
+
+Scene* InputHandler::getThisScene(std::vector<Scene*>* lstScene, std::string name)
+{
+    for (int i = 0; i < lstScene->size(); ++i)
+    {
+        Scene* search = (*lstScene)[i];
+        if (search->getName() == name)
+            return search;
+    }
+    return nullptr;
+}
+
+void InputHandler::RestartGame()
+{
+    std::cout << "=== RESTART DU JEU ===\n\n\n\n" << std::endl;
+    engineRef->setGameState(false);
+
+    // 1. Nettoyer les anciens callbacks
+    InputManager::ClearKeyCallbacks();
+    Event::ClearAllEvents();
+    eventsCreated = false;
+
+    // 2. Détruire et recréer les scènes
+    for (Scene* scene : *scenesRef)
+    {
+        if (scene != nullptr)
+        {
+            scene->Destroy();
+            delete scene;
+        }
+    }
+    scenesRef->clear();
+
+    Scene* Menu = CreateMenuDepart(scenesRef);
+    Scene* LvL1 = CreateLvL1();
+    Scene* LvL2 = CreateLvL2();
+    Scene* LvL3 = CreateLvL3();
+    Scene* Pause = CreatePause();
+    Scene* GameOver = CreateGameOver();
+
+    scenesRef->push_back(Menu);
+    scenesRef->push_back(LvL1);
+    scenesRef->push_back(LvL2);
+    scenesRef->push_back(LvL3);
+    scenesRef->push_back(Pause);
+    scenesRef->push_back(GameOver);
+    
+
+    pauseScene = Pause;
+
+    engineRef->getSceneModule()->SetActiveScene(Menu);
+    InputHandler::SetupSceneInputs(Menu, "LaunchMenu");
+
+    engineRef->setGameState(true);
+
+    std::cout << "=== JEU REINITIALISE ===\n\n\n\n" << std::endl;
+}
