@@ -230,7 +230,7 @@ void InputHandler::MovePlayer(Scene* lvl)
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
                 SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-                player->getTransform().pos.y -= 64.f;
+                player->getTransform().pos += isometri(0,-1);
                 sprite->setDirection(Direction::Up);
             }
         });
@@ -240,7 +240,7 @@ void InputHandler::MovePlayer(Scene* lvl)
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
                 SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-                player->getTransform().pos.y += 64.f;
+				player->getTransform().pos += isometri(0, 1);
                 sprite->setDirection(Direction::Down);
             }
         });
@@ -250,7 +250,7 @@ void InputHandler::MovePlayer(Scene* lvl)
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
                 SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-                player->getTransform().pos.x -= 64.f;
+				player->getTransform().pos += isometri(-1, 0);
                 sprite->setDirection(Direction::Left);
             }
         });
@@ -260,7 +260,7 @@ void InputHandler::MovePlayer(Scene* lvl)
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
                 SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-                player->getTransform().pos.x += 64.f;
+				player->getTransform().pos += isometri(1, 0);
                 sprite->setDirection(Direction::Right);
             }
         });

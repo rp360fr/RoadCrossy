@@ -18,6 +18,7 @@ const float tile_height = 64;
 sf::Vector2f isometri(int x, int y);
 extern std::vector<EnnemiData> enemiesToSpawn;
 GameObject* CreateGrass(sf::Vector2f vector);
+GameObject* CreateRockLigne(int  x, int y, int length, int  widtdh, sf::Angle  angle);
 GameObject* CreateTree(sf::Vector2f vector);
 GameObject* CreateRock(int x,int y,sf::Angle angle);
 GameObject* CreateRiver(sf::Vector2f vector);

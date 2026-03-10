@@ -7,10 +7,24 @@ GameObject* CreateTree(sf::Vector2f vector) {
     return tree;
 }
 
+GameObject* CreateRockLigne(int  x, int y, int length, int  widtdh, sf::Angle  angle)
+{
+	for (int i = 0; i < widtdh; i++)
+    {
+		for (int j = 0; j < length; j++)
+     {
+        GameObject* rock = new GameObject({isometri(x + i, y + j)});
+        SpriteRenderer* sr = new SpriteRenderer("Blocks_1.png", { 64,64 }, { 1,1 });
+        sr->setRotation(angle);
+        rock->AddComponent(sr);
+        return rock;
+     }
+    }
+}
 
 GameObject* CreateRock(int x,int y,sf::Angle angle) {
     GameObject* rock = new GameObject({isometri(x,y)});
-    SpriteRenderer* sr = new SpriteRenderer("rock.png", { 64,64 }, { 1,1 });
+    SpriteRenderer* sr = new SpriteRenderer("Blocks_1.png", { 64,64 }, { 1,1 });
     sr->setRotation(angle);
     rock->AddComponent(sr);
     return rock;
@@ -138,7 +152,7 @@ void SpawnEnemies(int type, float spawnx, Scene* scene)
 sf::Vector2f isometri(int x, int y)
 {
     float screenX = (x - y) * tile_width / 2;
-    float screenY = (x + y) * tile_height / 2;
+    float screenY = (x + y) * tile_height / 4;
     return sf::Vector2f(screenX, screenY);
 }
 
