@@ -14,4 +14,4 @@ Scene* CreateMenuDepart(std::vector<Scene*>* lstScene);
 Scene* CreateGameLvL();
 Scene* CreateGameOver();
 
-GameObject* createfloor(int x, int y,  int length, int width,sf::Angle, Scene* scene);
+//void createfloor(int x, int y,  int length, int width,sf::Angle, Scene* scene);

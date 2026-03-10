@@ -75,14 +75,14 @@ Scene* CreateGameOver()
         });
     return GameOver;
 }
-GameObject* createfloor(int x, int y, int length, int width, sf::Angle,Scene* scene) {
+void createfloor(int x, int y, int length, int width, sf::Angle,Scene* scene) {
 	for (int i = 0; i < width; i++)
      {
          for(int j = 0; j < length; j++)
          {
-			 GameObject* floor = CreateRock(x + i, y + j, sf::degrees(0));
+			 GameObject* floor = CreateRock(x + j, y + i, sf::degrees(0));
 			 scene->AddGameObject(floor);
-			 return floor;
+		
 			 
              
          }
@@ -112,7 +112,7 @@ Scene* CreateGameLvL()
     lvl1->AddGameObject(grass_1);
     lvl1->AddGameObject(grass_2);
     lvl1->AddGameObject(rock);
-    createfloor(2, 0, 5, 1, sf::degrees(0), lvl1);
+    createfloor(2, 0, 15, 4, sf::degrees(0), lvl1);
     GameObject* Enemie = CreateEnemiesType1();
     lvl1->AddGameObject(Enemie);
     lvl1->AddGameObject(player);
