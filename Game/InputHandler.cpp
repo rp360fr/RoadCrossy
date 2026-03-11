@@ -120,14 +120,55 @@ void InputHandler::TestDeath()
 }
 
 
-void InputHandler::ChangeLayer(std::vector<GameObject*> obj, char mv)
+
+void moveElementUp(std::vector<GameObject*>& list, int posStart, int posFin)
 {
+    if (posStart == posFin) return;
+    if (posStart < 0 || posStart >= list.size()) return;
+    if (posFin < 0 || posFin >= list.size()) return;
+
+    GameObject* elem = list[posStart];
+    list.erase(list.begin() + posStart);
+    list.insert(list.begin() + posFin, elem);
+}
+
+void moveElementDown(std::vector<GameObject*>& list, int posStart, int posFin)
+{
+    if (posStart == posFin) return;
+    if (posStart < 0 || posStart >= list.size()) return;
+    if (posFin < 0 || posFin >= list.size()) return;
+
+    GameObject* elem = list[posStart];
+    list.erase(list.begin() - posStart);
+    list.insert(list.begin() - posFin, elem);
+}
+
+void InputHandler::ChangeLayer(std::vector<GameObject*>& obj,GameObject* player, char mv)
+{
+    int id = -1;
+
+    for (int i = 0; i < obj.size(); i++)
+    {
+        if (obj[i] == player)
+        {
+            id = i;
+            std::cout << "test";
+            break;
+        }
+    }
+
+    if (id == -1) return;
+
+    int pos = std::min(id + 15, (int)obj.size() - 1);
+
     switch (mv)
     {
-    case 'U':
-        break;
-
+    case 'U': moveElementUp(obj, id, pos); break;
+    case 'D': moveElementDown(obj, id, pos); break;
+    case 'L': moveElementDown(obj, id, 1); break;
+    case 'R': moveElementUp(obj, id, 1); break;
     }
+    std::cout << "pos joueur tab " << id << std::endl;
 }
 
 
@@ -142,41 +183,45 @@ void InputHandler::MovePlayer(Scene* lvl)
 
     // Capturer le pointeur du joueur pour cette scène spécifique
     GameObject* player = lvl->GetPlayer();
-
-    InputManager::RegisterKeyPress("Z", [player]()
+    std::vector<GameObject*>& lstObj = lvl->getLayer2Obj();
+    InputManager::RegisterKeyPress("Z", [player,&lstObj]()
         {
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
+                ChangeLayer(lstObj,player, 'U');
                 SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
                 player->getTransform().pos += calcMouvement(0,-1);
                 sprite->setDirection(Direction::Up);
             }
         });
 
-    InputManager::RegisterKeyPress("S", [player]()
+    InputManager::RegisterKeyPress("S", [player,&lstObj]()
         {
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
+                ChangeLayer(lstObj,player, 'D');
                 SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
 				player->getTransform().pos += calcMouvement(0, 1);
                 sprite->setDirection(Direction::Down);
             }
         });
 
-    InputManager::RegisterKeyPress("Q", [player]()
+    InputManager::RegisterKeyPress("Q", [player,&lstObj]()
         {
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
+                ChangeLayer(lstObj,player, 'L');
                 SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
 				player->getTransform().pos += calcMouvement(-1, 0);
                 sprite->setDirection(Direction::Left);
             }
         });
 
-    InputManager::RegisterKeyPress("D", [player]()
+    InputManager::RegisterKeyPress("D", [player,&lstObj]()
         {
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
+                ChangeLayer(lstObj,player, 'R');
                 SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
 				player->getTransform().pos += calcMouvement(1, 0);
                 sprite->setDirection(Direction::Right);

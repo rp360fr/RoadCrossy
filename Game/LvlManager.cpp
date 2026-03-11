@@ -9,8 +9,8 @@ Scene* CreateMenuDepart(std::vector<Scene*>* lstScene)
     GameObject* Quit = createQuit();
     Play->setClickable(true);
     Quit->setClickable(true);
-    Launch->AddGameObject(Play);
-    Launch->AddGameObject(Quit);
+    Launch->AddParamObject(Play);
+    Launch->AddParamObject(Quit);
 
     InputManager::RegisterClickableObject(Play, [lstScene,Play,Quit](GameObject* obj) {
         std::cout << "Play cliqué !" << std::endl;
@@ -52,9 +52,9 @@ Scene* CreateGameOver()
     GameOver->SetLvLData(GameOverObject);
     Retry->setClickable(false);
     Quit->setClickable(false);
-    GameOver->AddGameObject(fond);
-    GameOver->AddGameObject(Retry);
-    GameOver->AddGameObject(Quit);
+    GameOver->AddParamObject(fond);
+    GameOver->AddParamObject(Retry);
+    GameOver->AddParamObject(Quit);
     InputManager::RegisterClickableObject(Retry, [Retry, Quit](GameObject* obj) {
         std::cout << "Retry cliqué !\n\n\n\n\n\n" << std::endl;
         if (InputHandler::GetScenes()->size() > 1) {
@@ -76,9 +76,9 @@ Scene* CreateGameOver()
     return GameOver;
 }
 void createfloor(int x, int y, int length, int width, sf::Angle,Scene* scene) {
-	for (int i = 0; i < width; i++)
+	for (int i = width; i > 0; i--)
      {
-         for(int j = 0; j < length; j++)
+         for(int j = length; j > 0; j--)
          {
 			 GameObject* floor = CreateGrass(x + j, y + i);
 			 scene->AddGroundObject(floor); 
@@ -99,9 +99,9 @@ Scene* CreateGameLvL()
     
    /* createfloor(2, -1, 15, 1, sf::degrees(0), lvl1);*/
     GameObject* caillou = CreateRock(15,2);
-    lvl1->AddGameObject(player);
-    lvl1->AddGameObject(caillou);
-    createfloor(2, 0, 15, 6, sf::degrees(0), lvl1);
+    lvl1->AddGameObject(player,{0,1});
+    lvl1->AddGameObject(caillou, { 15,2 });
+    createfloor(5, -100, 15, 100, sf::degrees(0), lvl1);
     lvl1->SetPlayer(player);
     lvl1->SetLvLData(lvlObject);
     return lvl1;

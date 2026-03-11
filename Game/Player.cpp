@@ -3,7 +3,7 @@
 
 GameObject* createPlayer()
 {
-	GameObject* player = new GameObject(1,0);
+	GameObject* player = new GameObject(5,-1);
 	SpriteRenderer* sr = new SpriteRenderer("blocks_1.png", { 64,64 }, { 3,3 });
 	sr->setRotation(sf::degrees(0));
 	Collider* cl = new Collider();
