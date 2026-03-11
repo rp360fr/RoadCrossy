@@ -22,11 +22,17 @@ GameObject* CreateRockLigne(int  x, int y, int length, int  widtdh, sf::Angle  a
     }
 }
 
-GameObject* CreateRock(int x,int y,sf::Angle angle) {
-    GameObject* rock = new GameObject({isometri(x,y)});
+GameObject* CreateRock(int x, int y, sf::Angle angle) {
+    GameObject* rock = new GameObject({ isometri(x,y) });
     SpriteRenderer* sr = new SpriteRenderer("Blocks_1.png", { 64,64 }, { 1,1 });
+    /*Collider* cl = new Collider();*/
+    Variables* var = new Variables();
     sr->setRotation(angle);
+
+    //rock->AddComponent(cl);
     rock->AddComponent(sr);
+    rock->AddComponent(var);
+    
     return rock;
 }
 

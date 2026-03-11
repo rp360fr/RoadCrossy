@@ -202,21 +202,22 @@ class Collider : public Component
 {
 private:
 	bool canCollide = true;
-
+	sf::RectangleShape hitbox;
 public:
 	//Constructeurs
-	Collider() {};
+	Collider() ;
 	bool getCollide() { return canCollide; }
 	void setCollide(bool t) { canCollide = t; }
 	void Start() override;
 	void Update() override;
-	void Render(sf::RenderWindow& window);
-
-
-
+	void Render(sf::RenderWindow& window) override;
+	void Hitbox(float x, float y,sf::Angle angle);
+	sf::FloatRect GetBounds() const {
+		return hitbox.getGlobalBounds();
+	}
 
 	bool DoesCollide(GameObject* target);
-
+	bool DoesHitboxCollide(GameObject* target);
 };
 
 class Ennemie : public Component

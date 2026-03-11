@@ -83,7 +83,7 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
             {
                 for (GameObject* obj : lvl->getLstObj())
                 {
-                    obj->getTransform().pos.y += 0.005f;
+                 /*   obj->getTransform().pos += isometri(0,1);*/
                 }
             });
         // Gestion des collisions
