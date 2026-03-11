@@ -3,9 +3,9 @@
 
 GameObject* createPlayer()
 {
-	GameObject* player = new GameObject({ 200, 200 });
-	SpriteRenderer* sr = new SpriteRenderer("Spaceship-Sheet.png", { 64,64 }, { 3,3 });
-	sr->setRotation(sf::degrees(45));
+	GameObject* player = new GameObject(isometri(1,0));
+	SpriteRenderer* sr = new SpriteRenderer("blocks_1.png", { 64,64 }, { 3,3 });
+	sr->setRotation(sf::degrees(0));
 	SpriteRenderer* HP = new SpriteRenderer("HP.png", { 32,32 }, { 5,1 },true,1);
 	HP->setScale(4.5);
 	AudioManager* ad = new AudioManager("Shoot.wav");
@@ -16,7 +16,7 @@ GameObject* createPlayer()
 	player->AddComponent(cl);
 	player->AddComponent(sr);
 	player->AddComponent(HP);
-	player->SetPosition({ 300,200 });
+
 	player->AddComponent(stats);
 	return player;
 }

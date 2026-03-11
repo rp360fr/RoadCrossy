@@ -112,7 +112,8 @@ Scene* CreateGameLvL()
     lvl1->AddGameObject(grass_1);
     lvl1->AddGameObject(grass_2);
     lvl1->AddGameObject(rock);
-    createfloor(2, 0, 15, 4, sf::degrees(0), lvl1);
+    createfloor(2, 0, 15, 6, sf::degrees(0), lvl1);
+   /* createfloor(2, -1, 15, 1, sf::degrees(0), lvl1);*/
     GameObject* Enemie = CreateEnemiesType1();
     lvl1->AddGameObject(Enemie);
     lvl1->AddGameObject(player);
