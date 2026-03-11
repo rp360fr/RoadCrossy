@@ -23,6 +23,7 @@ private:
 public:
 
 	//Constructeurs
+	GameObject(int x, int y);
 	GameObject(sf::Vector2f position);
 
 	//Get

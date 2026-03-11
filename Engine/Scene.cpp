@@ -6,6 +6,13 @@ Scene::Scene(std::string name,sf::Vector2u size)
 	this->name = name;
 }
 
+
+void Scene::AddGroundObject(GameObject* obj)
+{
+	obj->setOwner(this);
+	ground.push_back(obj);
+}
+
 void Scene::AddGameObject(GameObject* obj)
 {
 	obj->setOwner(this);
@@ -40,6 +47,10 @@ GameObject* Scene::getThisObjByText(std::string name)
 
 void Scene::Start()
 {
+	for (GameObject* object : ground)
+	{
+		object->Start();
+	}
 	for (GameObject* object : objects)
 	{
 		object->Start();
@@ -56,6 +67,13 @@ void Scene::Start()
 void Scene::Update(sf::RenderWindow& window)
 {
 	// 1. Update tous les objets (sans supprimer pendant l'itération)
+	for (GameObject* object : ground)
+	{
+		if (object && object->getActive())
+		{
+			object->Update();
+		}
+	}
 	for (GameObject* object : objects)
 	{
 		if (object && object->getActive())
@@ -87,11 +105,15 @@ void Scene::Update(sf::RenderWindow& window)
 
 void Scene::Render(sf::RenderWindow& window)
 {
-		for (GameObject* object : objects)
-		{
-			object->Render(window); 
-		}
-		window.display();
+	for (GameObject* object : ground)
+	{
+		object->Render(window);
+	}
+	for (GameObject* object : objects)
+	{
+		object->Render(window); 
+	}
+	window.display();
 }
 
 

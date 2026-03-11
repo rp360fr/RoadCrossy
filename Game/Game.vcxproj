@@ -145,8 +145,6 @@
     <ClCompile Include="LvlManager.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PowerUp.cpp" />
-    <ClCompile Include="Projectiles.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enemies.h" />
@@ -155,8 +153,6 @@
     <ClInclude Include="LvlManager.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="PowerUp.h" />
-    <ClInclude Include="Projectiles.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

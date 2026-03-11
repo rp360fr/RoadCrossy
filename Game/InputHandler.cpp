@@ -74,9 +74,9 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
     MovePlayer(lvl);
     
 
-    InputManager::RegisterKeyPress("F10", []()
+    InputManager::RegisterKeyPress("F1", []()
         {
-            Debug::ChangeDebug(10);
+            Debug::ChangeDebug(1);
         });
 
 
@@ -84,14 +84,20 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
 
     if (!eventsCreated)
     {
-        std::cout << "Creation des events de collision et IA" << std::endl;
 
 
         Event::CreateEvent(-1, [lvl]()
             {
-                for (GameObject* obj : lvl->getLstObj())
+                if (debugF1)
                 {
-                    obj->getTransform().pos += { scrolling(0,1).x / 10000,scrolling(0,1).y / 10000 };
+                    for (GameObject* obj : lvl->getGroundObj())
+                    {
+                        obj->getTransform().pos += { scrolling(0, 1).x / 10000, scrolling(0, 1).y / 10000 };
+                    }
+                    for (GameObject* obj : lvl->getLstObj())
+                    {
+                        obj->getTransform().pos += { scrolling(0, 1).x / 10000, scrolling(0, 1).y / 10000 };
+                    }
                 }
             });
         // Gestion des collisions
@@ -114,6 +120,18 @@ void InputHandler::TestDeath()
 }
 
 
+void InputHandler::ChangeLayer(std::vector<GameObject*> obj, char mv)
+{
+    switch (mv)
+    {
+    case 'U':
+        break;
+
+    }
+}
+
+
+
 void InputHandler::MovePlayer(Scene* lvl)
 {
     if (lvl == nullptr || lvl->GetPlayer() == nullptr)
@@ -130,7 +148,7 @@ void InputHandler::MovePlayer(Scene* lvl)
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
                 SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-                player->getTransform().pos += isometri(0,-1);
+                player->getTransform().pos += calcMouvement(0,-1);
                 sprite->setDirection(Direction::Up);
             }
         });
@@ -140,7 +158,7 @@ void InputHandler::MovePlayer(Scene* lvl)
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
                 SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-				player->getTransform().pos += isometri(0, 1);
+				player->getTransform().pos += calcMouvement(0, 1);
                 sprite->setDirection(Direction::Down);
             }
         });
@@ -150,7 +168,7 @@ void InputHandler::MovePlayer(Scene* lvl)
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
                 SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-				player->getTransform().pos += isometri(-1, 0);
+				player->getTransform().pos += calcMouvement(-1, 0);
                 sprite->setDirection(Direction::Left);
             }
         });
@@ -160,7 +178,7 @@ void InputHandler::MovePlayer(Scene* lvl)
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
                 SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-				player->getTransform().pos += isometri(1, 0);
+				player->getTransform().pos += calcMouvement(1, 0);
                 sprite->setDirection(Direction::Right);
             }
         });
@@ -177,7 +195,12 @@ Scene* InputHandler::getThisScene(std::vector<Scene*>* lstScene, std::string nam
     return nullptr;
 }
 
-
+sf::Vector2f InputHandler::calcMouvement(int x, int y)
+{
+    float screenX = (x - y) * tile_width / 2;
+    float screenY = (x + y) * tile_height / 4;
+    return sf::Vector2f(screenX, screenY);
+}
 
 void InputHandler::RestartGame()
 {

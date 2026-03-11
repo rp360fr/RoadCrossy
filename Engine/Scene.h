@@ -10,6 +10,7 @@ class Scene
 private:
 	sf::Clock clock;
 	std::string name;
+	std::vector<GameObject*> ground;
 	std::vector<GameObject*> objects;
 	sf::Vector2u size = { 800,800 };
 	GameObject* player = nullptr;
@@ -21,6 +22,7 @@ public:
 
 	//Get
 	std::vector<GameObject*> getLstObj() { return objects; }
+	std::vector<GameObject*> getGroundObj() { return ground; }
 	GameObject* getThisObjByText(std::string name);
 	bool LvlEnd() { if (clock.getElapsedTime().asSeconds() > 5 && name == "LvL1") return true; else return false; }
 	sf::Vector2u getSize() { return size; }
@@ -35,6 +37,7 @@ public:
 	//Autres
 	void Destroy();
 	void RemoveGameObject(GameObject* obj);
+	void AddGroundObject(GameObject* obj);
 	void AddGameObject(GameObject* obj);
 	void Start();
 	void Update(sf::RenderWindow& window);

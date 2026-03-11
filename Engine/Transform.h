@@ -4,6 +4,7 @@
 class Transform
 {
 public:
+	std::pair<int, int> placement;
 	sf::Vector2f pos;
 	float rotation = 0.f;
 

@@ -3,7 +3,7 @@
 
 GameObject* createPlayer()
 {
-	GameObject* player = new GameObject(isometri(1,0));
+	GameObject* player = new GameObject(1,0);
 	SpriteRenderer* sr = new SpriteRenderer("blocks_1.png", { 64,64 }, { 3,3 });
 	sr->setRotation(sf::degrees(0));
 	Collider* cl = new Collider();
@@ -16,7 +16,7 @@ GameObject* createPlayer()
 GameObject* createTest()
 {
 	std::cout << "create test" << std::endl;
-	GameObject* test = new GameObject({ 200, 200 });
+	GameObject* test = new GameObject(sf::Vector2f(200, 200));
 	SpriteRenderer* sr = new SpriteRenderer("mechant1.png", { 64,64 }, { 3,3 });
 	Collider* cl = new Collider();
 	Variables* stats = new Variables();
