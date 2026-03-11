@@ -92,11 +92,11 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
                 {
                     for (GameObject* obj : lvl->getGroundObj())
                     {
-                        obj->getTransform().pos += { scrolling(0, 1).x / 10000, scrolling(0, 1).y / 10000 };
+                        obj->getTransform().pos += { scrolling(0, 1).x / 1000, scrolling(0, 1).y / 1000 };
                     }
                     for (GameObject* obj : lvl->getLstObj())
                     {
-                        obj->getTransform().pos += { scrolling(0, 1).x / 10000, scrolling(0, 1).y / 10000 };
+                        obj->getTransform().pos += { scrolling(0, 1).x / 1000, scrolling(0, 1).y / 1000 };
                     }
                 }
             });
@@ -121,7 +121,7 @@ void InputHandler::TestDeath()
 
 
 
-void moveElementUp(std::vector<GameObject*>& list, int posStart, int posFin)
+void moveElement(std::vector<GameObject*>& list, int posStart, int posFin)
 {
     if (posStart == posFin) return;
     if (posStart < 0 || posStart >= list.size()) return;
@@ -130,18 +130,10 @@ void moveElementUp(std::vector<GameObject*>& list, int posStart, int posFin)
     GameObject* elem = list[posStart];
     list.erase(list.begin() + posStart);
     list.insert(list.begin() + posFin, elem);
+    std::cout << "pos joueur tab " << posFin << std::endl;
 }
 
-void moveElementDown(std::vector<GameObject*>& list, int posStart, int posFin)
-{
-    if (posStart == posFin) return;
-    if (posStart < 0 || posStart >= list.size()) return;
-    if (posFin < 0 || posFin >= list.size()) return;
 
-    GameObject* elem = list[posStart];
-    list.erase(list.begin() - posStart);
-    list.insert(list.begin() - posFin, elem);
-}
 
 void InputHandler::ChangeLayer(std::vector<GameObject*>& obj,GameObject* player, char mv)
 {
@@ -159,16 +151,16 @@ void InputHandler::ChangeLayer(std::vector<GameObject*>& obj,GameObject* player,
 
     if (id == -1) return;
 
-    int pos = std::min(id + 15, (int)obj.size() - 1);
+
 
     switch (mv)
     {
-    case 'U': moveElementUp(obj, id, pos); break;
-    case 'D': moveElementDown(obj, id, pos); break;
-    case 'L': moveElementDown(obj, id, 1); break;
-    case 'R': moveElementUp(obj, id, 1); break;
+    case 'U': if(id+15 < 1500) moveElement(obj, id, id+15); break;
+    case 'D': if (id - 15 >= 0) moveElement(obj, id, id-15); break;
+    case 'R': if (id - 1 >= 0 ) moveElement(obj, id, id-1); break;
+    case 'L': if (id + 1 < 1500) moveElement(obj, id, id+1); break;
     }
-    std::cout << "pos joueur tab " << id << std::endl;
+
 }
 
 

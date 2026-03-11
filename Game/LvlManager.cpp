@@ -95,13 +95,13 @@ Scene* CreateGameLvL()
     AudioManager* ad = new AudioManager("SpaceMainTheme.mp3");
     ad->SetLoop(true);
     lvlObject->AddComponent(ad);
-    GameObject* player = createPlayer();
+    GameObject* player = createPlayer(0,0);
     
    /* createfloor(2, -1, 15, 1, sf::degrees(0), lvl1);*/
-    GameObject* caillou = CreateRock(15,2);
-    lvl1->AddGameObject(player,{0,1});
-    lvl1->AddGameObject(caillou, { 15,2 });
-    createfloor(5, -100, 15, 100, sf::degrees(0), lvl1);
+    GameObject* caillou = CreateRock(8,2);
+    lvl1->AddGameObject(player,{0,0});
+    lvl1->AddGameObject(caillou, { 8,2 });
+    createfloor(0, 0, 15, 100, sf::degrees(0), lvl1);
     lvl1->SetPlayer(player);
     lvl1->SetLvLData(lvlObject);
     return lvl1;

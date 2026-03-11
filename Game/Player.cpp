@@ -1,9 +1,9 @@
 #include "Player.h"
 
 
-GameObject* createPlayer()
+GameObject* createPlayer(int x, int y)
 {
-	GameObject* player = new GameObject(5,-1);
+	GameObject* player = new GameObject(x,y);
 	SpriteRenderer* sr = new SpriteRenderer("blocks_1.png", { 64,64 }, { 3,3 });
 	sr->setRotation(sf::degrees(0));
 	Collider* cl = new Collider();

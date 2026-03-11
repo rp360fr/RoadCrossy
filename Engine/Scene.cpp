@@ -18,7 +18,8 @@ void Scene::AddGameObject(GameObject* obj, std::pair<int,int> pos)
 {
 
 	obj->setOwner(this);
-	Layer2[pos.second*15+pos.first] = obj;
+	Layer2[pos.first+pos.second*15] = obj;
+	
 }
 
 void Scene::AddParamObject(GameObject* obj)
@@ -128,14 +129,14 @@ void Scene::Render(sf::RenderWindow& window)
 	{
 		object->Render(window);
 	}
-	for (auto object = ground.rbegin(); object != ground.rend(); ++object)
+	for (GameObject* object : ground)
 	{
-		(*object)->Render(window);
+		object->Render(window);
 	}
-	for (GameObject* object : Layer2)
+	for (auto object = Layer2.rbegin(); object != Layer2.rend(); ++object)
 	{
-		if (object)
-			object->Render(window);
+		if((*object) != nullptr)
+			(*object)->Render(window);
 	}
 	window.display();
 }
