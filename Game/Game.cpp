@@ -15,7 +15,7 @@ int main()
 {
     srand(time(NULL));
     std::vector<Scene*>* lstScene = new std::vector<Scene*>;
-    Engine engine({ 800, 600 }, "ShootEmUp");
+    Engine engine({ 800, 800 }, "ShootEmUp");
 
     Scene* Menu = CreateMenuDepart(lstScene);
     Scene* LvL = CreateGameLvL();

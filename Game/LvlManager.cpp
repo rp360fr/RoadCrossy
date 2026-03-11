@@ -80,13 +80,9 @@ void createfloor(int x, int y, int length, int width, sf::Angle,Scene* scene) {
      {
          for(int j = 0; j < length; j++)
          {
-			 GameObject* floor = CreateRock(x + j, y + i, sf::degrees(0));
-			 scene->AddGameObject(floor);
-		
-			 
-             
+			 GameObject* floor = CreateGrass(x + j, y + i);
+			 scene->AddGameObject(floor); 
          }
-		
      }
 	
 }
@@ -100,22 +96,10 @@ Scene* CreateGameLvL()
     ad->SetLoop(true);
     lvlObject->AddComponent(ad);
     GameObject* player = createPlayer();
-    GameObject* grass_1 = CreateGrass({0,0});
-    GameObject* grass_2 = CreateGrass({ 64,0 });
-    GameObject* fond = createFond();
-    GameObject* rock = CreateRock(1, 0 ,sf::degrees(0));
-    GameObject* rock_2 = CreateRock(2, 0 ,sf::degrees(0));
-	GameObject* rock_3 = CreateRockLigne(0, -3, 5, 1, sf::degrees(0));
-	
-    
-    lvl1->AddGameObject(fond);
-    lvl1->AddGameObject(grass_1);
-    lvl1->AddGameObject(grass_2);
-    lvl1->AddGameObject(rock);
     createfloor(2, 0, 15, 6, sf::degrees(0), lvl1);
    /* createfloor(2, -1, 15, 1, sf::degrees(0), lvl1);*/
-    GameObject* Enemie = CreateEnemiesType1();
-    lvl1->AddGameObject(Enemie);
+    GameObject* caillou = CreateRock(10,1);
+    lvl1->AddGameObject(caillou);
     lvl1->AddGameObject(player);
     lvl1->SetPlayer(player);
     lvl1->SetLvLData(lvlObject);

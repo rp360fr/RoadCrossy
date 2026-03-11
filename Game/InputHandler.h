@@ -21,14 +21,11 @@ public:
     static void Initialize(Engine* engine, std::vector<Scene*>* scenes);
 
     static void TestDeath();
-    static void CollisionProjectiles();
-    static void CollisionVaisseau();
-    static void CollisionBonusMalus();
     static void SetupSceneInputs(Scene* scene, std::string sceneName);
     static void ClearSceneInputs();
     static void RestartGame();
     static void MovePlayer(Scene* scene);
-    static void PauseGame();
+    static sf::Vector2f scrolling(int x, int y);
     static Scene* getThisScene(std::vector<Scene*>* lstScene, std::string name);
     static Engine* GetEngine() { return engineRef; }
     static std::vector<Scene*>* GetScenes() { return scenesRef; }

@@ -16,6 +16,14 @@ void InputHandler::Initialize(Engine* engine, std::vector<Scene*>* scenes)
         std::cout << "InputHandler initialise" << std::endl;
 }
 
+sf::Vector2f InputHandler::scrolling(int x, int y)
+{
+        float screenX = (x - y) * tile_width / 2;
+        float screenY = (x + y) * tile_height / 2;
+        return sf::Vector2f(screenX, screenY);
+}
+
+
 void InputHandler::SetupSceneInputs(Scene* scene, std::string sceneName)
 {
     if (scene == nullptr)
@@ -83,7 +91,7 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
             {
                 for (GameObject* obj : lvl->getLstObj())
                 {
-                    obj->getTransform().pos.y += 0.005f;
+                    obj->getTransform().pos += { scrolling(0,1).x / 10000,scrolling(0,1).y / 10000 };
                 }
             });
         // Gestion des collisions
@@ -93,10 +101,6 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
                 if (currentScene == nullptr || currentScene->getName() == "Pause" ||
                     currentScene->getName() == "Menu" || currentScene->getName() == "GameOver")
                     return;
-                InputHandler::CollisionProjectiles();
-                InputHandler::CollisionVaisseau(); 
-                InputHandler::CollisionBonusMalus();
-                InputHandler::TestDeath();
                 
             });
 
@@ -105,113 +109,9 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
     }
 }
 
-
-void InputHandler::CollisionProjectiles()
-{
-    for (GameObject* obj : engineRef->getSceneModule()->GetActiveScene()->getLstObj())
-    {
-        if (obj->GetComponent<Collider>() != nullptr && obj->GetComponent<Collider>()->getCollide() == true)
-        {
-            for (GameObject* target : engineRef->getSceneModule()->GetActiveScene()->getLstObj())
-            {
-                if (target->GetComponent<Projectile>() != nullptr)
-                {
-                    if (obj->GetComponent<Collider>()->DoesCollide(target) && target->GetComponent<Projectile>()->getShooter() != obj)
-                    {
-                        obj->GetComponent<Variables>()->MinusInt("PV", 1);
-                        if (obj == engineRef->getSceneModule()->GetActiveScene()->GetPlayer())
-                            engineRef->getSceneModule()->GetActiveScene()->GetPlayer()->GetComponent<SpriteRenderer>(1)->UpFrame();
-                        std::cout << "touche, Pv : " << obj->GetComponent<Variables>()->getInt("PV") << std::endl;
-                        target->Destroy();
-                    }
-                }
-            }
-        }
-    }
-}
-
 void InputHandler::TestDeath()
 {
-    for (GameObject* obj : engineRef->getSceneModule()->GetActiveScene()->getLstObj())
-    {
-        if (obj->GetComponent<Collider>() != nullptr)
-        {
-            if (obj->GetComponent<Variables>()->getInt("PV") == 0)
-            {
-                if (obj == engineRef->getSceneModule()->GetActiveScene()->GetPlayer())
-                {
-                    Scene* GameOver = InputHandler::getThisScene(scenesRef, "GameOver");
-                    engineRef->getSceneModule()->GetActiveScene()->GetLvLData()->GetComponent<AudioManager>()->Pause();
-                    if (engineRef != nullptr)
-                    {
-                        GameOver->getThisObjByText("Retry")->setClickable(true);
-                        GameOver->getThisObjByText("Quit")->setClickable(true);
-                        engineRef->getSceneModule()->SetActiveScene(GameOver);
-                        GameOver->Start();
-                        engineRef->setGameState(false);
-                    }
-                }
-                else
-                {
-                    int Bonus = rand() % 10 + 1;
-                    if (Bonus >= 6)
-                    {
-                        GameObject* pUp = CreateHpUp(obj);
-                        engineRef->getSceneModule()->GetActiveScene()->AddGameObject(pUp);
-                        pUp->Start();
-                    }
-                    obj->GetComponent<Collider>()->setCollide(false);
-                    std::cout << "mort" << std::endl;
-                    obj->GetComponent<SpriteRenderer>()->setVisible(false);
-                    obj->Destroy();
-                } 
-            }
-        }
-    }
 }
-
-void InputHandler::CollisionVaisseau()
-{
-    for (GameObject* obj : engineRef->getSceneModule()->GetActiveScene()->getLstObj())
-    {
-        if (obj->GetComponent<Collider>() != nullptr && obj->GetComponent<Collider>()->getCollide() == true && obj->GetComponent<Ennemie>() != nullptr)
-        {
-            for (GameObject* target : engineRef->getSceneModule()->GetActiveScene()->getLstObj())
-            {
-                if (target == engineRef->getSceneModule()->GetActiveScene()->GetPlayer())
-                {
-                    if (obj->GetComponent<Collider>()->DoesCollide(target))
-                        target->GetComponent<Variables>()->addInt("PV", 0);
-                        
-                }
-            }
-        }
-    }
-}
-
-void InputHandler::CollisionBonusMalus()
-{
-    for (GameObject* obj : engineRef->getSceneModule()->GetActiveScene()->getLstObj())
-    {
-        if (obj->GetComponent<Collider>() != nullptr && obj->GetComponent<Collider>()->getCollide() == true && obj->GetComponent<Variables>() != nullptr && obj->GetComponent<Variables>()->getString("Up")== "+1HP")
-        {
-            for (GameObject* target : engineRef->getSceneModule()->GetActiveScene()->getLstObj())
-            {
-                if (target == engineRef->getSceneModule()->GetActiveScene()->GetPlayer())
-                {
-                    if (obj->GetComponent<Collider>()->DoesCollide(target) && target->GetComponent<Variables>()->getInt("PV") <= 4)
-                    {
-                        target->GetComponent<Variables>()->PlusInt("PV", 1);
-                        target->GetComponent<SpriteRenderer>(1)->DownFrame();
-                        obj->Destroy();
-                    }
-                        
-                }
-            }
-        }
-    }
-}
-
 
 
 void InputHandler::MovePlayer(Scene* lvl)

@@ -7,7 +7,7 @@ SceneModule::SceneModule()
 {
 	name = "default";
 	window = sf::RenderWindow(sf::VideoMode({800,800}), "default");
-	window.setFramerateLimit(60);
+	window.setFramerateLimit(90);
 }
 
 
