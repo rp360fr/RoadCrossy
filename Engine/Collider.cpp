@@ -18,7 +18,7 @@ Collider::Collider()
 
 void Collider::Start()
 {
-	
+	hitbox.setPosition(owner->getTransform().pos);
 }
 
 void Collider::Update()

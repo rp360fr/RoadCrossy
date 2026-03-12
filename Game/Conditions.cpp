@@ -109,12 +109,17 @@ void Conditions::Scrolling(Scene* lvl)
     {
         for (GameObject* obj : lvl->getGroundObj())
         {
-            obj->getTransform().pos += { scrolling(0, 2).x / 100, scrolling(0, 1).y / 100 };
+            obj->getTransform().pos += { scrolling(0, 2).x / 500, scrolling(0, 1).y / 500 };
         }
         for (GameObject* obj : lvl->getObstaclesObj())
         {
             if (obj != nullptr)
-                obj->getTransform().pos += { scrolling(0, 2).x / 100, scrolling(0, 1).y / 100 };
+                obj->getTransform().pos += { scrolling(0, 2).x / 500, scrolling(0, 1).y / 500 };
+        }
+        for (GameObject* obj : lvl->getMovingObstaclesObj())
+        {
+            if (obj != nullptr)
+                obj->getTransform().pos += { scrolling(0, 2).x / 500, scrolling(0, 1).y / 500 };
         }
     }
 }

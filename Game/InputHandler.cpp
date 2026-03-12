@@ -92,7 +92,7 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
             {
                 Conditions::Scrolling(lvl);
                 if (Conditions::Collision(lvl))
-                    std::cout << "collide" << std::endl;
+                    Event::SetEventTrue(1);
                 if (Conditions::testWin(lvl))
                     Event::SetEventTrue(1);
                 
