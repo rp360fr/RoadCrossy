@@ -1,15 +1,13 @@
 #pragma once
 #include <iostream>
 
-extern bool debugF9;
-extern bool debugF10;
-extern bool debugF8;
-extern bool debugF5;
+extern bool debugF1;
+extern bool debugF2;
 
 class Debug
 {
 public:
 	static void ChangeDebug(int i);
-	static void DebugCout(std::string text, char F);
+	static void DebugCout(std::string text, int F);
 
 };

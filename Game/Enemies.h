@@ -1,9 +1,7 @@
 #pragma once
 #include "Engine.h"
 #include "Scene.h"
-#include "Projectiles.h"
 #include <fstream>
-
 #include <sstream>
 
 
@@ -15,10 +13,9 @@ struct EnnemiData {
 };
 const float tile_width = 64;
 const float tile_height = 64;
-sf::Vector2f isometri(int x, int y);
 extern std::vector<EnnemiData> enemiesToSpawn;
 GameObject* CreateGrass(int x, int y);
-GameObject* CreateTree(sf::Vector2f vector);
+GameObject* CreateTree(int x, int y);
 GameObject* CreateRock(int x,int y);
 GameObject* CreateRiver(sf::Vector2f vector);
 GameObject* CreateBoat(sf::Vector2f vector);

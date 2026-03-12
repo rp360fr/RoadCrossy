@@ -1,14 +1,15 @@
 #include "Player.h"
 
 
-GameObject* createPlayer()
+GameObject* createPlayer(int x, int y)
 {
-	GameObject* player = new GameObject(isometri(1,0));
-	SpriteRenderer* sr = new SpriteRenderer("blocks_28.png", { 64,64 }, { 3,3 });
-	sr->setRotation(sf::degrees(0));
+	GameObject* player = new GameObject(x,y);
+	SpriteRenderer* sr = new SpriteRenderer("blocks_1.png", { 64,64 }, { 3,3 });
+	Variables* vr = new Variables();
 	Collider* cl = new Collider();
 	player->AddComponent(cl);
 	player->AddComponent(sr);
+	player->AddComponent(vr);
 	return player;
 }
 
@@ -16,7 +17,7 @@ GameObject* createPlayer()
 GameObject* createTest()
 {
 	std::cout << "create test" << std::endl;
-	GameObject* test = new GameObject({ 200, 200 });
+	GameObject* test = new GameObject(sf::Vector2f(200, 200));
 	SpriteRenderer* sr = new SpriteRenderer("mechant1.png", { 64,64 }, { 3,3 });
 	Collider* cl = new Collider();
 	Variables* stats = new Variables();

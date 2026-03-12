@@ -8,6 +8,19 @@ GameObject::GameObject(sf::Vector2f position) //Constructeur (position de l'obje
     active = true;
 }
 
+GameObject::GameObject(int x, int y) //Constructeur (position de l'objet)
+{
+    getTransform().placement = std::make_pair(x, y);
+
+    int isoX = 20 - x;
+    int isoY = -y;
+
+    this->getTransform().pos.x = (isoX - isoY) * 32;
+    this->getTransform().pos.y = (isoX + isoY) * 16;
+    active = true;
+}
+
+
 Transform& GameObject::getTransform()
 {
 	return transform;

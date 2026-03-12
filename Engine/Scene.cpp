@@ -4,14 +4,29 @@ Scene::Scene(std::string name,sf::Vector2u size)
 {
 	this->size = size;
 	this->name = name;
+	Layer2.resize(1500, nullptr);
 }
 
-void Scene::AddGameObject(GameObject* obj)
+
+void Scene::AddGroundObject(GameObject* obj)
+{
+	obj->setOwner(this);
+	ground.push_back(obj);
+}
+
+void Scene::AddGameObject(GameObject* obj, std::pair<int,int> pos)
+{
+
+	obj->setOwner(this);
+	Layer2[pos.first+pos.second*15] = obj;
+	
+}
+
+void Scene::AddParamObject(GameObject* obj)
 {
 	obj->setOwner(this);
 	objects.push_back(obj);
 }
-
 
 
 
@@ -44,6 +59,15 @@ void Scene::Start()
 	{
 		object->Start();
 	}
+	for (GameObject* object : ground)
+	{
+		object->Start();
+	}
+	for (GameObject* object : Layer2)
+	{
+		if (object)
+			object->Start();
+	}
 	if (LvLData != nullptr)
 	{
 		LvLData->Start();
@@ -57,6 +81,20 @@ void Scene::Update(sf::RenderWindow& window)
 {
 	// 1. Update tous les objets (sans supprimer pendant l'itération)
 	for (GameObject* object : objects)
+	{
+		if (object && object->getActive())
+		{
+			object->Update();
+		}
+	}
+	for (GameObject* object : ground)
+	{
+		if (object && object->getActive())
+		{
+			object->Update();
+		}
+	}
+	for (GameObject* object : Layer2)
 	{
 		if (object && object->getActive())
 		{
@@ -87,11 +125,20 @@ void Scene::Update(sf::RenderWindow& window)
 
 void Scene::Render(sf::RenderWindow& window)
 {
-		for (GameObject* object : objects)
-		{
-			object->Render(window); 
-		}
-		window.display();
+	for (GameObject* object : objects)
+	{
+		object->Render(window);
+	}
+	for (GameObject* object : ground)
+	{
+		object->Render(window);
+	}
+	for (auto object = Layer2.rbegin(); object != Layer2.rend(); ++object)
+	{
+		if((*object) != nullptr)
+			(*object)->Render(window);
+	}
+	window.display();
 }
 
 

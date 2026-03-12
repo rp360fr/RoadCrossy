@@ -1,29 +1,29 @@
 #include "Enemies.h"
 
-GameObject* CreateTree(sf::Vector2f vector) {
-    GameObject* tree = new GameObject({ vector });
-    SpriteRenderer* sr = new SpriteRenderer("tree.png", { 64,64 }, { 1,1 });
+GameObject* CreateTree(int x, int y) {
+    GameObject* tree = new GameObject(x,y);
+    SpriteRenderer* sr = new SpriteRenderer("blocks_3.png", { 64,64 }, { 1,1 });
+    Variables* vr = new Variables();
     tree->AddComponent(sr);
+    tree->AddComponent(vr);
     return tree;
 }
 
 
 
 GameObject* CreateRock(int x,int y) {
-    GameObject* rock = new GameObject({isometri(x,y)});
+    GameObject* rock = new GameObject(x,y);
     SpriteRenderer* sr = new SpriteRenderer("Blocks_63.png", { 64,64 }, { 1,1 });
-    Collider* cl = new Collider();
+    Variables* vr = new Variables();
+    vr->addString("Type","Rock");
     rock->AddComponent(sr);
-    rock->AddComponent(cl);
-   /* cl->Hitbox(64, 32, sf::degrees(45));*/
-    
-    
+    rock->AddComponent(vr);
     return rock;
 }
 
 
 GameObject* CreateGrass(int x, int y) {
-    GameObject* grass = new GameObject(isometri(x,y));
+    GameObject* grass = new GameObject(x-2,y-2);
     SpriteRenderer* sr = new SpriteRenderer("blocks_1.png", { 64,64 }, { 1,1 });
     grass->AddComponent(sr);
 
@@ -36,10 +36,3 @@ GameObject* CreateGrass(int x, int y) {
 
 
 
-
-sf::Vector2f isometri(int x, int y)
-{
-    float screenX = (x - y) * tile_width / 2;
-    float screenY = (x + y) * tile_height / 4;
-    return sf::Vector2f(screenX, screenY);
-}
