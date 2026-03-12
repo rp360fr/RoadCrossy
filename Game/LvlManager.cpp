@@ -96,16 +96,7 @@ void limite(Scene* scene)
         GameObject* droite = CreateTree(14, i);
         scene->AddGameObject(droite, { 14,i });
     }
-}
 
-    for (int i = width; i > 0; i--)
-    {
-        for (int j = length; j > 0; j--)
-        {
-            GameObject* tree = CreateTree(x + j, y + i);
-            scene->AddGameObject(tree,{x,y});
-        }
-    }
 
 }
 
@@ -113,22 +104,26 @@ void limite(Scene* scene)
 Scene* CreateGameLvL()
 {
     Scene* lvl1 = new Scene("LvL");
-    GameObject* lvlObject = new GameObject(sf::Vector2f(0,0));
+    GameObject* lvlObject = new GameObject(sf::Vector2f(0, 0));
     AudioManager* ad = new AudioManager("SpaceMainTheme.mp3");
     ad->SetLoop(true);
     lvlObject->AddComponent(ad);
-    GameObject* player = createPlayer(5,0);
+    GameObject* player = createPlayer(5, 0);
     lvl1->AddGameObject(player, { 5,0 });
     createfloor(0, 0, 15, 100, sf::degrees(0), lvl1);
     limite(lvl1);
-    GameObject* caillou = CreateRock(8,2);
+    GameObject* caillou = CreateRock(8, 2);
     GameObject* caillou2 = CreateRock(9, 2);
     GameObject* arbe = CreateTree(2, 2);
+    GameObject* car = CreateCar(8, 0);
     lvl1->AddGameObject(caillou, { 8,2 });
     lvl1->AddGameObject(caillou2, { 9,2 });
     lvl1->AddGameObject(arbe, { 2,2 });
+    lvl1->AddGameObject(car, { 8,0 });
+    
     
     lvl1->SetPlayer(player);
+
     lvl1->SetLvLData(lvlObject);
     return lvl1;
 }

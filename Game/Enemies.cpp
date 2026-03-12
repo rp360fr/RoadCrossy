@@ -28,8 +28,22 @@ GameObject* CreateGrass(int x, int y) {
     grass->AddComponent(sr);
 
     return grass;
+
 }
 
+GameObject* CreateCar(int x, int y) {
+    GameObject* car = new GameObject(x, y);
+    SpriteRenderer* sr = new SpriteRenderer("Blocks_28.png", { 64,64 }, { 1,1 });
+    Collider* cl = new Collider();
+
+    car->AddComponent(sr);
+
+    car->AddComponent(cl);
+    cl->Hitbox(32, 32, sf::degrees(45));
+    cl->GetHitbox().setPosition();
+
+    return car;
+}
 
 
 

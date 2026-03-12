@@ -215,7 +215,7 @@ public:
 	sf::FloatRect GetBounds() const {
 		return hitbox.getGlobalBounds();
 	}
-
+	sf::RectangleShape GetHitbox() { return hitbox; }
 	bool DoesCollide(GameObject* target);
 	bool DoesHitboxCollide(GameObject* target);
 };

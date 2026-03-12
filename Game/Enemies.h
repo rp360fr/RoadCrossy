@@ -19,7 +19,7 @@ GameObject* CreateTree(int x, int y);
 GameObject* CreateRock(int x,int y);
 GameObject* CreateRiver(sf::Vector2f vector);
 GameObject* CreateBoat(sf::Vector2f vector);
-GameObject* CreateCar(sf::Vector2f vector);
+GameObject* CreateCar(int x,int y);
 GameObject* CreateEnemiesType2();
 GameObject* CreateEnemiesType1();
 GameObject* CreateEnemiesMine();

@@ -29,9 +29,9 @@ bool Collider::DoesCollide(GameObject* target)
 
 
 void Collider::Hitbox(float x, float y,sf::Angle angle) {
-	if (owner->GetComponent<Transform>() != nullptr && owner != nullptr); {
+	/*if (owner->GetComponent<Transform>() != nullptr && owner != nullptr); {
 		hitbox.setPosition(owner->GetComponent<Transform>()->pos);
-	}
+	}*/
 	hitbox.setSize({ x,y });
 	hitbox.setRotation(angle);
 	hitbox.setFillColor({ sf::Color::Red });
