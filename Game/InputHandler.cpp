@@ -16,12 +16,7 @@ void InputHandler::Initialize(Engine* engine, std::vector<Scene*>* scenes)
         std::cout << "InputHandler initialise" << std::endl;
 }
 
-sf::Vector2f InputHandler::scrolling(int x, int y)
-{
-        float screenX = (x - y) * tile_width / 2;
-        float screenY = (x + y) * tile_height / 2;
-        return sf::Vector2f(screenX, screenY);
-}
+
 
 
 void InputHandler::SetupSceneInputs(Scene* scene, std::string sceneName)
@@ -70,7 +65,7 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
         return;
     }
 
-    // Configuration des mouvements du joueur pour CE niveau spécifique
+    // Configuration des mouvements du joueur
     MovePlayer(lvl);
     
 
@@ -89,32 +84,26 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
     if (!eventsCreated)
     {
 
-
+        // Gestion d'event a chaque boucle
         Event::CreateEvent(-1, [lvl]()
             {
-                if (debugF1)
-                {
-                    for (GameObject* obj : lvl->getGroundObj())
-                    {
-                        obj->getTransform().pos += { scrolling(0, 2).x / 1000, scrolling(0, 1).y / 1000 };
-                    }
-                    for (GameObject* obj : lvl->getLayer2Obj())
-                    {
-                        if(obj != nullptr)
-                            obj->getTransform().pos += { scrolling(0, 2).x / 1000, scrolling(0, 1).y / 1000 };
-                    }
-                }
-            });
-        // Gestion des collisions
-        Event::CreateEvent(-2, []()
-            {
-                Scene* currentScene = engineRef->getSceneModule()->GetActiveScene();
-                if (currentScene == nullptr || currentScene->getName() == "Pause" ||
-                    currentScene->getName() == "Menu" || currentScene->getName() == "GameOver")
-                    return;
-                
+                Conditions::Scrolling(lvl);
+                if (Conditions::testWin(lvl))
+                    Event::SetEventTrue(1);
             });
 
+
+
+        //Fin
+        Event::CreateEvent(1, []()
+            {
+                Scene* GameOver = InputHandler::getThisScene(scenesRef, "GameOver");
+                GameOver->getThisObjByText("Retry")->setClickable(true);
+                GameOver->getThisObjByText("Quit")->setClickable(true);
+                engineRef->getSceneModule()->SetActiveScene(GameOver);
+                GameOver->Start();
+                engineRef->setGameState(false);
+            });
 
         eventsCreated = true;
     }
@@ -126,51 +115,7 @@ void InputHandler::TestDeath()
 
 
 
-bool moveElement(std::vector<GameObject*>& list, int posStart, int posFin)
-{
-    GameObject* elem = list[posStart];
-    if (list[posFin] == nullptr)
-    {
-        list[posFin] = elem;
-        list[posStart] = nullptr;
-        Debug::DebugCout("pos joueur tab "+posFin,2);
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-    
-}
 
-
-
-bool InputHandler::ChangeLayer(std::vector<GameObject*>& obj,GameObject* player, char mv)
-{
-    int id = -1;
-    bool test = false;
-    for (int i = 0; i < obj.size(); i++)
-    {
-        if (obj[i] == player)
-        {
-            id = i;
-            break;
-        }
-    }
-
-    if (id == -1) return false;
-
-
-
-    switch (mv)
-    {
-    case 'U': if(id+15 < 1500) test = moveElement(obj, id, id+15); break;
-    case 'D': if (id - 15 >= 0) test = moveElement(obj, id, id-15); break;
-    case 'R': if (id - 1 >= 0 ) test = moveElement(obj, id, id-1); break;
-    case 'L': if (id + 1 < 1500) test = moveElement(obj, id, id+1); break;
-    }
-    return test;
-}
 
 
 
@@ -182,61 +127,46 @@ void InputHandler::MovePlayer(Scene* lvl)
         return;
     }
 
-    // Capturer le pointeur du joueur pour cette scène spécifique
     GameObject* player = lvl->GetPlayer();
     std::vector<GameObject*>& lstObj = lvl->getLayer2Obj();
+
     InputManager::RegisterKeyPress("Z", [player,&lstObj]()
         {
-            if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
-            {
-                if (ChangeLayer(lstObj, player, 'U'))
-                {
-                    SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-                    player->getTransform().pos += calcMouvement(0, -1);
-                    sprite->setDirection(Direction::Up);
-                }
-                
-            }
+            Conditions::MoveUp(player, lstObj);
         });
+    InputManager::RegisterKeyPress("Up", [player, &lstObj]()
+        {
+            Conditions::MoveUp(player, lstObj);
+        });
+
 
     InputManager::RegisterKeyPress("S", [player,&lstObj]()
         {
-            if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
-            {
-                if (ChangeLayer(lstObj, player, 'D'))
-                {
-                    SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-                    player->getTransform().pos += calcMouvement(0, 1);
-                    sprite->setDirection(Direction::Down);
-                }
-                
-            }
+            Conditions::MoveDown(player, lstObj);
+        });
+    InputManager::RegisterKeyPress("Down", [player, &lstObj]()
+        {
+            Conditions::MoveDown(player, lstObj);
         });
 
-    InputManager::RegisterKeyPress("Q", [player,&lstObj]()
+
+    InputManager::RegisterKeyPress("Q", [player, &lstObj]()
         {
-            if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
-            {
-                if (ChangeLayer(lstObj, player, 'L'))
-                {
-                    SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-                    player->getTransform().pos += calcMouvement(-1, 0);
-                    sprite->setDirection(Direction::Left);
-                }
-            }
+            Conditions::MoveLeft(player, lstObj);
         });
+    InputManager::RegisterKeyPress("Left", [player, &lstObj]()
+        {
+            Conditions::MoveLeft(player, lstObj);
+        });
+
 
     InputManager::RegisterKeyPress("D", [player,&lstObj]()
         {
-            if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
-            {
-                if (ChangeLayer(lstObj, player, 'R'))
-                {
-                    SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-                    player->getTransform().pos += calcMouvement(1, 0);
-                    sprite->setDirection(Direction::Right);
-                }
-            }
+            Conditions::MoveRight(player, lstObj);
+        });
+    InputManager::RegisterKeyPress("Right", [player, &lstObj]()
+        {
+            Conditions::MoveRight(player, lstObj);
         });
 }
 
@@ -251,12 +181,7 @@ Scene* InputHandler::getThisScene(std::vector<Scene*>* lstScene, std::string nam
     return nullptr;
 }
 
-sf::Vector2f InputHandler::calcMouvement(int x, int y)
-{
-    float screenX = (x - y) * tile_width / 2;
-    float screenY = (x + y) * tile_height / 4;
-    return sf::Vector2f(screenX, screenY);
-}
+
 
 void InputHandler::RestartGame()
 {

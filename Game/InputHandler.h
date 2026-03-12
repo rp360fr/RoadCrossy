@@ -6,6 +6,7 @@
 #include "Menu.h"
 #include "Enemies.h"
 #include "LvlManager.h"
+#include "Conditions.h"
 
 class InputHandler
 {
@@ -24,11 +25,10 @@ public:
     static void ClearSceneInputs();
     static void RestartGame();
     static void MovePlayer(Scene* scene);
-    static sf::Vector2f scrolling(int x, int y);
+    
     static Scene* getThisScene(std::vector<Scene*>* lstScene, std::string name);
     static Engine* GetEngine() { return engineRef; }
-    static bool ChangeLayer(std::vector<GameObject*>& obj,GameObject* player, char mv);
     static std::vector<Scene*>* GetScenes() { return scenesRef; }
     static void SetScenes(std::vector<Scene*>* s) { scenesRef = s; }
-    static sf::Vector2f calcMouvement(int x, int y);
+
 };
