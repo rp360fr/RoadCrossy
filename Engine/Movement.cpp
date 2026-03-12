@@ -12,21 +12,30 @@ void Movement::Render(sf::RenderWindow& window) {
         return;
     }
 
-    if (owner->getTransform().pos.x < 0 ||
-        owner->getTransform().pos.x > window.getSize().x ||
-        owner->getTransform().pos.y > window.getSize().y)
-    {
-        if (owner->GetComponent<Variables>()->getInt("Type") == 3)
-            owner->Destroy();
-        else
-            owner->SetPosition({ owner->getTransform().pos.x,-70 });
-    }
 }
 
-void Movement::Update() {
-    if (!owner) {
+sf::Vector2f Movement::calc(int x, int y)
+{
+
+        float screenX = (x - y) * 32;
+        float screenY = (x + y) * 16;
+        return sf::Vector2f(screenX, screenY);
+}
+
+void Movement::Update() 
+{
+    int speed = 1000;
+    if (!owner)
+    {
         std::cout << "[ERROR] Movement::Update - owner est null!" << std::endl;
         return;
     }
-    owner->getTransform().pos.y += speed;
+    if (owner->GetComponent<Variables>()->getString("Type") == "Car")
+    {
+        speed = 500;
+    }
+    if (sens == "Right")
+        owner->getTransform().pos += { calc(1, 0).x / speed, calc(1, 0).y / speed };
+    else
+        owner->getTransform().pos += { calc(-1, 0).x / speed, calc(-1, 0).y / speed };
 }

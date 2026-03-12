@@ -30,7 +30,18 @@ GameObject* CreateGrass(int x, int y) {
     return grass;
 }
 
-
+GameObject* CreateCar(int x, int y, std::string sens)
+{
+    GameObject* car = new GameObject(x, y);
+    SpriteRenderer* sr = new SpriteRenderer("blocks_28.png", { 64,64 }, { 1,1 });
+    Movement* mv = new Movement(sens);
+    Variables* vr = new Variables();
+    vr->addString("Type", "Car");
+    car->AddComponent(sr);
+    car->AddComponent(vr);
+    car->AddComponent(mv);
+    return car;
+}
 
 
 

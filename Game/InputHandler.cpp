@@ -77,7 +77,10 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
         {
             Debug::ChangeDebug(2);
         });
-
+    InputManager::RegisterKeyPress("F12", []()
+        {
+            Event::SetEventTrue(1);
+        });
 
     // Gestion des collisions
 

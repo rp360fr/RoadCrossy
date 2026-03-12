@@ -189,9 +189,10 @@ public:
 
 class Movement : public Component {
 private:
-	float speed;
+	std::string sens;
 public:
-	Movement(float s) : speed(s) {}
+	Movement(std::string s) : sens(s) {}
+	sf::Vector2f calc(int x, int y);
 	void Start();
 	void Update();
 	void Render(sf::RenderWindow& window);

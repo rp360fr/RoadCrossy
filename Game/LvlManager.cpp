@@ -112,10 +112,11 @@ Scene* CreateGameLvL()
     GameObject* caillou = CreateRock(8,2);
     GameObject* caillou2 = CreateRock(9, 2);
     GameObject* arbe = CreateTree(2, 2);
+    GameObject* voture = CreateCar(4, 4, "Left");
     lvl1->AddGameObject(caillou, { 8,2 });
     lvl1->AddGameObject(caillou2, { 9,2 });
     lvl1->AddGameObject(arbe, { 2,2 });
-    
+    lvl1->AddGameObject(voture, { 4,4 });
     lvl1->SetPlayer(player);
     lvl1->SetLvLData(lvlObject);
     return lvl1;
