@@ -1,9 +1,7 @@
 #include "Component.h"
 
 Collider::Collider() {
-	hitbox.setSize({ 64,32 });
-	hitbox.setRotation(sf::degrees(45));
-	hitbox.setFillColor({ sf::Color::Red });
+	
 }
 
 void Collider::Start()
@@ -31,12 +29,17 @@ bool Collider::DoesCollide(GameObject* target)
 
 
 void Collider::Hitbox(float x, float y,sf::Angle angle) {
-	
+	if (owner->GetComponent<Transform>() != nullptr && owner != nullptr); {
+		hitbox.setPosition(owner->GetComponent<Transform>()->pos);
+	}
+	hitbox.setSize({ x,y });
+	hitbox.setRotation(angle);
+	hitbox.setFillColor({ sf::Color::Red });
 	
 
 }
 void Collider::Render(sf::RenderWindow& window) {
-	/*window.draw(hitbox);*/
+	window.draw(hitbox);
 }
 bool Collider::DoesHitboxCollide(GameObject* target) {
 	sf::FloatRect objBounds = owner->GetComponent<Collider>()->GetBounds();

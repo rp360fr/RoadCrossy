@@ -12,8 +12,11 @@ GameObject* CreateTree(sf::Vector2f vector) {
 GameObject* CreateRock(int x,int y) {
     GameObject* rock = new GameObject({isometri(x,y)});
     SpriteRenderer* sr = new SpriteRenderer("Blocks_63.png", { 64,64 }, { 1,1 });
+    Collider* cl = new Collider();
     rock->AddComponent(sr);
-    rock->AddComponent(var);
+    rock->AddComponent(cl);
+   /* cl->Hitbox(64, 32, sf::degrees(45));*/
+    
     
     return rock;
 }
