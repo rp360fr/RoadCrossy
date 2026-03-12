@@ -2,8 +2,10 @@
 
 GameObject* CreateTree(int x, int y) {
     GameObject* tree = new GameObject(x,y);
-    SpriteRenderer* sr = new SpriteRenderer("tree.png", { 64,64 }, { 1,1 });
+    SpriteRenderer* sr = new SpriteRenderer("blocks_3.png", { 64,64 }, { 1,1 });
+    Variables* vr = new Variables();
     tree->AddComponent(sr);
+    tree->AddComponent(vr);
     return tree;
 }
 
@@ -12,7 +14,10 @@ GameObject* CreateTree(int x, int y) {
 GameObject* CreateRock(int x,int y) {
     GameObject* rock = new GameObject(x,y);
     SpriteRenderer* sr = new SpriteRenderer("Blocks_63.png", { 64,64 }, { 1,1 });
+    Variables* vr = new Variables();
+    vr->addString("Type","Rock");
     rock->AddComponent(sr);
+    rock->AddComponent(vr);
     return rock;
 }
 

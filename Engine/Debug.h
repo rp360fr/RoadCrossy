@@ -2,9 +2,7 @@
 #include <iostream>
 
 extern bool debugF1;
-extern bool debugF10;
-extern bool debugF8;
-extern bool debugF5;
+extern bool debugF2;
 
 class Debug
 {

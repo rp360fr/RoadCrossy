@@ -78,6 +78,10 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
         {
             Debug::ChangeDebug(1);
         });
+    InputManager::RegisterKeyPress("F2", []()
+        {
+            Debug::ChangeDebug(2);
+        });
 
 
     // Gestion des collisions
@@ -92,11 +96,12 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
                 {
                     for (GameObject* obj : lvl->getGroundObj())
                     {
-                        obj->getTransform().pos += { scrolling(0, 1).x / 1000, scrolling(0, 1).y / 1000 };
+                        obj->getTransform().pos += { scrolling(0, 2).x / 1000, scrolling(0, 1).y / 1000 };
                     }
-                    for (GameObject* obj : lvl->getLstObj())
+                    for (GameObject* obj : lvl->getLayer2Obj())
                     {
-                        obj->getTransform().pos += { scrolling(0, 1).x / 1000, scrolling(0, 1).y / 1000 };
+                        if(obj != nullptr)
+                            obj->getTransform().pos += { scrolling(0, 2).x / 1000, scrolling(0, 1).y / 1000 };
                     }
                 }
             });
@@ -121,46 +126,50 @@ void InputHandler::TestDeath()
 
 
 
-void moveElement(std::vector<GameObject*>& list, int posStart, int posFin)
+bool moveElement(std::vector<GameObject*>& list, int posStart, int posFin)
 {
-    if (posStart == posFin) return;
-    if (posStart < 0 || posStart >= list.size()) return;
-    if (posFin < 0 || posFin >= list.size()) return;
-
     GameObject* elem = list[posStart];
-    list.erase(list.begin() + posStart);
-    list.insert(list.begin() + posFin, elem);
-    std::cout << "pos joueur tab " << posFin << std::endl;
+    if (list[posFin] == nullptr)
+    {
+        list[posFin] = elem;
+        list[posStart] = nullptr;
+        Debug::DebugCout("pos joueur tab "+posFin,2);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    
 }
 
 
 
-void InputHandler::ChangeLayer(std::vector<GameObject*>& obj,GameObject* player, char mv)
+bool InputHandler::ChangeLayer(std::vector<GameObject*>& obj,GameObject* player, char mv)
 {
     int id = -1;
-
+    bool test = false;
     for (int i = 0; i < obj.size(); i++)
     {
         if (obj[i] == player)
         {
             id = i;
-            std::cout << "test";
             break;
         }
     }
 
-    if (id == -1) return;
+    if (id == -1) return false;
 
 
 
     switch (mv)
     {
-    case 'U': if(id+15 < 1500) moveElement(obj, id, id+15); break;
-    case 'D': if (id - 15 >= 0) moveElement(obj, id, id-15); break;
-    case 'R': if (id - 1 >= 0 ) moveElement(obj, id, id-1); break;
-    case 'L': if (id + 1 < 1500) moveElement(obj, id, id+1); break;
+    case 'U': if(id+15 < 1500) test = moveElement(obj, id, id+15); break;
+    case 'D': if (id - 15 >= 0) test = moveElement(obj, id, id-15); break;
+    case 'R': if (id - 1 >= 0 ) test = moveElement(obj, id, id-1); break;
+    case 'L': if (id + 1 < 1500) test = moveElement(obj, id, id+1); break;
     }
-
+    return test;
 }
 
 
@@ -180,10 +189,13 @@ void InputHandler::MovePlayer(Scene* lvl)
         {
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
-                ChangeLayer(lstObj,player, 'U');
-                SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-                player->getTransform().pos += calcMouvement(0,-1);
-                sprite->setDirection(Direction::Up);
+                if (ChangeLayer(lstObj, player, 'U'))
+                {
+                    SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
+                    player->getTransform().pos += calcMouvement(0, -1);
+                    sprite->setDirection(Direction::Up);
+                }
+                
             }
         });
 
@@ -191,10 +203,13 @@ void InputHandler::MovePlayer(Scene* lvl)
         {
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
-                ChangeLayer(lstObj,player, 'D');
-                SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-				player->getTransform().pos += calcMouvement(0, 1);
-                sprite->setDirection(Direction::Down);
+                if (ChangeLayer(lstObj, player, 'D'))
+                {
+                    SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
+                    player->getTransform().pos += calcMouvement(0, 1);
+                    sprite->setDirection(Direction::Down);
+                }
+                
             }
         });
 
@@ -202,10 +217,12 @@ void InputHandler::MovePlayer(Scene* lvl)
         {
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
-                ChangeLayer(lstObj,player, 'L');
-                SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-				player->getTransform().pos += calcMouvement(-1, 0);
-                sprite->setDirection(Direction::Left);
+                if (ChangeLayer(lstObj, player, 'L'))
+                {
+                    SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
+                    player->getTransform().pos += calcMouvement(-1, 0);
+                    sprite->setDirection(Direction::Left);
+                }
             }
         });
 
@@ -213,10 +230,12 @@ void InputHandler::MovePlayer(Scene* lvl)
         {
             if (player != nullptr && player->GetComponent<SpriteRenderer>() != nullptr)
             {
-                ChangeLayer(lstObj,player, 'R');
-                SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-				player->getTransform().pos += calcMouvement(1, 0);
-                sprite->setDirection(Direction::Right);
+                if (ChangeLayer(lstObj, player, 'R'))
+                {
+                    SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
+                    player->getTransform().pos += calcMouvement(1, 0);
+                    sprite->setDirection(Direction::Right);
+                }
             }
         });
 }

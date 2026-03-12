@@ -96,11 +96,14 @@ Scene* CreateGameLvL()
     ad->SetLoop(true);
     lvlObject->AddComponent(ad);
     GameObject* player = createPlayer(0,0);
-    
+    lvl1->AddGameObject(player, { 0,0 });
    /* createfloor(2, -1, 15, 1, sf::degrees(0), lvl1);*/
     GameObject* caillou = CreateRock(8,2);
-    lvl1->AddGameObject(player,{0,0});
+    GameObject* caillou2 = CreateRock(9, 2);
+    GameObject* arbe = CreateTree(2, 2);
     lvl1->AddGameObject(caillou, { 8,2 });
+    lvl1->AddGameObject(caillou2, { 9,2 });
+    lvl1->AddGameObject(arbe, { 2,2 });
     createfloor(0, 0, 15, 100, sf::degrees(0), lvl1);
     lvl1->SetPlayer(player);
     lvl1->SetLvLData(lvlObject);
