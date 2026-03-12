@@ -48,7 +48,6 @@ public:
 	}
 
 
-
 	//Set
 	void setClickable(bool B) { clickable = B; }
 	void setOwner(Scene* s);

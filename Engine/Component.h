@@ -203,10 +203,12 @@ class Collider : public Component
 {
 private:
 	bool canCollide = true;
-
+	
 public:
+	sf::ConvexShape hitbox;
 	//Constructeurs
-	Collider() {};
+	Collider();
+	sf::ConvexShape getHitbox() { return hitbox; }
 	bool getCollide() { return canCollide; }
 	void setCollide(bool t) { canCollide = t; }
 	void Start() override;

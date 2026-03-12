@@ -111,7 +111,7 @@ void Conditions::Scrolling(Scene* lvl)
         {
             obj->getTransform().pos += { scrolling(0, 2).x / 100, scrolling(0, 1).y / 100 };
         }
-        for (GameObject* obj : lvl->getLayer2Obj())
+        for (GameObject* obj : lvl->getObstaclesObj())
         {
             if (obj != nullptr)
                 obj->getTransform().pos += { scrolling(0, 2).x / 100, scrolling(0, 1).y / 100 };
@@ -123,5 +123,15 @@ bool Conditions::testWin(Scene* lvl)
 {
     if (lvl->GetPlayer()->getTransform().placement >= 1485)
         return true;
+    return false;
+}
+
+bool Conditions::Collision(Scene* lvl)
+{
+    for (GameObject* obj : lvl->getMovingObstaclesObj())
+    {
+        if (obj->GetComponent<Collider>()->DoesCollide(lvl->GetPlayer()))
+            return true;
+    }
     return false;
 }

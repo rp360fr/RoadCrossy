@@ -4,7 +4,7 @@ Scene::Scene(std::string name,sf::Vector2u size)
 {
 	this->size = size;
 	this->name = name;
-	Layer2.resize(1500, nullptr);
+	Obstacles.resize(1500, nullptr);
 }
 
 
@@ -18,8 +18,16 @@ void Scene::AddGameObject(GameObject* obj, std::pair<int,int> pos)
 {
 
 	obj->setOwner(this);
-	Layer2[pos.first+pos.second*15] = obj;
+	Obstacles[pos.first+pos.second*15] = obj;
 	
+}
+
+void Scene::AddMovingGameObject(GameObject* obj)
+{
+
+	obj->setOwner(this);
+	MovingObstacles.push_back(obj);
+
 }
 
 void Scene::AddParamObject(GameObject* obj)
@@ -63,7 +71,12 @@ void Scene::Start()
 	{
 		object->Start();
 	}
-	for (GameObject* object : Layer2)
+	for (GameObject* object : Obstacles)
+	{
+		if (object)
+			object->Start();
+	}
+	for (GameObject* object : MovingObstacles)
 	{
 		if (object)
 			object->Start();
@@ -94,7 +107,14 @@ void Scene::Update(sf::RenderWindow& window)
 			object->Update();
 		}
 	}
-	for (GameObject* object : Layer2)
+	for (GameObject* object : Obstacles)
+	{
+		if (object && object->getActive())
+		{
+			object->Update();
+		}
+	}
+	for (GameObject* object : MovingObstacles)
 	{
 		if (object && object->getActive())
 		{
@@ -133,10 +153,15 @@ void Scene::Render(sf::RenderWindow& window)
 	{
 		object->Render(window);
 	}
-	for (auto object = Layer2.rbegin(); object != Layer2.rend(); ++object)
+	for (auto object = Obstacles.rbegin(); object != Obstacles.rend(); ++object)
 	{
 		if((*object) != nullptr)
 			(*object)->Render(window);
+	}
+	for (GameObject* object : MovingObstacles)
+	{
+		if(object)
+			object->Render(window);
 	}
 	window.display();
 }

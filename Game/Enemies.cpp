@@ -36,10 +36,12 @@ GameObject* CreateCar(int x, int y, std::string sens)
     SpriteRenderer* sr = new SpriteRenderer("blocks_28.png", { 64,64 }, { 1,1 });
     Movement* mv = new Movement(sens);
     Variables* vr = new Variables();
+    Collider* cl = new Collider();
     vr->addString("Type", "Car");
     car->AddComponent(sr);
     car->AddComponent(vr);
     car->AddComponent(mv);
+    car->AddComponent(cl);
     return car;
 }
 

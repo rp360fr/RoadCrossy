@@ -17,4 +17,5 @@ public:
 	static void MoveRight(GameObject* player, std::vector<GameObject*>& lstObj);
 	static void Scrolling(Scene* lvl);
 	static bool testWin(Scene* lvl);
+	static bool Collision(Scene* lvl);
 };
