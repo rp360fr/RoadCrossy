@@ -30,6 +30,27 @@ GameObject* CreateGrass(int x, int y) {
     return grass;
 }
 
+GameObject* CreateWater(int x, int y)
+{
+    GameObject* water = new GameObject(x - 2, y - 2);
+    SpriteRenderer* sr = new SpriteRenderer("blocks_69.png", { 64,64 }, { 1,1 });
+    water->AddComponent(sr);
+
+    return water;
+}
+
+GameObject* CreateWaterHitbox(int x, int y)
+{
+    GameObject* water = new GameObject(x, y);
+    Variables* vr = new Variables();
+    Collider* cl = new Collider();
+    vr->addString("Type", "Water");
+    water->AddComponent(vr);
+    water->AddComponent(cl);
+    return water;
+}
+
+
 GameObject* CreateCar(int x, int y, std::string sens)
 {
     GameObject* car = new GameObject(x, y);
@@ -44,6 +65,22 @@ GameObject* CreateCar(int x, int y, std::string sens)
     car->AddComponent(cl);
     return car;
 }
+
+GameObject* CreateBoat(int x, int y, std::string sens)
+{
+    GameObject* boat = new GameObject(x, y-1);
+    SpriteRenderer* sr = new SpriteRenderer("cercueil2.png", { 64,64 }, { 1,1 });
+    Movement* mv = new Movement(sens);
+    Variables* vr = new Variables();
+    Collider* cl = new Collider();
+    vr->addString("Type", "Boat");
+    boat->AddComponent(sr);
+    boat->AddComponent(vr);
+    boat->AddComponent(mv);
+    boat->AddComponent(cl);
+    return boat;
+}
+
 
 
 

@@ -133,10 +133,16 @@ bool Conditions::testWin(Scene* lvl)
 
 bool Conditions::Collision(Scene* lvl)
 {
-    for (GameObject* obj : lvl->getMovingObstaclesObj())
+    for (GameObject* obj : lvl->getObstaclesObj())
     {
-        if (obj->GetComponent<Collider>()->DoesCollide(lvl->GetPlayer()))
-            return true;
+        if (obj)
+        {
+            if (obj->GetComponent<Collider>() != nullptr && obj != lvl->GetPlayer())
+            {
+                if (obj->GetComponent<Collider>()->DoesCollide(lvl->GetPlayer()))
+                    return true;
+            }
+        }
     }
     return false;
 }

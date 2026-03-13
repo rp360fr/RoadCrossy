@@ -3,6 +3,7 @@
 
 extern bool debugF1;
 extern bool debugF2;
+extern bool debugF3;
 
 class Debug
 {

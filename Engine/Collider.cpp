@@ -13,7 +13,7 @@ Collider::Collider()
 	hitbox.setPoint(2, sf::Vector2f(w, h / 2));
 	hitbox.setPoint(3, sf::Vector2f(w / 2, h));
 	hitbox.setOrigin({ 0, -32 });
-	hitbox.setFillColor(sf::Color::Green);
+	hitbox.setFillColor(sf::Color::Red);
 }
 
 void Collider::Start()
@@ -30,7 +30,8 @@ void Collider::Update()
 
 void Collider::Render(sf::RenderWindow& window)
 {
-	window.draw(hitbox);
+	if(debugF3)
+		window.draw(hitbox);
 }
 
 bool Collider::DoesCollide(GameObject* target)
@@ -45,7 +46,12 @@ bool Collider::DoesCollide(GameObject* target)
 	sf::FloatRect objBounds = hitbox.getGlobalBounds();
 	sf::FloatRect targetBounds = col->hitbox.getGlobalBounds();
 
-	if (objBounds.findIntersection(targetBounds))
+	if (objBounds.contains(targetBounds.position))
+	{
+		if (owner->GetComponent<Variables>()->getString("Type") == "Boat")
+			return false;
 		return true;
+	}
 	return false;
 }
+

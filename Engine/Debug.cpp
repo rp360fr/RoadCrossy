@@ -2,8 +2,7 @@
 
 bool debugF1 = false;
 bool debugF2 = false;
-bool debugF8 = false;
-bool debugF5 = false;
+bool debugF3 = false;
 
 void Debug::ChangeDebug(int i)
 {
@@ -26,8 +25,13 @@ void Debug::ChangeDebug(int i)
         else
             std::cout << "[  Deactivation Debug PosPayer  ]" << std::endl;
         break;
-
-
+    case 3:
+        debugF3 = !debugF3;
+        if (debugF3)
+            std::cout << "[  Activation Debug hitbox  ]" << std::endl;
+        else
+            std::cout << "[  Deactivation Debug hitbox  ]" << std::endl;
+        break;
     }
 }
 
@@ -48,6 +52,11 @@ void Debug::DebugCout(std::string text, int F)
             std::cout << text << std::endl;
         }
         break;
+    case 3:
+        if (debugF3)
+        {
+            std::cout << text << std::endl;
+        }
     }
 
 }
