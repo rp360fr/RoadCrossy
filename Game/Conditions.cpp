@@ -12,11 +12,11 @@ bool moveElement(std::vector<GameObject*>& list, int posStart, int posFin)
         Debug::DebugCout("pos joueur tab " + std::to_string(posFin), 2);
         return true;
     }
-    else if (list[posFin]->GetComponent<Collider>())
+    else if (list[posFin]->GetComponent<Collider>() && list[posFin]->GetComponent<Variables>()->getString("Type") == "Boat")
     {
         elem->getTransform().placement = posFin;
-        list[posFin] = elem;
         list[posStart] = nullptr;
+        elem->AddComponent(new Movement(list[posFin]->GetComponent<Movement>()->getSens()));
         Debug::DebugCout("pos joueur tab " + std::to_string(posFin), 2);
         return true;
     }
@@ -171,10 +171,6 @@ void Conditions::Recalibrage(Scene* lvl)
                     {
                         if (lvl->getObstaclesObj()[pos + 1] == lvl->GetPlayer() && obj->GetComponent<Variables>()->getString("Type") == "Car")
                             Event::SetEventTrue(1);
-                        else if (lvl->getObstaclesObj()[pos + 1] == lvl->GetPlayer() && obj->GetComponent<Variables>()->getString("Type") == "Boat" && lvl->GetPlayer()->GetComponent<Movement>()==nullptr)
-                        {
-                            lvl->GetPlayer()->AddComponent(new Movement("Left"));
-                        }
                         else
                         {
                             lvl->getObstaclesObj()[pos + 1] = obj;
