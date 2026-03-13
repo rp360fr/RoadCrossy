@@ -85,8 +85,10 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
         {
             Debug::ChangeDebug(3);
         });
-
-    // Gestion des collisions
+    InputManager::RegisterKeyPress("F4", []()
+        {
+            Debug::ChangeDebug(4);
+        });
 
     if (!eventsCreated)
     {
@@ -99,6 +101,7 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
                     Event::SetEventTrue(1);
                 if (Conditions::testWin(lvl))
                     Event::SetEventTrue(1);
+                Conditions::Recalibrage(lvl);
                 
             });
 

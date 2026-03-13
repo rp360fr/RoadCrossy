@@ -18,4 +18,6 @@ public:
 	static void Scrolling(Scene* lvl);
 	static bool testWin(Scene* lvl);
 	static bool Collision(Scene* lvl);
+	static void Recalibrage(Scene* lvl);
+	static void Replace(GameObject* obj,std::string sens);
 };

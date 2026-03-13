@@ -1,6 +1,6 @@
 #include "Component.h"
 
-Collider::Collider() 
+Collider::Collider(sf::Color color) 
 {
 
 	hitbox.setPointCount(4);
@@ -12,25 +12,29 @@ Collider::Collider()
 	hitbox.setPoint(1, sf::Vector2f(w / 2, 0));
 	hitbox.setPoint(2, sf::Vector2f(w, h / 2));
 	hitbox.setPoint(3, sf::Vector2f(w / 2, h));
-	hitbox.setOrigin({ 0, -32 });
-	hitbox.setFillColor(sf::Color::Red);
+	hitbox.setOutlineThickness(1);
+	hitbox.setOutlineColor(sf::Color::Black);
+	hitbox.setFillColor(color);
 }
 
 void Collider::Start()
 {
+	if(owner->GetComponent<Variables>() != nullptr)
+		hitbox.setOrigin({ 0, -32 });
 	hitbox.setPosition(owner->getTransform().pos);
 }
 
 void Collider::Update()
 {
-	
 	hitbox.setPosition(owner->getTransform().pos);
 }
 
 
 void Collider::Render(sf::RenderWindow& window)
 {
-	if(debugF3)
+	if(debugF3 && hitbox.getFillColor() == sf::Color::Red)
+		window.draw(hitbox);
+	if(debugF4 && hitbox.getFillColor() == sf::Color::Blue)
 		window.draw(hitbox);
 }
 

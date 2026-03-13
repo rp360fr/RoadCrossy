@@ -2,8 +2,16 @@
 
 
 
-void Movement::Start() {
-
+void Movement::Start() 
+{
+    if (owner->GetComponent<Variables>()->getString("Type") == "Car")
+    {
+        speed = 500;
+    }
+    else
+    {
+        speed = 500;
+    }
 }
 
 void Movement::Render(sf::RenderWindow& window) {
@@ -24,18 +32,21 @@ sf::Vector2f Movement::calc(int x, int y)
 
 void Movement::Update() 
 {
-    int speed = 1000;
     if (!owner)
     {
         std::cout << "[ERROR] Movement::Update - owner est null!" << std::endl;
         return;
     }
-    if (owner->GetComponent<Variables>()->getString("Type") == "Car")
-    {
-        speed = 500;
-    }
+    
     if (sens == "Right")
+    {
         owner->getTransform().pos += { calc(1, 0).x / speed, calc(1, 0).y / speed };
+        cpt++;
+    }
     else
+    {
         owner->getTransform().pos += { calc(-1, 0).x / speed, calc(-1, 0).y / speed };
+        cpt++;
+    }
+        
 }

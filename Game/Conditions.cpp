@@ -12,6 +12,14 @@ bool moveElement(std::vector<GameObject*>& list, int posStart, int posFin)
         Debug::DebugCout("pos joueur tab " + std::to_string(posFin), 2);
         return true;
     }
+    else if (list[posFin]->GetComponent<Collider>())
+    {
+        elem->getTransform().placement = posFin;
+        list[posFin] = elem;
+        list[posStart] = nullptr;
+        Debug::DebugCout("pos joueur tab " + std::to_string(posFin), 2);
+        return true;
+    }
     else
     {
         return false;
@@ -116,11 +124,6 @@ void Conditions::Scrolling(Scene* lvl)
             if (obj != nullptr)
                 obj->getTransform().pos += { scrolling(0, 2).x / 500, scrolling(0, 1).y / 500 };
         }
-        for (GameObject* obj : lvl->getMovingObstaclesObj())
-        {
-            if (obj != nullptr)
-                obj->getTransform().pos += { scrolling(0, 2).x / 500, scrolling(0, 1).y / 500 };
-        }
     }
 }
 
@@ -145,4 +148,67 @@ bool Conditions::Collision(Scene* lvl)
         }
     }
     return false;
+}
+
+void Conditions::Recalibrage(Scene* lvl)
+{
+    int i = 0;
+    for (GameObject* obj : lvl->getObstaclesObj())
+    {
+        if(obj)
+            if (obj->GetComponent<Movement>())
+            {
+                i++;
+                int pos = obj->getTransform().placement;
+                int cpt = obj->GetComponent<Movement>()->cpt;
+                int speed = obj->GetComponent<Movement>()->speed;
+                std::string sens = obj->GetComponent<Movement>()->getSens();
+                if (cpt >= speed)
+                {
+                    
+                    if (sens == "Left")
+                    {
+                        lvl->getObstaclesObj()[pos + 1] = obj;
+                        lvl->getObstaclesObj()[pos] = nullptr;
+                        std::cout << "bouge a gauche : " << pos+1 << std::endl;
+                        obj->getTransform().placement = pos + 1;
+                        if (obj->getTransform().placement == obj->getTransform().posBase + 14)
+                        {
+                            lvl->getObstaclesObj()[pos - 14] = obj;
+                            lvl->getObstaclesObj()[pos] = nullptr;
+                            obj->getTransform().placement = pos - 14;
+                            Conditions::Replace(obj,"Left");
+                        }
+                    }
+                    else
+                    {
+     
+                        lvl->getObstaclesObj()[pos - 1] = obj;
+                        lvl->getObstaclesObj()[pos] = nullptr;
+                        std::cout << "bouge a droite : " << pos - 1 << std::endl;
+                        obj->getTransform().placement = pos - 1;
+                        if (obj->getTransform().placement == obj->getTransform().posBase - 14)
+                        {
+                            lvl->getObstaclesObj()[pos + 14] = obj;
+                            lvl->getObstaclesObj()[pos] = nullptr;
+                            obj->getTransform().placement = pos + 14;
+                            Conditions::Replace(obj, "Left");
+                        }
+                    }
+                    obj->GetComponent<Movement>()->cpt = 0;
+                    
+                }
+            }
+      
+    }
+}
+
+void Conditions::Replace(GameObject* obj, std::string sens)
+{
+    if(sens == "Right")
+        obj->getTransform().pos += { calcMouvement(1, 0).x *15, calcMouvement(1, 0).y *15 };
+    else
+    {
+        obj->getTransform().pos -= { calcMouvement(-1, 0).x * 15, calcMouvement(-1, 0).y * 15 };
+    }
 }

@@ -3,6 +3,7 @@
 bool debugF1 = false;
 bool debugF2 = false;
 bool debugF3 = false;
+bool debugF4 = false;
 
 void Debug::ChangeDebug(int i)
 {
@@ -32,6 +33,13 @@ void Debug::ChangeDebug(int i)
         else
             std::cout << "[  Deactivation Debug hitbox  ]" << std::endl;
         break;
+    case 4:
+        debugF4 = !debugF4;
+        if (debugF4)
+            std::cout << "[  Activation Debug sol  ]" << std::endl;
+        else
+            std::cout << "[  Deactivation Debug sol  ]" << std::endl;
+        break;
     }
 }
 
@@ -54,6 +62,11 @@ void Debug::DebugCout(std::string text, int F)
         break;
     case 3:
         if (debugF3)
+        {
+            std::cout << text << std::endl;
+        }
+    case 4:
+        if (debugF4)
         {
             std::cout << text << std::endl;
         }

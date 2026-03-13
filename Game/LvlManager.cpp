@@ -102,10 +102,13 @@ void limite(Scene* scene)
 {
     for (int i = 100; i >= 0; i--)
     {
-        GameObject* gauche = CreateTree(0, i);
-        scene->AddGameObject(gauche, { 0,i });
-        GameObject* droite = CreateTree(14, i);
-        scene->AddGameObject(droite, { 14,i });
+        if (i != 4)
+        {
+            GameObject* gauche = CreateTree(0, i);
+            scene->AddGameObject(gauche, { 0,i });
+            GameObject* droite = CreateTree(14, i);
+            scene->AddGameObject(droite, { 14,i });
+        }
     }
 }
 
@@ -121,13 +124,12 @@ Scene* CreateGameLvL()
     GameObject* caillou = CreateRock(8,2);
     GameObject* caillou2 = CreateRock(9, 2);
     GameObject* arbe = CreateTree(2, 2);
-    GameObject* voture = CreateCar(4, 4, "Left");
+    GameObject* voture = CreateCar(4, "Left");
     GameObject* bato = CreateBoat(15, 10, "Right");
     lvl1->AddGameObject(caillou, { 8,2 });
     lvl1->AddGameObject(caillou2, { 9,2 });
     lvl1->AddGameObject(arbe, { 2,2 });
-    lvl1->AddGameObject(voture,{4,4});
-    lvl1->AddMovingGameObject(bato);
+    lvl1->AddGameObject(voture,{0,4});
     lvl1->SetLvLData(lvlObject);
     return lvl1;
 }

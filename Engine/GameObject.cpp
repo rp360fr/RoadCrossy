@@ -11,7 +11,7 @@ GameObject::GameObject(sf::Vector2f position) //Constructeur (position de l'obje
 GameObject::GameObject(int x, int y) //Constructeur (position de l'objet)
 {
     getTransform().placement = x + y * 15;
-
+    getTransform().posBase = x + y * 15;
     int isoX = 20 - x;
     int isoY = -y;
 

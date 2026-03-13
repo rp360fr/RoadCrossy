@@ -190,9 +190,13 @@ public:
 class Movement : public Component {
 private:
 	std::string sens;
+	
 public:
+	int cpt = 0;
+	int speed = 500;
 	Movement(std::string s) : sens(s) {}
 	sf::Vector2f calc(int x, int y);
+	std::string getSens() { return sens; }
 	void Start();
 	void Update();
 	void Render(sf::RenderWindow& window);
@@ -207,7 +211,7 @@ private:
 public:
 	sf::ConvexShape hitbox;
 	//Constructeurs
-	Collider();
+	Collider(sf::Color color);
 	sf::ConvexShape getHitbox() { return hitbox; }
 	bool getCollide() { return canCollide; }
 	void setCollide(bool t) { canCollide = t; }
