@@ -47,12 +47,31 @@ public:
 		return nullptr;
 	}
 
+	template<typename T>
+	void RemoveComponent(size_t index = 0)
+	{
+		size_t count = 0;
+		for (auto it = components.begin(); it != components.end(); ++it)
+		{
+			if (T* casted = dynamic_cast<T*>(*it))
+			{
+				if (count == index)
+				{
+					delete* it;
+					components.erase(it);
+					return;
+				}
+				++count;
+			}
+		}
+	}
 
 	//Set
 	void setClickable(bool B) { clickable = B; }
 	void setOwner(Scene* s);
 	void SetPosition(sf::Vector2f pos);
-	
+
+
 	//Autres
 	Component* AddComponent(Component* component);
 	void Start();

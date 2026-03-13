@@ -74,9 +74,13 @@ GameObject* CreateCar(int y, std::string sens)
     return car;
 }
 
-GameObject* CreateBoat(int x, int y, std::string sens)
+GameObject* CreateBoat(int y, std::string sens)
 {
-    GameObject* boat = new GameObject(x, y-1);
+    GameObject* boat;
+    if (sens == "Left")
+        boat = new GameObject(0, y);
+    else
+        boat = new GameObject(15, y);
     SpriteRenderer* sr = new SpriteRenderer("cercueil2.png", { 64,64 }, { 1,1 });
     Movement* mv = new Movement(sens);
     Variables* vr = new Variables();

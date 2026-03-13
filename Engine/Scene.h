@@ -13,7 +13,7 @@ private:
 	std::vector<GameObject*> ground;
 	std::vector<GameObject*> Obstacles;
 	std::vector<GameObject*> objects;
-	std::vector<GameObject*> MovingObstacles;
+	std::vector<GameObject*> PlayerTab;
 	sf::Vector2u size = { 800,800 };
 	GameObject* player = nullptr;
 	GameObject* LvLData = nullptr;
@@ -26,7 +26,7 @@ public:
 	std::vector<GameObject*>& getLstObj() { return objects; }
 	std::vector<GameObject*>& getGroundObj() { return ground; }
 	std::vector<GameObject*>& getObstaclesObj() { return Obstacles; }
-	std::vector<GameObject*>& getMovingObstaclesObj() { return MovingObstacles; }
+	std::vector<GameObject*>& getPlayerTab() { return PlayerTab; }
 	GameObject* getThisObjByText(std::string name);
 	bool LvlEnd() { if (clock.getElapsedTime().asSeconds() > 5 && name == "LvL1") return true; else return false; }
 	sf::Vector2u getSize() { return size; }
@@ -44,7 +44,7 @@ public:
 	void AddGroundObject(GameObject* obj);
 	void AddGameObject(GameObject* obj, std::pair<int, int> pos);
 	void AddParamObject(GameObject* obj);
-	void AddMovingGameObject(GameObject* obj);
+	void AddPlayerObject(GameObject* obj, std::pair<int, int> pos);
 	void Start();
 	void Update(sf::RenderWindow& window);
 	void Render(sf::RenderWindow& window);

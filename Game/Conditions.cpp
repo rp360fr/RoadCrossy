@@ -53,6 +53,7 @@ bool ChangeLayer(std::vector<GameObject*>& obj, GameObject* player, char mv)
     case 'R': if (id - 1 >= 0) test = moveElement(obj, id, id - 1); break;
     case 'L': if (id + 1 < 1500) test = moveElement(obj, id, id + 1); break;
     }
+    player->RemoveComponent<Movement>();
     return test;
 }
 
@@ -168,22 +169,33 @@ void Conditions::Recalibrage(Scene* lvl)
                     
                     if (sens == "Left")
                     {
-                        lvl->getObstaclesObj()[pos + 1] = obj;
-                        lvl->getObstaclesObj()[pos] = nullptr;
-                        std::cout << "bouge a gauche : " << pos+1 << std::endl;
-                        obj->getTransform().placement = pos + 1;
-                        if (obj->getTransform().placement == obj->getTransform().posBase + 14)
+                        if (lvl->getObstaclesObj()[pos + 1] == lvl->GetPlayer() && obj->GetComponent<Variables>()->getString("Type") == "Car")
+                            Event::SetEventTrue(1);
+                        else if (lvl->getObstaclesObj()[pos + 1] == lvl->GetPlayer() && obj->GetComponent<Variables>()->getString("Type") == "Boat" && lvl->GetPlayer()->GetComponent<Movement>()==nullptr)
                         {
-                            Conditions::Clean(lvl->getObstaclesObj(), obj, "Left");
-                            lvl->getObstaclesObj()[pos - 14] = obj;
+                            lvl->GetPlayer()->AddComponent(new Movement("Left"));
+                        }
+                        else
+                        {
+                            lvl->getObstaclesObj()[pos + 1] = obj;
                             lvl->getObstaclesObj()[pos] = nullptr;
-                            obj->getTransform().placement = pos - 14;
-                            Conditions::Replace(obj,"Left");
+                            std::cout << "bouge a gauche : " << pos + 1 << std::endl;
+                            obj->getTransform().placement = pos + 1;
+                            if (obj->getTransform().placement == obj->getTransform().posBase + 14)
+                            {
+                                Conditions::Clean(lvl->getObstaclesObj(), obj, "Left");
+                                lvl->getObstaclesObj()[pos - 14] = obj;
+                                lvl->getObstaclesObj()[pos] = nullptr;
+                                obj->getTransform().placement = pos - 14;
+                                Conditions::Replace(obj, "Left");
+                                obj->GetComponent<Movement>()->speed = rand() % 250 + 100;
+                            }
                         }
                     }
                     else
                     {
-     
+                        if (lvl->getObstaclesObj()[pos - 1] == lvl->GetPlayer())
+                            Event::SetEventTrue(1);
                         lvl->getObstaclesObj()[pos - 1] = obj;
                         lvl->getObstaclesObj()[pos] = nullptr;
                         std::cout << "bouge a droite : " << pos - 1 << std::endl;
@@ -195,6 +207,7 @@ void Conditions::Recalibrage(Scene* lvl)
                             lvl->getObstaclesObj()[pos] = nullptr;
                             obj->getTransform().placement = pos + 14;
                             Conditions::Replace(obj, "Left");
+                            obj->GetComponent<Movement>()->speed = rand() % 250 + 100;
                         }
                     }
                     obj->GetComponent<Movement>()->cpt = 0;

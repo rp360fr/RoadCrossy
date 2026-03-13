@@ -6,7 +6,7 @@ void Movement::Start()
 {
     if (owner->GetComponent<Variables>()->getString("Type") == "Car")
     {
-        speed = 500;
+        speed = rand() % 250 + 100;
     }
     else
     {

@@ -85,7 +85,6 @@ void createfloor(int x, int y, int length, int width, sf::Angle,Scene* scene) {
                  GameObject* water = CreateWater(x + j, y + i);
                  GameObject* hitbox = CreateWaterHitbox(x + j-1, y + i-1);
                  scene->AddGroundObject(water);
-                 scene->AddMovingGameObject(hitbox);
              }
              else
              {
@@ -102,7 +101,7 @@ void limite(Scene* scene)
 {
     for (int i = 100; i >= 0; i--)
     {
-        if (i != 4)
+        if (i != 4 && i != 9)
         {
             GameObject* gauche = CreateTree(0, i);
             scene->AddGameObject(gauche, { 0,i });
@@ -125,11 +124,12 @@ Scene* CreateGameLvL()
     GameObject* caillou2 = CreateRock(9, 2);
     GameObject* arbe = CreateTree(2, 2);
     GameObject* voture = CreateCar(4, "Left");
-    GameObject* bato = CreateBoat(15, 10, "Right");
+    GameObject* bato = CreateBoat(9, "Left");
     lvl1->AddGameObject(caillou, { 8,2 });
     lvl1->AddGameObject(caillou2, { 9,2 });
     lvl1->AddGameObject(arbe, { 2,2 });
     lvl1->AddGameObject(voture,{0,4});
+    lvl1->AddGameObject(bato, { 0,9 });
     lvl1->SetLvLData(lvlObject);
     return lvl1;
 }

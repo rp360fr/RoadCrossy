@@ -97,8 +97,6 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
         Event::CreateEvent(-1, [lvl]()
             {
                 Conditions::Scrolling(lvl);
-                if (Conditions::Collision(lvl))
-                    Event::SetEventTrue(1);
                 if (Conditions::testWin(lvl))
                     Event::SetEventTrue(1);
                 Conditions::Recalibrage(lvl);
@@ -142,6 +140,7 @@ void InputHandler::MovePlayer(Scene* lvl)
 
     GameObject* player = lvl->GetPlayer();
     std::vector<GameObject*>& lstObj = lvl->getObstaclesObj();
+
 
     InputManager::RegisterKeyPress("Z", [player,&lstObj]()
         {

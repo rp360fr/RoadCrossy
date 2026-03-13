@@ -19,7 +19,7 @@ GameObject* CreateTree(int x, int y);
 GameObject* CreateRock(int x,int y);
 GameObject* CreateWater(int x, int y);
 GameObject* CreateWaterHitbox(int x, int y);
-GameObject* CreateBoat(int x, int y, std::string sens);
+GameObject* CreateBoat(int y, std::string sens);
 GameObject* CreateCar(int y,std::string sens);
 GameObject* CreateEnemiesType2();
 GameObject* CreateEnemiesType1();
