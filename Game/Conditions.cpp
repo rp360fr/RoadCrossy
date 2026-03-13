@@ -174,6 +174,7 @@ void Conditions::Recalibrage(Scene* lvl)
                         obj->getTransform().placement = pos + 1;
                         if (obj->getTransform().placement == obj->getTransform().posBase + 14)
                         {
+                            Conditions::Clean(lvl->getObstaclesObj(), obj, "Left");
                             lvl->getObstaclesObj()[pos - 14] = obj;
                             lvl->getObstaclesObj()[pos] = nullptr;
                             obj->getTransform().placement = pos - 14;
@@ -189,6 +190,7 @@ void Conditions::Recalibrage(Scene* lvl)
                         obj->getTransform().placement = pos - 1;
                         if (obj->getTransform().placement == obj->getTransform().posBase - 14)
                         {
+                            Conditions::Clean(lvl->getObstaclesObj(), obj, "Right");
                             lvl->getObstaclesObj()[pos + 14] = obj;
                             lvl->getObstaclesObj()[pos] = nullptr;
                             obj->getTransform().placement = pos + 14;
@@ -210,5 +212,23 @@ void Conditions::Replace(GameObject* obj, std::string sens)
     else
     {
         obj->getTransform().pos -= { calcMouvement(-1, 0).x * 15, calcMouvement(-1, 0).y * 15 };
+    }
+}
+
+void Conditions::Clean(std::vector<GameObject*>& tab, GameObject* obj, std::string sens)
+{
+    if (sens == "Left")
+    {
+        for (int i = 0; i < 15; i++)
+        {
+            tab[obj->getTransform().posBase + i] = nullptr;
+        }
+    }
+    else
+    {
+        for (int i = 0; i < 15; i++)
+        {
+            tab[obj->getTransform().posBase - i] = nullptr;
+        }
     }
 }

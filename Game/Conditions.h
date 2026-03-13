@@ -20,4 +20,5 @@ public:
 	static bool Collision(Scene* lvl);
 	static void Recalibrage(Scene* lvl);
 	static void Replace(GameObject* obj,std::string sens);
+	static void Clean(std::vector<GameObject*>& tab,GameObject* obj,std::string sens);
 };
