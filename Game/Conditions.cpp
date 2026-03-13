@@ -15,8 +15,10 @@ bool moveElement(std::vector<GameObject*>& list, int posStart, int posFin)
     else if (list[posFin]->GetComponent<Collider>() && list[posFin]->GetComponent<Variables>()->getString("Type") == "Boat")
     {
         elem->getTransform().placement = posFin;
-        list[posStart] = nullptr;
         elem->AddComponent(new Movement(list[posFin]->GetComponent<Movement>()->getSens()));
+        list[posFin] = elem;
+        list[posStart] = nullptr;
+        
         Debug::DebugCout("pos joueur tab " + std::to_string(posFin), 2);
         return true;
     }
@@ -31,6 +33,7 @@ bool moveElement(std::vector<GameObject*>& list, int posStart, int posFin)
 
 bool ChangeLayer(std::vector<GameObject*>& obj, GameObject* player, char mv)
 {
+    player->RemoveComponent<Movement>();
     int id = -1;
     bool test = false;
     for (int i = 0; i < obj.size(); i++)
@@ -53,7 +56,7 @@ bool ChangeLayer(std::vector<GameObject*>& obj, GameObject* player, char mv)
     case 'R': if (id - 1 >= 0) test = moveElement(obj, id, id - 1); break;
     case 'L': if (id + 1 < 1500) test = moveElement(obj, id, id + 1); break;
     }
-    player->RemoveComponent<Movement>();
+    
     return test;
 }
 
@@ -64,7 +67,7 @@ void Conditions::MoveUp(GameObject* player, std::vector<GameObject*>& lstObj)
         if (ChangeLayer(lstObj, player, 'U'))
         {
             SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-            player->getTransform().pos += calcMouvement(0, -1);
+            player->getTransform().pos = calcMouvement(20-(player->getTransform().placement % 15), -(player->getTransform().placement / 15)) + scrollOffset;;
             sprite->setDirection(Direction::Up);
         }
 
@@ -78,7 +81,7 @@ void Conditions::MoveDown(GameObject* player, std::vector<GameObject*>& lstObj)
         if (ChangeLayer(lstObj, player, 'D'))
         {
             SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-            player->getTransform().pos += calcMouvement(0, 1);
+            player->getTransform().pos = calcMouvement(20 - (player->getTransform().placement % 15), -(player->getTransform().placement / 15)) + scrollOffset;;
             sprite->setDirection(Direction::Down);
         }
 
@@ -92,7 +95,7 @@ void Conditions::MoveLeft(GameObject* player, std::vector<GameObject*>& lstObj)
         if (ChangeLayer(lstObj, player, 'L'))
         {
             SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-            player->getTransform().pos += calcMouvement(-1, 0);
+            player->getTransform().pos = calcMouvement(20 - (player->getTransform().placement % 15), -(player->getTransform().placement / 15)) + scrollOffset;;
             sprite->setDirection(Direction::Left);
         }
     }
@@ -106,25 +109,26 @@ void Conditions::MoveRight(GameObject* player, std::vector<GameObject*>& lstObj)
         if (ChangeLayer(lstObj, player, 'R'))
         {
             SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
-            player->getTransform().pos += calcMouvement(1, 0);
+            player->getTransform().pos = calcMouvement(20 - (player->getTransform().placement % 15), -(player->getTransform().placement / 15)) + scrollOffset;;
             sprite->setDirection(Direction::Right);
         }
     }
 }
 
+sf::Vector2f Conditions::scrollOffset = { 0, 0 };
+
 void Conditions::Scrolling(Scene* lvl)
 {
     if (debugF1)
     {
+        sf::Vector2f delta = { scrolling(0, 2).x / 500, scrolling(0, 1).y / 500 };
+        scrollOffset += delta; // ? on accumule l'offset total
+
         for (GameObject* obj : lvl->getGroundObj())
-        {
-            obj->getTransform().pos += { scrolling(0, 2).x / 500, scrolling(0, 1).y / 500 };
-        }
+            obj->getTransform().pos += delta;
         for (GameObject* obj : lvl->getObstaclesObj())
-        {
             if (obj != nullptr)
-                obj->getTransform().pos += { scrolling(0, 2).x / 500, scrolling(0, 1).y / 500 };
-        }
+                obj->getTransform().pos += delta;
     }
 }
 
@@ -175,7 +179,6 @@ void Conditions::Recalibrage(Scene* lvl)
                         {
                             lvl->getObstaclesObj()[pos + 1] = obj;
                             lvl->getObstaclesObj()[pos] = nullptr;
-                            std::cout << "bouge a gauche : " << pos + 1 << std::endl;
                             obj->getTransform().placement = pos + 1;
                             if (obj->getTransform().placement == obj->getTransform().posBase + 14)
                             {
@@ -194,7 +197,6 @@ void Conditions::Recalibrage(Scene* lvl)
                             Event::SetEventTrue(1);
                         lvl->getObstaclesObj()[pos - 1] = obj;
                         lvl->getObstaclesObj()[pos] = nullptr;
-                        std::cout << "bouge a droite : " << pos - 1 << std::endl;
                         obj->getTransform().placement = pos - 1;
                         if (obj->getTransform().placement == obj->getTransform().posBase - 14)
                         {
