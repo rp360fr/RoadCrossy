@@ -207,12 +207,12 @@ class Collider : public Component
 {
 private:
 	bool canCollide = true;
-	
+	sf::Color color;
 public:
-	sf::ConvexShape hitbox;
+	sf::RectangleShape hitbox;
 	//Constructeurs
 	Collider(sf::Color color);
-	sf::ConvexShape getHitbox() { return hitbox; }
+	sf::RectangleShape getHitbox() { return hitbox; }
 	bool getCollide() { return canCollide; }
 	void setCollide(bool t) { canCollide = t; }
 	void Start() override;

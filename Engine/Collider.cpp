@@ -1,26 +1,12 @@
 #include "Component.h"
 
-Collider::Collider(sf::Color color) 
+Collider::Collider(sf::Color color) : hitbox(sf::Vector2f(1, 1))
 {
-
-	hitbox.setPointCount(4);
-
-	float w = 64;
-	float h = 32;
-
-	hitbox.setPoint(0, sf::Vector2f(0, h / 2));
-	hitbox.setPoint(1, sf::Vector2f(w / 2, 0));
-	hitbox.setPoint(2, sf::Vector2f(w, h / 2));
-	hitbox.setPoint(3, sf::Vector2f(w / 2, h));
-	hitbox.setOutlineThickness(1);
-	hitbox.setOutlineColor(sf::Color::Black);
-	hitbox.setFillColor(color);
+	this->color = color;
 }
 
 void Collider::Start()
 {
-	if(owner->GetComponent<Variables>() != nullptr)
-		hitbox.setOrigin({ 0, -32 });
 	hitbox.setPosition(owner->getTransform().pos);
 }
 
@@ -29,13 +15,42 @@ void Collider::Update()
 	hitbox.setPosition(owner->getTransform().pos);
 }
 
-
 void Collider::Render(sf::RenderWindow& window)
 {
-	if(debugF3 && hitbox.getFillColor() == sf::Color::Red)
-		window.draw(hitbox);
-	if(debugF4 && hitbox.getFillColor() == sf::Color::Blue)
-		window.draw(hitbox);
+	sf::ConvexShape showHitbox;
+	float x = 20 - hitbox.getPosition().x;
+	float y = -hitbox.getPosition().y;
+	float isoX = (x - y) * 32;
+	float isoY = (x + y) * 16;
+	if (owner->GetComponent<Variables>() != nullptr)
+		showHitbox.setOrigin({ 0, -32 });
+	sf::Vector2f transform = { isoX,isoY };
+	transform += owner->getTransform().deltaScrolling;
+	showHitbox.setPosition(transform);
+	showHitbox.setPointCount(4);
+
+	float w = 64;
+	float h = 32;
+
+	showHitbox.setPoint(0, sf::Vector2f(0, h / 2));
+	showHitbox.setPoint(1, sf::Vector2f(w / 2, 0));
+	showHitbox.setPoint(2, sf::Vector2f(w, h / 2));
+	showHitbox.setPoint(3, sf::Vector2f(w / 2, h));
+	showHitbox.setOutlineThickness(1);
+	showHitbox.setOutlineColor(sf::Color::Black);
+
+	if (debugF3 && color == sf::Color::Red)
+	{
+		showHitbox.setFillColor(sf::Color::Red);
+		window.draw(showHitbox);
+	}
+		
+	if (debugF4 && color == sf::Color::Blue)
+	{
+		showHitbox.setFillColor(sf::Color::Blue);
+		window.draw(showHitbox);
+
+	}
 }
 
 bool Collider::DoesCollide(GameObject* target)
@@ -50,10 +65,8 @@ bool Collider::DoesCollide(GameObject* target)
 	sf::FloatRect objBounds = hitbox.getGlobalBounds();
 	sf::FloatRect targetBounds = col->hitbox.getGlobalBounds();
 
-	if (objBounds.contains(targetBounds.position))
+	if (objBounds.findIntersection(targetBounds))
 	{
-		if (owner->GetComponent<Variables>()->getString("Type") == "Boat")
-			return false;
 		return true;
 	}
 	return false;

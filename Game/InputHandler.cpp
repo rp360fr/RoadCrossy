@@ -97,9 +97,11 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
         Event::CreateEvent(-1, [lvl]()
             {
                 Conditions::Scrolling(lvl);
-                if (Conditions::testWin(lvl))
+                if (Conditions::Collision(lvl))
                     Event::SetEventTrue(1);
                 Conditions::Recalibrage(lvl);
+                if (Conditions::testWin(lvl))
+                    Event::SetEventTrue(1);
                 
             });
 

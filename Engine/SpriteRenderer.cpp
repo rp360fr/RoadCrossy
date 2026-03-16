@@ -34,9 +34,14 @@ void SpriteRenderer::Update()
 
 void SpriteRenderer::Render(sf::RenderWindow& window)
 {
-	float x = owner->getTransform().pos.x;
-	float y = owner->getTransform().pos.y;
-	sprite.setPosition({ x,y });
+	float x = 20 - owner->getTransform().pos.x ;
+	float y = -owner->getTransform().pos.y;
+	float isoX = (x - y) * 32;
+	float isoY = (x + y) * 16;
+	
+	sf::Vector2f transform = { isoX,isoY };
+	transform += owner->getTransform().deltaScrolling;
+	sprite.setPosition(transform);
 	if (Special == false)
 	{
 		if (!texture.isRepeated())

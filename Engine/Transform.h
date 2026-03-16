@@ -7,6 +7,13 @@ public:
 	int posBase = 0;
 	int placement;
 	sf::Vector2f pos;
+	sf::Vector2f deltaScrolling;
+
+
+
+
+
+
 	float rotation = 0.f;
 
 	float scale_x = 1.f;

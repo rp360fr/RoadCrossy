@@ -15,8 +15,8 @@ GameObject::GameObject(int x, int y) //Constructeur (position de l'objet)
     int isoX = 20 - x;
     int isoY = -y;
 
-    this->getTransform().pos.x = (isoX - isoY) * 32;
-    this->getTransform().pos.y = (isoX + isoY) * 16;
+    this->getTransform().pos.x = x;
+    this->getTransform().pos.y = y;
     active = true;
 }
 
@@ -38,13 +38,13 @@ void GameObject::Start() //Init tous les composants de l'objet
     
 }
 
-void GameObject::Update() {
+void GameObject::Update() 
+{
     for (Component* component : components)
     {
         if (component != nullptr)
         {
-            if (Bato != nullptr)
-                Bato->getTransform().pos = getTransform().pos;
+            
             component->Update();
             
         }
@@ -53,12 +53,13 @@ void GameObject::Update() {
             std::cout << "[ERROR] Composant null dans Update!" << std::endl;
         }
     }
+    if (Bato != nullptr)
+        Bato->getTransform().pos = getTransform().pos;
 }
 
 void GameObject::Render(sf::RenderWindow& window) 
 {
-    if (Bato != nullptr)
-        Bato->Render(window);
+    
     for (Component* component : components)
     {
         if (component != nullptr)
@@ -71,6 +72,8 @@ void GameObject::Render(sf::RenderWindow& window)
             std::cout << "[ERROR] Composant null dans Render!" << std::endl;
         }
     }
+    if (Bato != nullptr)
+        Bato->Render(window);
 }
 
 void GameObject::SetPosition(sf::Vector2f pos) 

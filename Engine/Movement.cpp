@@ -7,6 +7,7 @@ void Movement::Start()
     if (owner->GetComponent<Variables>()->getString("Type") == "Car")
     {
         speed = rand() % 250 + 100;
+        speed = 100;
     }
     else
     {
@@ -40,13 +41,13 @@ void Movement::Update()
     
     if (sens == "Right")
     {
-        owner->getTransform().pos += { calc(1, 0).x / speed, calc(1, 0).y / speed };
+        
+        owner->getTransform().pos += { (float)-1.0/speed, 0 };
         cpt++;
     }
     else
     {
-        owner->getTransform().pos += { calc(-1, 0).x / speed, calc(-1, 0).y / speed };
+        owner->getTransform().pos += { float(1.0)/speed, 0 };
         cpt++;
     }
-        
 }
