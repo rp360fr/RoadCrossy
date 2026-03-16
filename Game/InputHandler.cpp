@@ -97,7 +97,7 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
         Event::CreateEvent(-1, [lvl]()
             {
                 Conditions::Scrolling(lvl);
-                if (Conditions::Collision(lvl))
+                if (Conditions::Collision(lvl) == CollideType::Dead)
                     Event::SetEventTrue(1);
                 Conditions::Recalibrage(lvl);
                 if (Conditions::testWin(lvl))
@@ -141,46 +141,45 @@ void InputHandler::MovePlayer(Scene* lvl)
     }
 
     GameObject* player = lvl->GetPlayer();
-    std::vector<GameObject*>& lstObj = lvl->getObstaclesObj();
 
 
-    InputManager::RegisterKeyPress("Z", [player,&lstObj]()
+    InputManager::RegisterKeyPress("Z", [player,lvl]()
         {
-            Conditions::MoveUp(player, lstObj);
+            Conditions::MoveUp(player,lvl);
         });
-    InputManager::RegisterKeyPress("Up", [player, &lstObj]()
+    InputManager::RegisterKeyPress("Up", [player, lvl]()
         {
-            Conditions::MoveUp(player, lstObj);
-        });
-
-
-    InputManager::RegisterKeyPress("S", [player,&lstObj]()
-        {
-            Conditions::MoveDown(player, lstObj);
-        });
-    InputManager::RegisterKeyPress("Down", [player, &lstObj]()
-        {
-            Conditions::MoveDown(player, lstObj);
+            Conditions::MoveUp(player, lvl);
         });
 
 
-    InputManager::RegisterKeyPress("Q", [player, &lstObj]()
+    InputManager::RegisterKeyPress("S", [player, lvl]()
         {
-            Conditions::MoveLeft(player, lstObj);
+            Conditions::MoveDown(player,lvl);
         });
-    InputManager::RegisterKeyPress("Left", [player, &lstObj]()
+    InputManager::RegisterKeyPress("Down", [player, lvl]()
         {
-            Conditions::MoveLeft(player, lstObj);
+            Conditions::MoveDown(player, lvl);
         });
 
 
-    InputManager::RegisterKeyPress("D", [player,&lstObj]()
+    InputManager::RegisterKeyPress("Q", [player, lvl]()
         {
-            Conditions::MoveRight(player, lstObj);
+            Conditions::MoveLeft(player, lvl);
         });
-    InputManager::RegisterKeyPress("Right", [player, &lstObj]()
+    InputManager::RegisterKeyPress("Left", [player, lvl]()
         {
-            Conditions::MoveRight(player, lstObj);
+            Conditions::MoveLeft(player, lvl);
+        });
+
+
+    InputManager::RegisterKeyPress("D", [player, lvl]()
+        {
+            Conditions::MoveRight(player, lvl);
+        });
+    InputManager::RegisterKeyPress("Right", [player, lvl]()
+        {
+            Conditions::MoveRight(player, lvl);
         });
 }
 

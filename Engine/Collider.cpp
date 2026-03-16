@@ -22,7 +22,7 @@ void Collider::Render(sf::RenderWindow& window)
 	float y = -hitbox.getPosition().y;
 	float isoX = (x - y) * 32;
 	float isoY = (x + y) * 16;
-	if (owner->GetComponent<Variables>() != nullptr)
+	if (color == sf::Color::Red)
 		showHitbox.setOrigin({ 0, -32 });
 	sf::Vector2f transform = { isoX,isoY };
 	transform += owner->getTransform().deltaScrolling;

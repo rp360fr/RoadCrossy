@@ -21,10 +21,4 @@ GameObject* CreateWater(int x, int y);
 GameObject* CreateWaterHitbox(int x, int y);
 GameObject* CreateBoat(int y, std::string sens);
 GameObject* CreateCar(int y,std::string sens);
-GameObject* CreateEnemiesType2();
-GameObject* CreateEnemiesType1();
-GameObject* CreateEnemiesMine();
-
-void SpawnEnemies(int type, float spawnx, Scene* scene);
-void BotAi(GameObject* Bot, Scene* LvL);
 

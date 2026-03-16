@@ -53,8 +53,6 @@ void GameObject::Update()
             std::cout << "[ERROR] Composant null dans Update!" << std::endl;
         }
     }
-    if (Bato != nullptr)
-        Bato->getTransform().pos = getTransform().pos;
 }
 
 void GameObject::Render(sf::RenderWindow& window) 
@@ -72,8 +70,6 @@ void GameObject::Render(sf::RenderWindow& window)
             std::cout << "[ERROR] Composant null dans Render!" << std::endl;
         }
     }
-    if (Bato != nullptr)
-        Bato->Render(window);
 }
 
 void GameObject::SetPosition(sf::Vector2f pos) 

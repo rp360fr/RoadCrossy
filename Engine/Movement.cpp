@@ -42,7 +42,7 @@ void Movement::Update()
     if (sens == "Right")
     {
         
-        owner->getTransform().pos += { (float)-1.0/speed, 0 };
+        owner->getTransform().pos -= { (float)1.0/speed, 0 };
         cpt++;
     }
     else

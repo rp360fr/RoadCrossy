@@ -80,11 +80,12 @@ void createfloor(int x, int y, int length, int width, sf::Angle,Scene* scene) {
      {
          for(int j = length; j > 0; j--)
          {
-             if (i % 10 == 0)
+             if (i == 10)
              {
                  GameObject* water = CreateWater(x + j, y + i);
                  GameObject* hitbox = CreateWaterHitbox(x + j-1, y + i-1);
                  scene->AddGroundObject(water);
+                 scene->AddGroundObject(hitbox);
              }
              else
              {
@@ -124,7 +125,7 @@ Scene* CreateGameLvL()
     GameObject* caillou2 = CreateRock(9, 2);
     GameObject* arbe = CreateTree(2, 2);
     GameObject* voture = CreateCar(4, "Left");
-    GameObject* bato = CreateBoat(9, "Left");
+    GameObject* bato = CreateBoat(9, "Right");
     lvl1->AddGameObject(caillou, { 8,2 });
     lvl1->AddGameObject(caillou2, { 9,2 });
     lvl1->AddGameObject(arbe, { 2,2 });
