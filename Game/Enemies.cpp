@@ -24,7 +24,7 @@ GameObject* CreateRock(int x,int y) {
 
 GameObject* CreateGrass(int x, int y) {
     GameObject* grass = new GameObject(x-2,y-2);
-    SpriteRenderer* sr = new SpriteRenderer("blocks_1.png", { 64,64 }, { 1,1 });
+    SpriteRenderer* sr = new SpriteRenderer("route1.png", { 64,64 }, { 1,1 });
     grass->AddComponent(sr);
 
     return grass;

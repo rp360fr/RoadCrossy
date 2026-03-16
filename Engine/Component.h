@@ -35,7 +35,7 @@ private:
 	std::array<int, 2> AnimationParam;
 	bool animated = false;
 	bool visible = true;
-	Direction direction;
+	Direction direction = Direction::Left;
 public:
 	
 	//Constructeurs

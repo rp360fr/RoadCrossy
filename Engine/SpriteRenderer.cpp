@@ -47,7 +47,7 @@ void SpriteRenderer::Render(sf::RenderWindow& window)
 					if (animationClock.getElapsedTime().asMilliseconds() > 80)
 					{
 						currentFrame = (currentFrame + 1) % AnimationParam[0];
-						sprite.setTextureRect(sf::IntRect({ currentFrame * size.x, 0 }, { size.x, size.x }));
+						sprite.setTextureRect(sf::IntRect({ currentFrame * size.x, 0 }, { size.x, size.y }));
 						animationClock.restart();
 					}
 				}
@@ -56,7 +56,7 @@ void SpriteRenderer::Render(sf::RenderWindow& window)
 					if (animationClock.getElapsedTime().asMilliseconds() > 80)
 					{
 						currentFrame = (currentFrame + 1) % AnimationParam[0];
-						sprite.setTextureRect(sf::IntRect({ currentFrame * size.x, size.x % (AnimationParam[1] * size.x) }, { size.x, size.x }));
+						sprite.setTextureRect(sf::IntRect({ currentFrame * size.x, size.y % (AnimationParam[1] * size.x) }, { size.x, size.y }));
 						animationClock.restart();
 					}
 				}
@@ -65,7 +65,7 @@ void SpriteRenderer::Render(sf::RenderWindow& window)
 					if (animationClock.getElapsedTime().asMilliseconds() > 80)
 					{
 						currentFrame = (currentFrame + 1) % AnimationParam[0];
-						sprite.setTextureRect(sf::IntRect({ currentFrame * size.x, size.x * 2 % (AnimationParam[1] * size.x) }, { size.x, size.x }));
+						sprite.setTextureRect(sf::IntRect({ currentFrame * size.x, size.y * 2 % (AnimationParam[1] * size.x) }, { size.x, size.y }));
 						animationClock.restart();
 					}
 				}
@@ -76,13 +76,13 @@ void SpriteRenderer::Render(sf::RenderWindow& window)
 						if (AnimationParam[1] < 4)
 						{
 							currentFrame = (currentFrame + 1) % AnimationParam[0];
-							sprite.setTextureRect(sf::IntRect({ currentFrame * size.x, size.x * 2 }, { size.x, size.x }));
+							sprite.setTextureRect(sf::IntRect({ currentFrame * size.x, size.y * 2 }, { size.x, size.y }));
 							animationClock.restart();
 						}
 						else
 						{
 							currentFrame = (currentFrame + 1) % AnimationParam[0];
-							sprite.setTextureRect(sf::IntRect({ currentFrame * size.x, size.x * 3 }, { size.x, size.x }));
+							sprite.setTextureRect(sf::IntRect({ currentFrame * size.x, size.y * 3 }, { size.x, size.y }));
 							animationClock.restart();
 						}
 					}
@@ -90,7 +90,7 @@ void SpriteRenderer::Render(sf::RenderWindow& window)
 			}
 			else
 			{
-				sprite.setTextureRect(sf::IntRect({ 0 * size.x, 0 }, { size.x, size.x }));
+				sprite.setTextureRect(sf::IntRect({ 0 * size.x, 0 }, { size.x, size.y }));
 			}
 		}
 		else
@@ -105,7 +105,7 @@ void SpriteRenderer::Render(sf::RenderWindow& window)
 	}
 	else
 	{
-		sprite.setTextureRect(sf::IntRect({ currentFrame * size.x, 0 }, { size.x, size.x }));
+		sprite.setTextureRect(sf::IntRect({ currentFrame * size.x, 0 }, { size.x, size.y }));
 		sprite.setPosition({ 650,500 });
 	}
 	if(visible == true)

@@ -56,7 +56,7 @@ void Conditions::MoveUp(GameObject* player, std::vector<GameObject*>& lstObj)
         {
             SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
             player->getTransform().pos += calcMouvement(0, -1);
-            sprite->setDirection(Direction::Up);
+            sprite->setDirection(Direction::Left);
         }
 
     }
@@ -70,7 +70,7 @@ void Conditions::MoveDown(GameObject* player, std::vector<GameObject*>& lstObj)
         {
             SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
             player->getTransform().pos += calcMouvement(0, 1);
-            sprite->setDirection(Direction::Down);
+            sprite->setDirection(Direction::Left);
         }
 
     }
@@ -98,7 +98,7 @@ void Conditions::MoveRight(GameObject* player, std::vector<GameObject*>& lstObj)
         {
             SpriteRenderer* sprite = player->GetComponent<SpriteRenderer>();
             player->getTransform().pos += calcMouvement(1, 0);
-            sprite->setDirection(Direction::Right);
+            sprite->setDirection(Direction::Left);
         }
     }
 }
