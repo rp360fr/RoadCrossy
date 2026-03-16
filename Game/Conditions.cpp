@@ -10,15 +10,20 @@ bool moveElement(std::vector<GameObject*>& list, int posStart, int posFin)
         list[posFin] = elem;
         list[posStart] = nullptr;
         Debug::DebugCout("pos joueur tab " + std::to_string(posFin), 2);
+        if (elem->getBato() != nullptr)
+        {
+            list[elem->getBato()->getTransform().placement] = elem->getBato();
+            elem->setBato(nullptr);
+        }
         return true;
     }
     else if (list[posFin]->GetComponent<Collider>() && list[posFin]->GetComponent<Variables>()->getString("Type") == "Boat")
     {
         elem->getTransform().placement = posFin;
+        elem->setBato(list[posFin]);
         elem->AddComponent(new Movement(list[posFin]->GetComponent<Movement>()->getSens()));
         list[posFin] = elem;
         list[posStart] = nullptr;
-        
         Debug::DebugCout("pos joueur tab " + std::to_string(posFin), 2);
         return true;
     }
@@ -33,6 +38,11 @@ bool moveElement(std::vector<GameObject*>& list, int posStart, int posFin)
 
 bool ChangeLayer(std::vector<GameObject*>& obj, GameObject* player, char mv)
 {
+    if (player->getBato() != nullptr)
+    {
+        player->getBato()->getTransform().placement = player->getTransform().placement;
+    }
+        
     player->RemoveComponent<Movement>();
     int id = -1;
     bool test = false;
@@ -128,7 +138,10 @@ void Conditions::Scrolling(Scene* lvl)
             obj->getTransform().pos += delta;
         for (GameObject* obj : lvl->getObstaclesObj())
             if (obj != nullptr)
+            {
                 obj->getTransform().pos += delta;
+            }
+                
     }
 }
 
@@ -177,9 +190,6 @@ void Conditions::Recalibrage(Scene* lvl)
                             Event::SetEventTrue(1);
                         else
                         {
-                            lvl->getObstaclesObj()[pos + 1] = obj;
-                            lvl->getObstaclesObj()[pos] = nullptr;
-                            obj->getTransform().placement = pos + 1;
                             if (obj->getTransform().placement == obj->getTransform().posBase + 14)
                             {
                                 Conditions::Clean(lvl->getObstaclesObj(), obj, "Left");
@@ -189,15 +199,18 @@ void Conditions::Recalibrage(Scene* lvl)
                                 Conditions::Replace(obj, "Left");
                                 obj->GetComponent<Movement>()->speed = rand() % 250 + 100;
                             }
+                            else
+                            {
+                                lvl->getObstaclesObj()[pos + 1] = obj;
+                                lvl->getObstaclesObj()[pos] = nullptr;
+                                obj->getTransform().placement = pos + 1;
+                            }
+                            
+                            
                         }
                     }
                     else
                     {
-                        if (lvl->getObstaclesObj()[pos - 1] == lvl->GetPlayer())
-                            Event::SetEventTrue(1);
-                        lvl->getObstaclesObj()[pos - 1] = obj;
-                        lvl->getObstaclesObj()[pos] = nullptr;
-                        obj->getTransform().placement = pos - 1;
                         if (obj->getTransform().placement == obj->getTransform().posBase - 14)
                         {
                             Conditions::Clean(lvl->getObstaclesObj(), obj, "Right");
@@ -206,6 +219,12 @@ void Conditions::Recalibrage(Scene* lvl)
                             obj->getTransform().placement = pos + 14;
                             Conditions::Replace(obj, "Left");
                             obj->GetComponent<Movement>()->speed = rand() % 250 + 100;
+                        }
+                        else 
+                        {
+                            lvl->getObstaclesObj()[pos - 1] = obj;
+                            lvl->getObstaclesObj()[pos] = nullptr;
+                            obj->getTransform().placement = pos - 1;
                         }
                     }
                     obj->GetComponent<Movement>()->cpt = 0;
@@ -230,14 +249,14 @@ void Conditions::Clean(std::vector<GameObject*>& tab, GameObject* obj, std::stri
 {
     if (sens == "Left")
     {
-        for (int i = 0; i < 15; i++)
+        for (int i = 0; i < 14; i++)
         {
             tab[obj->getTransform().posBase + i] = nullptr;
         }
     }
     else
     {
-        for (int i = 0; i < 15; i++)
+        for (int i = 0; i < 14; i++)
         {
             tab[obj->getTransform().posBase - i] = nullptr;
         }

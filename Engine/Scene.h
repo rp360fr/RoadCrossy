@@ -13,7 +13,6 @@ private:
 	std::vector<GameObject*> ground;
 	std::vector<GameObject*> Obstacles;
 	std::vector<GameObject*> objects;
-	std::vector<GameObject*> PlayerTab;
 	sf::Vector2u size = { 800,800 };
 	GameObject* player = nullptr;
 	GameObject* LvLData = nullptr;
@@ -26,7 +25,6 @@ public:
 	std::vector<GameObject*>& getLstObj() { return objects; }
 	std::vector<GameObject*>& getGroundObj() { return ground; }
 	std::vector<GameObject*>& getObstaclesObj() { return Obstacles; }
-	std::vector<GameObject*>& getPlayerTab() { return PlayerTab; }
 	GameObject* getThisObjByText(std::string name);
 	bool LvlEnd() { if (clock.getElapsedTime().asSeconds() > 5 && name == "LvL1") return true; else return false; }
 	sf::Vector2u getSize() { return size; }

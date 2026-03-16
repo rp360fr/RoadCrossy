@@ -220,11 +220,10 @@ void InputHandler::RestartGame()
     Scene* LvL = CreateGameLvL();
 
     Scene* GameOver = CreateGameOver();
-
     scenesRef->push_back(Menu);
     scenesRef->push_back(LvL);
     scenesRef->push_back(GameOver);
-    
+    Conditions::scrollOffset = { 0,0 };
 
 
     engineRef->getSceneModule()->SetActiveScene(Menu);

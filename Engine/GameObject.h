@@ -18,7 +18,7 @@ private:
 	std::vector<Component*> components;
 	bool markedForDestruction = false;
 	bool clickable = false;
-
+	GameObject* Bato = nullptr;
 
 public:
 
@@ -30,6 +30,7 @@ public:
 	bool getClickable() { return clickable; }
 	bool getActive() { return active; }
 	Scene* getOwner() { return owner; }
+	GameObject* getBato() { return Bato; }
 	Transform& getTransform();
 	template<typename T>
 	T* GetComponent(size_t index = 0)
@@ -70,7 +71,7 @@ public:
 	void setClickable(bool B) { clickable = B; }
 	void setOwner(Scene* s);
 	void SetPosition(sf::Vector2f pos);
-
+	void setBato(GameObject* bato) { Bato = bato; }
 
 	//Autres
 	Component* AddComponent(Component* component);

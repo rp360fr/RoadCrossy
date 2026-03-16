@@ -28,14 +28,15 @@ void SpriteRenderer::Start()
 
 void SpriteRenderer::Update()
 {
-	float x = owner->getTransform().pos.x;
-	float y = owner->getTransform().pos.y;
-	sprite.setPosition({ x,y });
+	
 }
 
 
 void SpriteRenderer::Render(sf::RenderWindow& window)
 {
+	float x = owner->getTransform().pos.x;
+	float y = owner->getTransform().pos.y;
+	sprite.setPosition({ x,y });
 	if (Special == false)
 	{
 		if (!texture.isRepeated())
@@ -92,15 +93,6 @@ void SpriteRenderer::Render(sf::RenderWindow& window)
 			{
 				sprite.setTextureRect(sf::IntRect({ 0 * size.x, 0 }, { size.x, size.x }));
 			}
-		}
-		else
-		{
-			static float scroll = 0.0f;
-			scroll -= 0.005f;
-			if (scroll >= size.y)
-				scroll = 0.0f;
-
-			sprite.setTextureRect(sf::IntRect({ 0, static_cast<int>(scroll) }, { 800, 800 }));
 		}
 	}
 	else

@@ -43,7 +43,10 @@ void GameObject::Update() {
     {
         if (component != nullptr)
         {
+            if (Bato != nullptr)
+                Bato->getTransform().pos = getTransform().pos;
             component->Update();
+            
         }
         else
         {
@@ -52,11 +55,15 @@ void GameObject::Update() {
     }
 }
 
-void GameObject::Render(sf::RenderWindow& window) {
+void GameObject::Render(sf::RenderWindow& window) 
+{
+    if (Bato != nullptr)
+        Bato->Render(window);
     for (Component* component : components)
     {
         if (component != nullptr)
         {
+            
             component->Render(window);
         }
         else

@@ -5,7 +5,6 @@ Scene::Scene(std::string name,sf::Vector2u size)
 	this->size = size;
 	this->name = name;
 	Obstacles.resize(1500, nullptr);
-	PlayerTab.resize(1500, nullptr);
 }
 
 
@@ -21,14 +20,6 @@ void Scene::AddGameObject(GameObject* obj, std::pair<int,int> pos)
 	obj->setOwner(this);
 	Obstacles[pos.first+pos.second*15] = obj;
 	
-}
-
-void Scene::AddPlayerObject(GameObject* obj, std::pair<int, int> pos)
-{
-
-	obj->setOwner(this);
-	PlayerTab[pos.first + pos.second * 15] = obj;
-
 }
 
 void Scene::AddParamObject(GameObject* obj)
@@ -77,11 +68,6 @@ void Scene::Start()
 		if (object)
 			object->Start();
 	}
-	for (GameObject* object : PlayerTab)
-	{
-		if (object)
-			object->Start();
-	}
 	if (LvLData != nullptr)
 	{
 		LvLData->Start();
@@ -109,13 +95,6 @@ void Scene::Update(sf::RenderWindow& window)
 		}
 	}
 	for (GameObject* object : Obstacles)
-	{
-		if (object && object->getActive())
-		{
-			object->Update();
-		}
-	}
-	for (GameObject* object : PlayerTab)
 	{
 		if (object && object->getActive())
 		{
@@ -156,13 +135,8 @@ void Scene::Render(sf::RenderWindow& window)
 	}
 	for (auto object = Obstacles.rbegin(); object != Obstacles.rend(); ++object)
 	{
-		if((*object) != nullptr)
+		if ((*object) != nullptr)
 			(*object)->Render(window);
-	}
-	for (GameObject* object : PlayerTab)
-	{
-		if(object)
-			object->Render(window);
 	}
 	window.display();
 }

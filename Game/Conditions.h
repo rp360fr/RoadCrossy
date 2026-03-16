@@ -10,9 +10,9 @@
 
 class Conditions
 {
-	static sf::Vector2f scrollOffset;
+	
 public:
-
+	static sf::Vector2f scrollOffset;
 	static void MoveUp(GameObject* player, std::vector<GameObject*>& lstObj);
 	static void MoveDown(GameObject* player, std::vector<GameObject*>& lstObj);
 	static void MoveLeft(GameObject* player, std::vector<GameObject*>& lstObj);
