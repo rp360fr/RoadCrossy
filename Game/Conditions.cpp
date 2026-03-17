@@ -28,12 +28,14 @@ bool moveElement(Scene* lvl, int posStart,char D)
         {
             Debug::DebugCout("Bato", 3);
             player->setBato(collide);
+            player->getTransform().placement = collide->getTransform().placement;
             player->AddComponent(new Movement(collide->GetComponent<Movement>()->getSens()));
         }
         else if (collide->GetComponent<Variables>()->getString("Type") == "Block")
         {
             Debug::DebugCout("Block", 3);
-            player->getTransform().placement = posStart;
+            if(player->getBato() == nullptr)
+                player->getTransform().placement = posStart;
         }
         
     }
@@ -163,7 +165,7 @@ void Conditions::Scrolling(Scene* lvl)
 
 bool Conditions::testWin(Scene* lvl)
 {
-    if (lvl->GetPlayer()->getTransform().placement >= 1485)
+    if (lvl->GetPlayer()->getTransform().placement >= 745)
         return true;
     return false;
 }
@@ -173,7 +175,8 @@ CollideType Conditions::Collision(Scene* lvl)
     GameObject* player = lvl->GetPlayer();
     std::vector<GameObject*>& list = lvl->getObstaclesObj();
     std::vector<GameObject*>& listGround = lvl->getGroundObj();
-
+    if (player->getTransform().placement % 15 == 0 || player->getTransform().placement % 15 == 15 && player->getBato())
+        return CollideType::Dead;
     for (GameObject* obj : list)
     {
         if (obj && obj != player)
@@ -258,7 +261,7 @@ void Conditions::Recalibrage(Scene* lvl)
                             obj->getTransform().placement = pos + 1;
                         }
                     }
-                    else
+                    else if(sens == "Right")
                     {
                         if (obj->getTransform().placement == obj->getTransform().posBase - 14)
                         {

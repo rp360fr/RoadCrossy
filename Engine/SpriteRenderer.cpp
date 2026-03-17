@@ -34,8 +34,19 @@ void SpriteRenderer::Update()
 
 void SpriteRenderer::Render(sf::RenderWindow& window)
 {
-	float x = 20 - owner->getTransform().pos.x ;
-	float y = -owner->getTransform().pos.y;
+	float x;
+	float y;
+	if (owner->getBato())
+	{
+		x = 20 - owner->getBato()->getTransform().pos.x;
+		y = -owner->getBato()->getTransform().pos.y;
+	}
+	else
+	{
+		x = 20 - owner->getTransform().pos.x;
+		y = -owner->getTransform().pos.y;
+	}
+	
 	float isoX = (x - y) * 32;
 	float isoY = (x + y) * 16;
 	

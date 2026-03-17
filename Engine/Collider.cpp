@@ -17,9 +17,19 @@ void Collider::Update()
 
 void Collider::Render(sf::RenderWindow& window)
 {
+	float x, y;
+	if (owner->getBato())
+	{
+		x = 20 - owner->getBato()->GetComponent<Collider>()->getHitbox().getPosition().x;
+		y = -owner->getBato()->GetComponent<Collider>()->getHitbox().getPosition().y;
+	}
+	else
+	{
+		x = 20 - hitbox.getPosition().x;
+		y = -hitbox.getPosition().y;
+	}
 	sf::ConvexShape showHitbox;
-	float x = 20 - hitbox.getPosition().x;
-	float y = -hitbox.getPosition().y;
+	
 	float isoX = (x - y) * 32;
 	float isoY = (x + y) * 16;
 	if (color == sf::Color::Red)

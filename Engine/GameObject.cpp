@@ -12,8 +12,6 @@ GameObject::GameObject(int x, int y) //Constructeur (position de l'objet)
 {
     getTransform().placement = x + y * 15;
     getTransform().posBase = x + y * 15;
-    int isoX = 20 - x;
-    int isoY = -y;
 
     this->getTransform().pos.x = x;
     this->getTransform().pos.y = y;

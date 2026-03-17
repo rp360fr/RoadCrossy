@@ -75,42 +75,150 @@ Scene* CreateGameOver()
         });
     return GameOver;
 }
-void createfloor(int x, int y, int length, int width, sf::Angle,Scene* scene) {
-	for (int i = width; i > 0; i--)
-     {
-         for(int j = length; j > 0; j--)
-         {
-             if (i == 10)
-             {
-                 GameObject* water = CreateWater(x + j, y + i);
-                 GameObject* hitbox = CreateWaterHitbox(x + j-1, y + i-1);
-                 scene->AddGroundObject(water);
-                 scene->AddGroundObject(hitbox);
-             }
-             else
-             {
-                 GameObject* floor = CreateGrass(x + j, y + i);
-                 scene->AddGroundObject(floor);
-             }
-			 
-         }
-     }
-	
-}
 
-void limite(Scene* scene)
+TileType map[50] =
 {
-    for (int i = 100; i >= 0; i--)
+    GRASS,
+    GRASS,
+    GRASS,
+    ROAD,
+    ROAD,
+    GRASS,
+    WATER,
+    GRASS,
+    ROAD,
+    GRASS,
+    GRASS,
+    WATER,
+    GRASS,
+    ROAD,
+    GRASS,
+    GRASS,
+    WATER,
+    GRASS,
+    ROAD,
+    GRASS,
+    GRASS,
+    WATER,
+    GRASS,
+    ROAD,
+    GRASS,
+    GRASS,
+    WATER,
+    GRASS,
+    ROAD,
+    GRASS,
+    GRASS,
+    WATER,
+    GRASS,
+    ROAD,
+    GRASS,
+    GRASS,
+    WATER,
+    GRASS,
+    ROAD,
+    GRASS,
+    GRASS,
+    WATER,
+    GRASS,
+    ROAD,
+    GRASS,
+    GRASS,
+    WATER,
+    GRASS,
+    ROAD,
+    GRASS
+};
+
+void createMap(int length, int width, Scene* scene)
+{
+    int path = length / 2;
+    for (int i = 0; i < width; i++)
     {
-        if (i != 4 && i != 9)
+        for (int j = 0; j < length; j++)
+        {
+            if (map[i] == GRASS)
+            {
+                GameObject* grass = CreateGrass(j, i);
+                scene->AddGroundObject(grass);
+                if ((j < path || j > path + 1) && i != 0)
+                {
+                    int r = rand() % 5; // 0 ou 1 = obstacle
+                    if (r == 0)
+                    {
+                        GameObject* tree = CreateTree(j, i);
+                        scene->AddGameObject(tree, { j, i });
+                    }
+                    else if (r == 1)
+                    {
+                        GameObject* rock = CreateRock(j, i);
+                        scene->AddGameObject(rock, { j, i });
+                    }
+                }
+            }
+            if (map[i] == GRASS)
+            {
+                path += (rand() % 3) - 1; // -1, 0 ou +1
+                if (path < 2) path = 2;
+                if (path > length - 3) path = length - 3;
+            }
+            if (map[i] == ROAD)
+            {
+                GameObject* road = CreateRoad(j, i);
+                scene->AddGroundObject(road);
+            }
+
+            if (map[i] == WATER)
+            {
+                GameObject* water = CreateWater(j, i);
+                GameObject* hitbox = CreateWaterHitbox(j , i );
+
+                scene->AddGroundObject(water);
+                scene->AddGroundObject(hitbox);
+            }
+        }
+        if (map[i] == GRASS)
         {
             GameObject* gauche = CreateTree(0, i);
             scene->AddGameObject(gauche, { 0,i });
             GameObject* droite = CreateTree(14, i);
             scene->AddGameObject(droite, { 14,i });
         }
+
+        if (map[i] == ROAD)
+        {
+            if (rand() % 2 == 0)
+            {
+                GameObject* voture = CreateCar(i, "Left");
+                scene->AddGameObject(voture, { 0,i });
+            }
+            else
+            {
+                GameObject* voture = CreateCar(i, "Right");
+                scene->AddGameObject(voture, { 14,i });
+            }
+        }
+
+        if (map[i] == WATER)
+        {
+            if (rand() % 2 == 0)
+            {
+                GameObject* Boat = CreateBoat(i, "Left");
+                scene->AddGameObject(Boat, { 0,i });
+            }
+            else
+            {
+                GameObject* Boat = CreateBoat(i, "Right");
+                scene->AddGameObject(Boat, { 14,i });
+            }
+        }
     }
 }
+
+
+
+
+
 
 Scene* CreateGameLvL()
 {
@@ -119,18 +227,7 @@ Scene* CreateGameLvL()
     GameObject* player = createPlayer(5,0);
     lvl1->AddGameObject(player, { 5,0 });
     lvl1->SetPlayer(player);
-    createfloor(0, 0, 15, 100, sf::degrees(0), lvl1);
-    limite(lvl1);
-    GameObject* caillou = CreateRock(8,2);
-    GameObject* caillou2 = CreateRock(9, 2);
-    GameObject* arbe = CreateTree(2, 2);
-    GameObject* voture = CreateCar(4, "Left");
-    GameObject* bato = CreateBoat(9, "Right");
-    lvl1->AddGameObject(caillou, { 8,2 });
-    lvl1->AddGameObject(caillou2, { 9,2 });
-    lvl1->AddGameObject(arbe, { 2,2 });
-    lvl1->AddGameObject(voture,{0,4});
-    lvl1->AddGameObject(bato, { 0,9 });
+    createMap(15, 100, lvl1);
     lvl1->SetLvLData(lvlObject);
     return lvl1;
 }

@@ -28,7 +28,7 @@ GameObject* CreateRock(int x,int y) {
 
 
 GameObject* CreateGrass(int x, int y) {
-    GameObject* grass = new GameObject(x-2,y-2);
+    GameObject* grass = new GameObject(x-1,y-1);
     Collider* cl = new Collider(sf::Color::Blue);
     SpriteRenderer* sr = new SpriteRenderer("blocks_1.png", { 64,64 }, { 1,1 });
     Variables* vr = new Variables();
@@ -39,9 +39,21 @@ GameObject* CreateGrass(int x, int y) {
     return grass;
 }
 
+GameObject* CreateRoad(int x, int y) {
+    GameObject* road = new GameObject(x-1, y - 1);
+    Collider* cl = new Collider(sf::Color::Blue);
+    SpriteRenderer* sr = new SpriteRenderer("blocks_22.png", { 64,64 }, { 1,1 });
+    Variables* vr = new Variables();
+    vr->addString("Type", "Grass");
+    road->AddComponent(sr);
+    road->AddComponent(cl);
+    road->AddComponent(vr);
+    return road;
+}
+
 GameObject* CreateWater(int x, int y)
 {
-    GameObject* water = new GameObject(x - 2, y - 2);
+    GameObject* water = new GameObject(x-1, y - 1);
     SpriteRenderer* sr = new SpriteRenderer("blocks_69.png", { 64,64 }, { 1,1 });
     Variables* vr = new Variables();
     vr->addString("Type", "Water");

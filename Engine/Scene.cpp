@@ -129,14 +129,32 @@ void Scene::Render(sf::RenderWindow& window)
 	{
 		object->Render(window);
 	}
-	for (GameObject* object : ground)
+	for (auto object = ground.rbegin(); object != ground.rend(); ++object)
 	{
-		object->Render(window);
+		(*object)->Render(window);
 	}
 	for (auto object = Obstacles.rbegin(); object != Obstacles.rend(); ++object)
 	{
 		if ((*object) != nullptr)
+		{
+			GameObject* player = GetPlayer();
+
+			if (*object == player && player->getBato() != nullptr)
+			{
+				continue;
+			}
+
+			GameObject* bato = player->getBato();
+			if (*object == bato)
+			{
+				bato->Render(window);
+
+				player->Render(window);
+
+				continue;
+			}
 			(*object)->Render(window);
+		}
 	}
 	window.display();
 }
