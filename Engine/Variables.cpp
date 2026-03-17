@@ -1,18 +1,15 @@
 #include "Component.h"
 
-void Variables::addInt(std::string name, int value) {
+void Variables::addInt(const std::string& name, int value) {
     integers[name] = value;
 }
 
-void Variables::addFloat(std::string name, float value) {
+void Variables::addFloat(const std::string& name, float value) {
     floats[name] = value;
 }
 
-void Variables::addDouble(std::string name, double value) {
-    doubles[name] = value;
-}
 
-void Variables::addString(std::string name, std::string value) {
+void Variables::addString(const std::string& name, const std::string& value) {
     strings[name] = value;
 }
 

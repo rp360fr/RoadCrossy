@@ -164,16 +164,26 @@ void Scene::Destroy()
 {
 	for (GameObject* object : objects)
 	{
-		object->Destroy();
+		delete object;
+		std::cout << "delete";
+	}
+	for (GameObject* object : ground)
+	{
+		delete object;
+		std::cout << "delete";
+	}
+	for (GameObject* object : Obstacles)
+	{
+		delete object;
+		std::cout << "delete";
 	}
 }
 
 void Scene::CleanupDestroyedObjects() {
 	for (auto it = objects.begin(); it != objects.end(); ) {
-		if ((*it)->IsMarkedForDestruction()) {
-			std::cout << "[DEBUG] Objet detruit a la position: ("
-				<< (*it)->getTransform().pos.x << ", "
-				<< (*it)->getTransform().pos.y << ")" << "Objet Type : " << (*it)->GetComponent<SpriteRenderer>()->getTexture() << std::endl;
+		if ((*it)->IsMarkedForDestruction()) 
+		{
+			std::cout << "delete";
 			delete* it;
 			it = objects.erase(it);
 		}

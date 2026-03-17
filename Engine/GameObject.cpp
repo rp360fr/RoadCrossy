@@ -92,3 +92,10 @@ void GameObject::Destroy() {
     markedForDestruction = true;
 }
 
+GameObject::~GameObject() {
+    for (Component* component : components) 
+    {
+        delete component;
+    }
+    components.clear();
+}

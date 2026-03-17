@@ -26,7 +26,6 @@ public:
 	std::vector<GameObject*>& getGroundObj() { return ground; }
 	std::vector<GameObject*>& getObstaclesObj() { return Obstacles; }
 	GameObject* getThisObjByText(std::string name);
-	bool LvlEnd() { if (clock.getElapsedTime().asSeconds() > 5 && name == "LvL1") return true; else return false; }
 	sf::Vector2u getSize() { return size; }
 	std::string getName() { return name; }
 	GameObject* GetPlayer() { return player; }
@@ -42,7 +41,6 @@ public:
 	void AddGroundObject(GameObject* obj);
 	void AddGameObject(GameObject* obj, std::pair<int, int> pos);
 	void AddParamObject(GameObject* obj);
-	void AddPlayerObject(GameObject* obj, std::pair<int, int> pos);
 	void Start();
 	void Update(sf::RenderWindow& window);
 	void Render(sf::RenderWindow& window);

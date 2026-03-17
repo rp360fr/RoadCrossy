@@ -79,7 +79,7 @@ public:
 	void Update();
 	void Render(sf::RenderWindow& window);
 	void Destroy();
-
+	~GameObject();
 	bool IsMarkedForDestruction() const {return markedForDestruction;}
 	
 	

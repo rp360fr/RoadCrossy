@@ -206,6 +206,7 @@ void InputHandler::RestartGame()
     debugF2 = false;
     debugF3 = false;
     debugF4 = false;
+
     // 2. Détruire et recréer les scènes
     for (Scene* scene : *scenesRef)
     {
