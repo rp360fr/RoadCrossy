@@ -147,7 +147,7 @@ void Conditions::Scrolling(Scene* lvl)
 {
     if (debugF1)
     {
-        sf::Vector2f delta = { scrolling(0, 2).x / 500, scrolling(0, 1).y / 500 };
+        sf::Vector2f delta = { scrolling(0, 2).x / 1500, scrolling(0, 1).y / 1500 };
         scrollOffset += delta;
 
         for (GameObject* obj : lvl->getGroundObj())
@@ -155,8 +155,6 @@ void Conditions::Scrolling(Scene* lvl)
         for (GameObject* obj : lvl->getObstaclesObj())
             if (obj != nullptr)
             {
-                if (obj->getBato() != nullptr)
-                    obj->getBato()->getTransform().deltaScrolling = scrollOffset;
                 obj->getTransform().deltaScrolling = scrollOffset;
             }
                 
@@ -165,7 +163,7 @@ void Conditions::Scrolling(Scene* lvl)
 
 bool Conditions::testWin(Scene* lvl)
 {
-    if (lvl->GetPlayer()->getTransform().placement >= 745)
+    if (lvl->GetPlayer()->getTransform().placement >= 735)
         return true;
     return false;
 }
@@ -293,23 +291,5 @@ void Conditions::Replace(GameObject* obj, std::string sens)
     else
     {
         obj->getTransform().pos -= { 15,0 };
-    }
-}
-
-void Conditions::Clean(std::vector<GameObject*>& tab, GameObject* obj, std::string sens)
-{
-    if (sens == "Left")
-    {
-        for (int i = 0; i < 14; i++)
-        {
-            tab[obj->getTransform().posBase + i] = nullptr;
-        }
-    }
-    else
-    {
-        for (int i = 0; i < 14; i++)
-        {
-            tab[obj->getTransform().posBase - i] = nullptr;
-        }
     }
 }

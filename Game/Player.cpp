@@ -4,7 +4,7 @@
 GameObject* createPlayer(int x, int y)
 {
 	GameObject* player = new GameObject(x,y);
-	SpriteRenderer* sr = new SpriteRenderer("blocks_30.png", { 64,64 }, { 3,3 });
+	SpriteRenderer* sr = new SpriteRenderer("Player.png", { 64,64 }, { 3,3 });
 	Variables* vr = new Variables();
 	Collider* cl = new Collider(sf::Color::Red);
 	player->AddComponent(sr);

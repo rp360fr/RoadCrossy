@@ -1,19 +1,12 @@
 #pragma once
 #include "Engine.h"
 #include "Scene.h"
+#include "Color.h"
 #include <fstream>
 #include <sstream>
 
 
 
-struct EnnemiData {
-    int wave;
-    int type;
-    int spanwx;
-};
-const float tile_width = 64;
-const float tile_height = 64;
-extern std::vector<EnnemiData> enemiesToSpawn;
 GameObject* CreateGrass(int x, int y);
 GameObject* CreateRoad(int x, int y);
 GameObject* CreateTree(int x, int y);

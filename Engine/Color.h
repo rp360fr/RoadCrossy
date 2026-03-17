@@ -9,3 +9,4 @@ constexpr sf::Color color(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::u
 constexpr sf::Color White = color(255, 255, 255);
 constexpr sf::Color Red = color(255, 0, 0);
 constexpr sf::Color Green = color(0, 255, 0);
+constexpr sf::Color Blue = color(0, 0, 255);

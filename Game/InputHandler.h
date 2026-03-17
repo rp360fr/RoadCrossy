@@ -20,7 +20,6 @@ private:
 public:
     static void Initialize(Engine* engine, std::vector<Scene*>* scenes);
 
-    static void TestDeath();
     static void SetupSceneInputs(Scene* scene, std::string sceneName);
     static void ClearSceneInputs();
     static void RestartGame();

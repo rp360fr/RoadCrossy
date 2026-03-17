@@ -108,7 +108,7 @@ void Scene::Update(sf::RenderWindow& window)
 	// 3. Nettoyer les objets marqués pour destruction
 	CleanupDestroyedObjects();
 
-	// 4. Nettoyer les objets inactifs (APRÈS toutes les itérations)
+	// 4. Nettoyer les objets inactifs
 	objects.erase(
 		std::remove_if(objects.begin(), objects.end(),
 			[](GameObject* obj) {
@@ -169,7 +169,6 @@ void Scene::Destroy()
 }
 
 void Scene::CleanupDestroyedObjects() {
-	// Utiliser "objects" au lieu de "gameObjects" !
 	for (auto it = objects.begin(); it != objects.end(); ) {
 		if ((*it)->IsMarkedForDestruction()) {
 			std::cout << "[DEBUG] Objet detruit a la position: ("
