@@ -51,6 +51,19 @@ GameObject* CreateRoad(int x, int y) {
     return road;
 }
 
+GameObject* CreateRails(int x, int y) {
+    GameObject* road = new GameObject(x - 1, y - 1);
+    Collider* cl = new Collider(Blue);
+    SpriteRenderer* sr = new SpriteRenderer("Rails.png", { 64,64 }, { 1,1 });
+    Variables* vr = new Variables();
+    vr->addString("Type", "Grass");
+    road->AddComponent(sr);
+    road->AddComponent(cl);
+    road->AddComponent(vr);
+    return road;
+}
+
+
 GameObject* CreateWater(int x, int y)
 {
     GameObject* water = new GameObject(x-1, y - 1);
@@ -91,6 +104,26 @@ GameObject* CreateCar(int y, std::string sens)
     car->AddComponent(cl);
     return car;
 }
+
+GameObject* CreateTrain(int y, std::string sens)
+{
+    GameObject* Train;
+    if (sens == "Left")
+        Train = new GameObject(0, y);
+    else
+        Train = new GameObject(14, y);
+    SpriteRenderer* sr = new SpriteRenderer("Train.png", { 64,64 }, { 1,1 });
+    Movement* mv = new Movement(sens);
+    Variables* vr = new Variables();
+    Collider* cl = new Collider(Red);
+    vr->addString("Type", "Train");
+    Train->AddComponent(sr);
+    Train->AddComponent(vr);
+    Train->AddComponent(mv);
+    Train->AddComponent(cl);
+    return Train;
+}
+
 
 GameObject* CreateBoat(int y, std::string sens)
 {

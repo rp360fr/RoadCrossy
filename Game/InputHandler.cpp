@@ -141,7 +141,8 @@ void InputHandler::MovePlayer(Scene* lvl)
 
     InputManager::RegisterKeyPress("Z", [player,lvl]()
         {
-            Conditions::MoveUp(player,lvl);
+            if(engineRef->getSceneModule()->GetActiveScene() == lvl)
+                Conditions::MoveUp(player,lvl);
         });
     InputManager::RegisterKeyPress("Up", [player, lvl]()
         {

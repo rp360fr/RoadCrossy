@@ -4,14 +4,15 @@
 
 void Movement::Start() 
 {
-    if (owner->GetComponent<Variables>()->getString("Type") == "Car")
+    const std::string& type = owner->GetComponent<Variables>()->getString("Type");
+    if (type == "Car" || type == "Boat")
     {
         speed = rand() % 250 + 100;
 
     }
-    if (owner->GetComponent<Variables>()->getString("Type") == "Boat")
+    else if (type == "Train")
     {
-        speed = rand() % 250 + 100;
+        speed = 50;
     }
     else
     {

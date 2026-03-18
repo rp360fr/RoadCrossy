@@ -82,7 +82,7 @@ TileType map[50] =
     GRASS,
     ROAD,
     ROAD,
-    GRASS,
+    TRAIN,
     WATER,
     GRASS,
     ROAD,
@@ -102,7 +102,7 @@ TileType map[50] =
     GRASS,
     ROAD,
     GRASS,
-    GRASS,
+    TRAIN,
     WATER,
     GRASS,
     ROAD,
@@ -116,7 +116,7 @@ TileType map[50] =
     WATER,
     GRASS,
     ROAD,
-    GRASS,
+    TRAIN,
     GRASS,
     WATER,
     GRASS,
@@ -175,6 +175,11 @@ void createMap(int length, int width, Scene* scene)
                 scene->AddGroundObject(water);
                 scene->AddGroundObject(hitbox);
             }
+            if (map[i] == TRAIN)
+            {
+                GameObject* sol = CreateRails(j, i);
+                scene->AddGroundObject(sol);
+            }
         }
         if (map[i] == GRASS)
         {
@@ -198,6 +203,20 @@ void createMap(int length, int width, Scene* scene)
             }
         }
 
+        if (map[i] == TRAIN)
+        {
+            if (rand() % 2 == 0)
+            {
+                GameObject* trin = CreateTrain(i, "Left");
+                scene->AddGameObject(trin, { 0,i });
+            }
+            else
+            {
+                GameObject* trin = CreateTrain(i, "Right");
+                scene->AddGameObject(trin, { 0,i });
+            }
+            
+        }
         if (map[i] == WATER)
         {
             if (rand() % 2 == 0)

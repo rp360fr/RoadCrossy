@@ -12,7 +12,8 @@ enum TileType
 {
     GRASS,
     ROAD,
-    WATER
+    WATER,
+    TRAIN
 };
 
 Scene* CreateMenuDepart(std::vector<Scene*>* lstScene);

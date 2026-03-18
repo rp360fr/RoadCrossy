@@ -245,6 +245,7 @@ void Conditions::Recalibrage(Scene* lvl)
                     {
                         if (obj->getTransform().placement == obj->getTransform().posBase + 14)
                         {
+                            sf::Clock delay;
                             lvl->getObstaclesObj()[pos - 14] = obj;
                             lvl->getObstaclesObj()[pos] = nullptr;
                             obj->getTransform().placement = pos - 14;

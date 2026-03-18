@@ -15,4 +15,5 @@ GameObject* CreateWater(int x, int y);
 GameObject* CreateWaterHitbox(int x, int y);
 GameObject* CreateBoat(int y, std::string sens);
 GameObject* CreateCar(int y,std::string sens);
-
+GameObject* CreateTrain(int y, std::string sens);
+GameObject* CreateRails(int x, int y);
