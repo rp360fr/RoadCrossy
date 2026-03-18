@@ -32,6 +32,11 @@ void Event::SetEventTrue(int id) // met un event a true
 	if (lstId[id] == 0)
 		lstId[id] = 1;
 }
+void Event::SetEventFalse(int id) // met un event a true
+{
+	if (lstId[id] == -1)
+		lstId[id] = 0;
+}
 
 void Event::ClearAllEvents()
 {

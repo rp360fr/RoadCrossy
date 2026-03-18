@@ -20,12 +20,13 @@ int main()
     Scene* Menu = CreateMenuDepart(lstScene);
     Scene* LvL = CreateGameLvL();
     Scene* GameOver = CreateGameOver();
-
+    Scene* Qte = CreateQtelvl();
     InputHandler::Initialize(&engine, lstScene);
 
     lstScene->push_back(Menu);
     lstScene->push_back(LvL);
     lstScene->push_back(GameOver);
+    lstScene->push_back(Qte);
 
 
     engine.getSceneModule()->SetActiveScene(Menu);

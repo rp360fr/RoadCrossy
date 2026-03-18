@@ -125,6 +125,7 @@ void Scene::Update(sf::RenderWindow& window)
 
 void Scene::Render(sf::RenderWindow& window)
 {
+	window.clear();
 	for (GameObject* object : objects)
 	{
 		object->Render(window);

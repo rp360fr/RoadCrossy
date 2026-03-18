@@ -1,5 +1,7 @@
 ﻿// InputHandler.cpp
 #include "InputHandler.h"
+#include "QTE.h"
+
 Engine* InputHandler::engineRef = nullptr;
 std::vector<Scene*>* InputHandler::scenesRef = nullptr;
 bool InputHandler::eventsCreated = false;
@@ -98,7 +100,7 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
             {
                 Conditions::Scrolling(lvl);
                 if (Conditions::Collision(lvl) == CollideType::Dead)
-                    Event::SetEventTrue(1);
+                    Event::SetEventTrue(2);
                 Conditions::Recalibrage(lvl);
                 if (Conditions::testWin(lvl))
                     Event::SetEventTrue(1);
@@ -118,6 +120,33 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
                 engineRef->setGameState(false);
             });
 
+        Event::CreateEvent(2, []() 
+            {
+                Scene* lvl = InputHandler::getThisScene(scenesRef, "LvL");
+                Scene* Qte = InputHandler::getThisScene(scenesRef, "Qte");
+                ArrowMiniGame* arrow = new ArrowMiniGame;
+           
+                engineRef->getSceneModule()->SetActiveScene(Qte);
+               Qte->Start();
+               Qte->Update(engineRef->getSceneModule()->getWindow());
+               while(!arrow->isFinished()){
+               
+
+               arrow->update(engineRef->getSceneModule()->getWindow());
+               }
+               if (arrow->playerWon()) {
+                   engineRef->getSceneModule()->SetActiveScene(lvl);
+                   Event::SetEventFalse(2);
+               }
+               else {
+                   Scene* GameOver = InputHandler::getThisScene(scenesRef, "GameOver");
+                   GameOver->getThisObjByText("Retry")->setClickable(true);
+                   GameOver->getThisObjByText("Quit")->setClickable(true);
+                   engineRef->getSceneModule()->SetActiveScene(GameOver);
+                   GameOver->Start();
+                   engineRef->setGameState(false);
+               }
+            });
         eventsCreated = true;
     }
 }
@@ -142,40 +171,48 @@ void InputHandler::MovePlayer(Scene* lvl)
 
     InputManager::RegisterKeyPress("Z", [player,lvl]()
         {
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
             Conditions::MoveUp(player,lvl);
         });
     InputManager::RegisterKeyPress("Up", [player, lvl]()
         {
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
             Conditions::MoveUp(player, lvl);
         });
 
 
     InputManager::RegisterKeyPress("S", [player, lvl]()
         {
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
             Conditions::MoveDown(player,lvl);
         });
     InputManager::RegisterKeyPress("Down", [player, lvl]()
         {
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
             Conditions::MoveDown(player, lvl);
         });
 
 
     InputManager::RegisterKeyPress("Q", [player, lvl]()
         {
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
             Conditions::MoveLeft(player, lvl);
         });
     InputManager::RegisterKeyPress("Left", [player, lvl]()
         {
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
             Conditions::MoveLeft(player, lvl);
         });
 
 
     InputManager::RegisterKeyPress("D", [player, lvl]()
         {
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
             Conditions::MoveRight(player, lvl);
         });
     InputManager::RegisterKeyPress("Right", [player, lvl]()
         {
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
             Conditions::MoveRight(player, lvl);
         });
 }
@@ -219,11 +256,12 @@ void InputHandler::RestartGame()
 
     Scene* Menu = CreateMenuDepart(scenesRef);
     Scene* LvL = CreateGameLvL();
-
+    Scene* Qte = CreateQtelvl();
     Scene* GameOver = CreateGameOver();
     scenesRef->push_back(Menu);
     scenesRef->push_back(LvL);
     scenesRef->push_back(GameOver);
+    scenesRef->push_back(Qte);
     Conditions::scrollOffset = { 0,0 };
 
 

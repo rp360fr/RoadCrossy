@@ -1,6 +1,6 @@
 #include "LvlManager.h"
 #include "InputHandler.h"
-
+#include "QTE.h"
 
 Scene* CreateMenuDepart(std::vector<Scene*>* lstScene)
 {
@@ -229,4 +229,10 @@ Scene* CreateGameLvL()
     createMap(15, 100, lvl1);
     lvl1->SetLvLData(lvlObject);
     return lvl1;
+}
+
+Scene* CreateQtelvl() {
+    Scene* Qte = new Scene("Qte");
+    
+    return Qte;
 }
