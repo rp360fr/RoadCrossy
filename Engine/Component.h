@@ -193,7 +193,7 @@ private:
 public:
 	int cpt = 0;
 	int speed = 500;
-	Movement(std::string s) : sens(s) {}
+	Movement(std::string s,int speed) : sens(s),speed(speed) {}
 	sf::Vector2f calc(int x, int y);
 	std::string getSens() { return sens; }
 	void Start();

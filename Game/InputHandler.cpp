@@ -61,13 +61,81 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
 {
     struct SpawnLigne
     {
-        int mapIndex;
-        int minIntervalSec;
-        int maxIntervalSec;
+        int mapId;
+        int Speed;
+		std::pair<int, int> MinMaxTime;
         sf::Clock clock;
-        int nextSpawnSec;
-        std::function<GameObject* ()> factory;         
+        int nextSpawnSec = 0;
+        std::function<void()> CreateObstacle;
     };
+    static std::vector<SpawnLigne> spawnLignes;
+	spawnLignes.clear();
+    for (int i = 0; i < map.size(); ++i)
+    {
+        switch (map[i])
+        {
+        case TileType::TRAINL:
+        case TileType::TRAINR:
+        {
+            int mapId = i;
+            int spd = 50;
+            SpawnLigne sl;
+			sl.mapId = mapId;
+            sl.Speed = spd;
+            sl.MinMaxTime = { 10,15 };
+            sl.clock = sf::Clock();
+            sl.nextSpawnSec = 0;
+            sl.CreateObstacle = [i, lvl, spd]()
+                {
+                    GameObject* train = CreateTrain(i, map[i], spd);
+                    train->Start();
+                    lvl->AddGameObject(train, { sens(map[i]), i });
+                };
+            spawnLignes.push_back(sl);
+            break;
+        }
+        case TileType::ROADL:
+        case TileType::ROADR:
+        {
+            int mapId = i;
+            int spd = rand() % 250 + 100;
+            SpawnLigne sl;
+            sl.mapId = mapId;
+            sl.Speed = spd;
+            sl.MinMaxTime = { 4,8 };
+            sl.clock = sf::Clock();
+            sl.nextSpawnSec = 0;
+            sl.CreateObstacle = [i, lvl, spd]()
+                {
+                    GameObject* car = CreateCar(i, map[i], spd);
+                    car->Start();
+                    lvl->AddGameObject(car, { sens(map[i]), i });
+                };
+            spawnLignes.push_back(sl);
+            break;
+        }
+        case TileType::WATERL:
+        case TileType::WATERR:
+        {
+            int mapId = i;
+            int spd = 300;
+            SpawnLigne sl;
+            sl.mapId = mapId;
+            sl.Speed = spd;
+            sl.MinMaxTime = { 5,7 };
+            sl.clock = sf::Clock();
+            sl.nextSpawnSec = 0;
+            sl.CreateObstacle = [i, lvl, spd]()
+                {
+                    GameObject* boat = CreateBoat(i, map[i], spd);
+                    boat->Start();
+                    lvl->AddGameObject(boat, { sens(map[i]), i });
+                };
+            spawnLignes.push_back(sl);
+            break;
+        }
+        }
+    }
     static sf::Clock TrainClock;
     TrainClock.restart();
     if (lvl == nullptr)
@@ -115,38 +183,25 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
                     Event::SetEventTrue(1);
                 
             });
-        static int TrainTime = rand() % 5 + 5;
 
-        //Gestion et Creation des Obstacles 
         Event::CreateEvent(-2,[lvl]()
             {
-				
-                static sf::Clock CarClock;
-				static sf::Clock BoatClock;
-                
-                if (TrainClock.getElapsedTime().asSeconds() >= TrainTime)
+				for (int i = 0; i < spawnLignes.size(); ++i)
                 {
-
-					GameObject* train1 = CreateTrain(5, map[5]);
-                    train1->Start();
-
-                    GameObject* train2 = CreateTrain(25, map[25]);
-                    train2->Start();
-
-                    GameObject* train3 = CreateTrain(39, map[39]);
-                    train3->Start();
-
-					lvl->AddGameObject(train1,{sens(map[5]),5});
-					lvl->AddGameObject(train2, {sens(map[25]),25});
-					lvl->AddGameObject(train3, {sens(map[39]),39});
-                    TrainTime = rand() % 5 + 5;
-					TrainClock.restart();
+                    if(spawnLignes[i].CreateObstacle)
+                    if (spawnLignes[i].clock.getElapsedTime().asSeconds() >= spawnLignes[i].nextSpawnSec)
+                    {
+						std::cout << "Spawn obstacle ligne " << spawnLignes[i].mapId << "sens" << TileTypeToString(map[spawnLignes[i].mapId]) << " en pos " << sens(map[spawnLignes[i].mapId]) << " " << spawnLignes[i].mapId <<  std::endl;
+                        spawnLignes[i].CreateObstacle();
+                        spawnLignes[i].clock.restart();
+                        spawnLignes[i].nextSpawnSec = rand() % (spawnLignes[i].MinMaxTime.second-spawnLignes[i].MinMaxTime.first) + spawnLignes[i].MinMaxTime.first;
+                    }
                 }
 			});
 
-        //Fin
         Event::CreateEvent(1, []()
             {
+                Event::ClearAllEvents();
                 Scene* GameOver = InputHandler::getThisScene(scenesRef, "GameOver");
                 GameOver->getThisObjByText("Retry")->setClickable(true);
                 GameOver->getThisObjByText("Quit")->setClickable(true);
@@ -239,6 +294,7 @@ void InputHandler::RestartGame()
     // 1. Nettoyer les anciens callbacks
     InputManager::ClearKeyCallbacks();
     Event::ClearAllEvents();
+    InitScrollOffset();
     eventsCreated = false;
     debugF1 = false;
     debugF2 = false;
@@ -263,7 +319,7 @@ void InputHandler::RestartGame()
     scenesRef->push_back(Menu);
     scenesRef->push_back(LvL);
     scenesRef->push_back(GameOver);
-    InitScrollOffset();
+
 
 
     engineRef->getSceneModule()->SetActiveScene(Menu);

@@ -3,6 +3,34 @@
 std::vector <TileType> map = {};
 sf::Vector2f* scrollOffset = nullptr;
 
+std::string TileTypeToString(TileType t)
+{
+    switch (t)
+    {
+    case TileType::GRASS:
+        return "GRASS";
+    case TileType::ROAD:
+        return "ROAD";
+    case TileType::ROADR:
+        return "ROADR";
+    case TileType::ROADL:
+        return "ROADL";
+    case TileType::WATER:
+        return "WATER";
+    case TileType::WATERR:
+        return "WATERR";
+    case TileType::WATERL:
+        return "WATERL";
+    case TileType::TRAIN:
+        return "TRAIN";
+    case TileType::TRAINR:
+        return "TRAINR";
+    case TileType::TRAINL:
+        return "TRAINL";
+    default:
+        return "UNKNOWN_TILE_TYPE";
+    }
+}
 
 void InitScrollOffset()
 {
@@ -21,9 +49,9 @@ sf::Vector2f scrolling(int x, int y)
 int sens(TileType t)
 {
     if (t == TileType::ROADL || t == TileType::WATERL || t == TileType::TRAINL)
-        return 14;
-    else if (t == TileType::ROADR || t == TileType::WATERR || t == TileType::TRAINR)
         return 0;
+    else if (t == TileType::ROADR || t == TileType::WATERR || t == TileType::TRAINR)
+        return 14;
     else
         return 1234567890;
 }

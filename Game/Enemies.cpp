@@ -86,15 +86,21 @@ GameObject* CreateWaterHitbox(int x, int y)
     return water;
 }
 
-GameObject* CreateCar(int y, std::string sens)
+GameObject* CreateCar(int y, TileType t, int speed)
 {
+    std::string sens;
+    if (t == TileType::ROADL)
+        sens = "Left";
+    else
+        sens = "Right";
+
     GameObject* car;
     if(sens == "Left")
         car = new GameObject(0, y, scrollOffset);
     else
         car = new GameObject(14, y, scrollOffset);
     SpriteRenderer* sr = new SpriteRenderer("Car.png", { 64,64 }, { 1,1 });
-    Movement* mv = new Movement(sens);
+    Movement* mv = new Movement(sens, speed);
     Variables* vr = new Variables();
     Collider* cl = new Collider(Red);
     vr->addString("Type", "Car");
@@ -105,26 +111,8 @@ GameObject* CreateCar(int y, std::string sens)
     return car;
 }
 
-GameObject* CreateTrain(int y, std::string sens)
-{
-    GameObject* Train;
-    if (sens == "Left")
-        Train = new GameObject(0, y, scrollOffset);
-    else
-        Train = new GameObject(14, y, scrollOffset);
-    SpriteRenderer* sr = new SpriteRenderer("Train.png", { 64,64 }, { 1,1 });
-    Movement* mv = new Movement(sens);
-    Variables* vr = new Variables();
-    Collider* cl = new Collider(Red);
-    vr->addString("Type", "Train");
-    Train->AddComponent(sr);
-    Train->AddComponent(vr);
-    Train->AddComponent(mv);
-    Train->AddComponent(cl);
-    return Train;
-}
 
-GameObject* CreateTrain(int y,TileType t)
+GameObject* CreateTrain(int y,TileType t,int speed)
 {
     std::string sens;
     if (t == TileType::TRAINL)
@@ -138,7 +126,7 @@ GameObject* CreateTrain(int y,TileType t)
     else
         Train = new GameObject(14, y, scrollOffset);
     SpriteRenderer* sr = new SpriteRenderer("Train.png", { 64,64 }, { 1,1 });
-    Movement* mv = new Movement(sens);
+    Movement* mv = new Movement(sens,speed);
     Variables* vr = new Variables();
     Collider* cl = new Collider(Red);
     vr->addString("Type", "Train");
@@ -150,15 +138,27 @@ GameObject* CreateTrain(int y,TileType t)
 }
 
 
-GameObject* CreateBoat(int y, std::string sens)
+GameObject* CreateBoat(int y,TileType t,int speed)
 {
-    GameObject* boat;
-    if (sens == "Left")
-        boat = new GameObject(0, y,scrollOffset);
+    std::string sens;
+    if (t == TileType::WATERL)
+        sens = "Left";
     else
-        boat = new GameObject(14, y,scrollOffset);
-    SpriteRenderer* sr = new SpriteRenderer("Boat.png", { 64,64 }, { 1,1 });
-    Movement* mv = new Movement(sens);
+        sens = "Right";
+
+    GameObject* boat;
+    SpriteRenderer* sr;
+    if (sens == "Left")
+    {
+        boat = new GameObject(0, y, scrollOffset);
+        sr = new SpriteRenderer("BoatG.png", { 64,64 }, { 1,1 });
+    } 
+    else
+    {
+        boat = new GameObject(14, y, scrollOffset);
+        sr = new SpriteRenderer("BoatD.png", { 64,64 }, { 1,1 });
+    }   
+    Movement* mv = new Movement(sens,speed);
     Variables* vr = new Variables();
     Collider* cl = new Collider(Red);
     vr->addString("Type", "Boat");

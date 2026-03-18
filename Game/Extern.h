@@ -19,7 +19,7 @@ sf::Vector2f scrolling(int x, int y);
 int sens(TileType t);
 std::vector<TileType> CreateMapTab();
 void InitScrollOffset();
-
+std::string TileTypeToString(TileType t);
 
 extern sf::Vector2f* scrollOffset;
 extern std::vector<TileType> map;

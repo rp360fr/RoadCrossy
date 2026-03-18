@@ -4,7 +4,7 @@ Scene::Scene(std::string name,sf::Vector2u size)
 {
 	this->size = size;
 	this->name = name;
-	Obstacles.resize(1500, nullptr);
+	Obstacles.resize(750, nullptr);
 }
 
 

@@ -142,14 +142,10 @@ void createMap(int length, int width, Scene* scene)
         {
             if (rand() % 2 == 0)
             {
-                GameObject* voture = CreateCar(i, "Left");
-                scene->AddGameObject(voture, { 0,i });
 				map[i] = TileType::ROADL;
             }
             else
             {
-                GameObject* voture = CreateCar(i, "Right");
-                scene->AddGameObject(voture, { 14,i });
 				map[i] = TileType::ROADR;
             }
         }
@@ -158,14 +154,10 @@ void createMap(int length, int width, Scene* scene)
         {
             if (rand() % 2 == 0)
             {
-                GameObject* trin = CreateTrain(i, "Left");
-                scene->AddGameObject(trin, { 0,i });
 				map[i] = TileType::TRAINL;
             }
             else
             {
-                GameObject* trin = CreateTrain(i, "Right");
-                scene->AddGameObject(trin, { 14,i });
 				map[i] = TileType::TRAINR;
             }
             
@@ -174,14 +166,10 @@ void createMap(int length, int width, Scene* scene)
         {
             if (rand() % 2 == 0)
             {
-                GameObject* Boat = CreateBoat(i, "Left");
-                scene->AddGameObject(Boat, { 0,i });
 				map[i] = TileType::WATERL;
             }
             else
             {
-                GameObject* Boat = CreateBoat(i, "Right");
-                scene->AddGameObject(Boat, { 14,i });
 				map[i] = TileType::WATERR;
             }
         }
