@@ -20,6 +20,6 @@ public:
 	static void SetEventTrue(int id);
 	static void SetEventFalse(int id);
 
-
+	static void ResetEvent(int id);
 };
 

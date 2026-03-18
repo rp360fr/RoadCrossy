@@ -16,6 +16,7 @@ void Event::CreateEvent(int id, event evt) //Creer un event pour le jeu
 
 void Event::ProcessEvent() //test la condition pour le lancement d'event
 {
+	std::vector<std::pair<int, event>> toFire;
 	for (auto& [id, test] : lstId)
 	{
 		if (test == 1)
@@ -43,4 +44,9 @@ void Event::ClearAllEvents()
 	lstId.clear();
 	lstEvent.clear();
 	std::cout << "Tous les events ont ete nettoyes" << std::endl;
+}
+void Event::ResetEvent(int id)
+{
+	if (lstId.count(id))
+		lstId[id] = 0;
 }

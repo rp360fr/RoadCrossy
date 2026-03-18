@@ -1,12 +1,11 @@
 ﻿#include "QTE.h"
 #include <iostream>
-
-
+#include "Scene.h"
 
 ArrowMiniGame::ArrowMiniGame()
 {
     srand(static_cast<unsigned int>(time(nullptr)));
-    sequenceLength = 1;      // 20 flèches
+    sequenceLength = 4;      // 20 flèches
     remainingTime = 5.f;     // 20 secondes
     finished = false;
     currentIndex = 0;
@@ -14,11 +13,13 @@ ArrowMiniGame::ArrowMiniGame()
     windowWidth = 800.f;   // ou passe la window en paramètre
     windowHeight = 800.f;
     generateSequence(sequenceLength);
+    text = nullptr;
+    timerObj = nullptr;
 
-    if (!font.openFromFile("./Assets/ArrowSymbols.ttf"))
-        std::cerr << "Impossible de charger la police !\n";
-    if (!font2.openFromFile("./Assets/3270NerdFont-Regular.ttf"))
-        std::cerr << "Impossible de charger la police !\n";
+    //    if (!font.openFromFile("./Assets/ArrowSymbols.ttf"))
+    //        std::cerr << "Impossible de charger la police !\n";
+    //    if (!font2.openFromFile("./Assets/3270NerdFont-Regular.ttf"))
+    //        std::cerr << "Impossible de charger la police !\n";
 
     clock.restart();
 }
@@ -40,42 +41,55 @@ void ArrowMiniGame::generateSequence(unsigned int length)
     currentIndex = 0;
 }
 
-void ArrowMiniGame::drawSequence(sf::RenderWindow& window)
+void ArrowMiniGame::drawSequence(Scene* lvl)
 {
-    std::cout << "QTE" << std::endl;
     const float startX = 10.f;
-    const float y = windowHeight / 2.f - 20.f;
-    const float spacing = 25.f;           // espacement entre flèches
-    const float maxDisplay = windowWidth - 20.f;
+    const float y = 400.f;
+    const float spacing = 50.f;
 
-    for (size_t i = 0; i < sequence.size(); ++i)
+    if (text == nullptr)
     {
-        sf::Text text(font);
-        text.setCharacterSize(20); // taille des fleches
-        text.setFillColor(i < currentIndex ? sf::Color::Green : sf::Color::White); // vert pour flèches déjà faites
-
-        std::string arrow;
-        switch (sequence[i])
+        // Créer un GameObject par flèche
+        for (size_t i = 0; i < sequence.size(); ++i)
         {
-        case sf::Keyboard::Key::Up: arrow = "D"; break;
-        case sf::Keyboard::Key::Down: arrow = "B"; break;
-        case sf::Keyboard::Key::Left: arrow = "C"; break;
-        case sf::Keyboard::Key::Right: arrow = "A"; break;
-        default: arrow = "?"; break;
+            std::string arrow;
+            switch (sequence[i])
+            {
+            case sf::Keyboard::Key::Up:    arrow = "D"; break;
+            case sf::Keyboard::Key::Down:  arrow = "B"; break;
+            case sf::Keyboard::Key::Left:  arrow = "C"; break;
+            case sf::Keyboard::Key::Right: arrow = "A"; break;
+            default: arrow = "?"; break;
+            }
+
+            float posX = startX + i * spacing;
+            // Flèche courante en jaune, les autres en blanc
+            sf::Color color = (i == currentIndex) ? sf::Color::Yellow : sf::Color::White;
+
+            GameObject* arrow_obj = new GameObject(sf::Vector2f(posX, y));
+            Text* t = new Text(arrow, 40, color, "ArrowSymbols.ttf");
+            arrow_obj->AddComponent(t);
+            lvl->AddParamObject(arrow_obj);
+            arrow_obj->Start();
+            arrowObjects.push_back(arrow_obj); // ← stocker tous les objets
         }
-
-        text.setString(arrow);
-
-        float posX = startX + i * spacing;
-        if (posX > maxDisplay) posX = maxDisplay;
-        text.setPosition({ posX, y });
-        window.draw(text);
+        text = arrowObjects[0]; // ← text pointe sur le premier pour le hide()
+    }
+    else
+    {
+        // Mettre à jour les couleurs chaque frame
+        for (size_t i = 0; i < arrowObjects.size(); ++i)
+        {
+            sf::Color color = (i < currentIndex) ? sf::Color::Green  // déjà faite
+                : (i == currentIndex) ? sf::Color::Yellow  // courante
+                : sf::Color::White;  // à faire
+            arrowObjects[i]->GetComponent<Text>()->setColor(color);
+        }
     }
 }
 
-void ArrowMiniGame::update(sf::RenderWindow& window)
+void ArrowMiniGame::update(Scene* lvl)
 {
-    
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
     {
         finished = true;
@@ -85,62 +99,67 @@ void ArrowMiniGame::update(sf::RenderWindow& window)
     float deltaTime = clock.restart().asSeconds();
     remainingTime -= deltaTime;
 
-    // Timer écoulé = perdu
     if (remainingTime <= 0.f)
     {
         remainingTime = 0.f;
         finished = true;
         won = false;
-        std::cout << "? Temps écoulé, vous avez perdu !\n";
         return;
     }
 
-    // Détecter la touche pressée actuellement
     sf::Keyboard::Key pressedKey = sf::Keyboard::Key::Unknown;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) pressedKey = sf::Keyboard::Key::Up;
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) pressedKey = sf::Keyboard::Key::Down;
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) pressedKey = sf::Keyboard::Key::Left;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))    pressedKey = sf::Keyboard::Key::Up;
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))  pressedKey = sf::Keyboard::Key::Down;
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))  pressedKey = sf::Keyboard::Key::Left;
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) pressedKey = sf::Keyboard::Key::Right;
 
-    // Vérifier si c’est un nouvel appui
     if (pressedKey != sf::Keyboard::Key::Unknown && pressedKey != lastKeyPressed)
     {
         if (pressedKey == sequence[currentIndex])
-        {
-            // Bonne touche = passer à la suivante
             currentIndex++;
-        }
         else
-        {
-            // Mauvaise touche = remettre à zéro l'indice seulement
-            std::cout << "? Mauvaise flèche ! Recommencez depuis le début !\n";
             currentIndex = 0;
-        }
     }
-
     lastKeyPressed = pressedKey;
 
-    // Si toutes les flèches faites
     if (currentIndex >= sequence.size())
     {
         finished = true;
         won = true;
-        std::cout << "?? Séquence terminée !\n";
+        return;
     }
 
-    // Dessin des flèches
-    drawSequence(window);
+    drawSequence(lvl);
 
-    // Afficher le timer en haut à gauche
-    sf::Text timerText(font2);
-    timerText.setCharacterSize(20);
-    timerText.setFillColor(sf::Color::Yellow);
-    std::stringstream ss;
-    ss << "Temps restant: " << (int)remainingTime;
-    timerText.setString(ss.str());
-    timerText.setPosition({ 10.f, 5.f });
-    window.draw(timerText);
+    // Timer
+    if (timerObj == nullptr)
+    {
+        timerObj = new GameObject(sf::Vector2f{ 10.f, 5.f });
+        Text* timerComp = new Text("Timer", 20, sf::Color::Yellow, "PressStart2P-Regular.ttf");
+        timerObj->AddComponent(timerComp); // ← manquait dans ton code original
+        lvl->AddParamObject(timerObj);     // ← AddParamObject, pas AddGameObject
+        timerObj->Start();
+    }
+    else
+    {
+        std::stringstream ss;
+        ss << "Temps: " << (int)remainingTime;
+        timerObj->GetComponent<Text>()->setText(ss.str());
+    }
 }
 
+void ArrowMiniGame::hide(Scene * lvl)
+{
+
+    for (GameObject* obj : arrowObjects)
+    {
+        if (obj != nullptr)
+            lvl->RemoveParamObject(obj);
+    }
+    arrowObjects.clear();
+    text = nullptr;
+    timerObj = nullptr;
+    
+}
 bool ArrowMiniGame::isFinished() const { return finished; }
 bool ArrowMiniGame::playerWon() const { return won; }

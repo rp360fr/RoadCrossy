@@ -13,10 +13,11 @@ class InputHandler
 private:
     static void SetupMenuInputs(Scene* menu);
     static void SetupLvLInputs(Scene* lvl);
+    static void SetupQTEInputs(Scene* qte);
     static bool eventsCreated;
     static Engine* engineRef;
     static std::vector<Scene*>* scenesRef;
-    static ArrowMiniGame* currentQTE;
+    static ArrowMiniGame* qteGame;
 
 public:
     static void Initialize(Engine* engine, std::vector<Scene*>* scenes);

@@ -5,7 +5,7 @@
 Engine* InputHandler::engineRef = nullptr;
 std::vector<Scene*>* InputHandler::scenesRef = nullptr;
 bool InputHandler::eventsCreated = false;
-
+ArrowMiniGame* InputHandler::qteGame = nullptr;
 void InputHandler::Initialize(Engine* engine, std::vector<Scene*>* scenes)
 {
     engineRef = engine;
@@ -38,7 +38,10 @@ void InputHandler::SetupSceneInputs(Scene* scene, std::string sceneName)
     else if (sceneName == "LvL1" || sceneName == "LvL2" || sceneName == "LvL")
     {
         SetupLvLInputs(scene);
-    }
+    }else if (sceneName == "QTE")
+    {
+        SetupQTEInputs(scene);
+	}
 
     std::cout << "Inputs configures pour: " << sceneName << std::endl;
 }
@@ -107,46 +110,18 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
                 
             });
 
-
-
-        //Fin
-        Event::CreateEvent(1, []()
+        Event::CreateEvent(2, []()
             {
-                Scene* GameOver = InputHandler::getThisScene(scenesRef, "GameOver");
-                GameOver->getThisObjByText("Retry")->setClickable(true);
-                GameOver->getThisObjByText("Quit")->setClickable(true);
-                engineRef->getSceneModule()->SetActiveScene(GameOver);
-                GameOver->Start();
-                engineRef->setGameState(false);
+                Scene* qte = InputHandler::getThisScene(scenesRef, "Qte");
+                if (qte != nullptr)
+                {
+                    engineRef->getSceneModule()->SetActiveScene(qte);
+                    InputHandler::SetupSceneInputs(qte, "QTE");
+                    qte->Start();
+                }
             });
 
-        Event::CreateEvent(2, []() 
-            {
-                Scene* lvl = InputHandler::getThisScene(scenesRef, "LvL");
-                Scene* Qte = InputHandler::getThisScene(scenesRef, "Qte");
-                ArrowMiniGame* arrow = new ArrowMiniGame;
-           
-                engineRef->getSceneModule()->SetActiveScene(Qte);
-               Qte->Start();
-               Qte->Update(engineRef->getSceneModule()->getWindow());
-               while(!arrow->isFinished()){
-               
-
-               arrow->update(engineRef->getSceneModule()->getWindow());
-               }
-               if (arrow->playerWon()) {
-                   engineRef->getSceneModule()->SetActiveScene(lvl);
-                   Event::SetEventFalse(2);
-               }
-               else {
-                   Scene* GameOver = InputHandler::getThisScene(scenesRef, "GameOver");
-                   GameOver->getThisObjByText("Retry")->setClickable(true);
-                   GameOver->getThisObjByText("Quit")->setClickable(true);
-                   engineRef->getSceneModule()->SetActiveScene(GameOver);
-                   GameOver->Start();
-                   engineRef->setGameState(false);
-               }
-            });
+    
         eventsCreated = true;
     }
 }
@@ -271,4 +246,52 @@ void InputHandler::RestartGame()
     engineRef->setGameState(true);
 
     std::cout << "=== JEU REINITIALISE ===\n\n\n\n" << std::endl;
+}
+
+void InputHandler::SetupQTEInputs(Scene* qte)
+{
+    if (qteGame != nullptr)
+    {
+        delete qteGame;
+        qteGame = nullptr;
+    }
+    qteGame = new ArrowMiniGame();
+
+     // ← récupérer lvl
+
+    Event::CreateEvent(-1, [qte]() // ← capturer lvl
+        {
+            Scene* lvl = InputHandler::getThisScene(scenesRef, "LvL");
+            if (qteGame == nullptr) return;
+
+            qteGame->update(qte);
+
+            if (qteGame->isFinished())
+            {
+				qteGame->hide(qte);
+
+                bool won = qteGame->playerWon();
+                delete qteGame;
+                qteGame = nullptr;
+
+                // ← réarmer la mort pour la prochaine fois
+               
+                if (won)
+                {
+                    eventsCreated = false;
+                    engineRef->getSceneModule()->SetActiveScene(lvl);
+                    InputHandler::SetupSceneInputs(lvl, "LvL");
+					Event::ResetEvent(2); // ← réarmer la mort pour la prochaine fois
+                }
+                else
+                {
+                    Scene* GameOver = InputHandler::getThisScene(scenesRef, "GameOver");
+                    GameOver->getThisObjByText("Retry")->setClickable(true);
+                    GameOver->getThisObjByText("Quit")->setClickable(true);
+                    engineRef->getSceneModule()->SetActiveScene(GameOver);
+                    GameOver->Start();
+                    engineRef->setGameState(false);
+                }
+            }
+        });
 }
