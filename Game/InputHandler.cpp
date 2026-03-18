@@ -106,7 +106,6 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
             });
 
 
-
         //Fin
         Event::CreateEvent(1, []()
             {

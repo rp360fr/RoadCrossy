@@ -226,7 +226,7 @@ Scene* CreateGameLvL()
     GameObject* player = createPlayer(5,0);
     lvl1->AddGameObject(player, { 5,0 });
     lvl1->SetPlayer(player);
-    createMap(15, 100, lvl1);
+    createMap(15, 50, lvl1);
     lvl1->SetLvLData(lvlObject);
     return lvl1;
 }

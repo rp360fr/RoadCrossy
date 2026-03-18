@@ -68,7 +68,6 @@ void Conditions::DelPlayer(Scene* lvl)
 
 bool ChangeLayer(Scene* lvl, GameObject* player, char mv)
 {
-        
     player->RemoveComponent<Movement>();
     bool test = false;
     int id = player->getTransform().placement;
@@ -147,7 +146,7 @@ void Conditions::Scrolling(Scene* lvl)
 {
     if (debugF1)
     {
-        sf::Vector2f delta = { scrolling(0, 2).x / 1500, scrolling(0, 1).y / 1500 };
+        sf::Vector2f delta = { scrolling(0, 2).x / 1000, scrolling(0, 1).y / 1000 };
         scrollOffset += delta;
 
         for (GameObject* obj : lvl->getGroundObj())
