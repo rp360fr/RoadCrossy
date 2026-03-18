@@ -2,8 +2,8 @@
 
 GameObject* CreateTree(int x, int y) {
     GameObject* tree = new GameObject(x,y);
-    Collider* cl = new Collider(sf::Color::Red);
-    SpriteRenderer* sr = new SpriteRenderer("blocks_3.png", { 64,64 }, { 1,1 });
+    Collider* cl = new Collider(Red);
+    SpriteRenderer* sr = new SpriteRenderer("Tree.png", { 64,64 }, { 1,1 });
     Variables* vr = new Variables();
     vr->addString("Type", "Block");
     tree->AddComponent(sr);
@@ -16,9 +16,9 @@ GameObject* CreateTree(int x, int y) {
 
 GameObject* CreateRock(int x,int y) {
     GameObject* rock = new GameObject(x,y);
-    SpriteRenderer* sr = new SpriteRenderer("Blocks_63.png", { 64,64 }, { 1,1 });
+    SpriteRenderer* sr = new SpriteRenderer("Rock.png", { 64,64 }, { 1,1 });
     Variables* vr = new Variables();
-    Collider* cl = new Collider(sf::Color::Red);
+    Collider* cl = new Collider(Red);
     vr->addString("Type","Block");
     rock->AddComponent(sr);
     rock->AddComponent(vr);
@@ -29,8 +29,8 @@ GameObject* CreateRock(int x,int y) {
 
 GameObject* CreateGrass(int x, int y) {
     GameObject* grass = new GameObject(x-1,y-1);
-    Collider* cl = new Collider(sf::Color::Blue);
-    SpriteRenderer* sr = new SpriteRenderer("blocks_1.png", { 64,64 }, { 1,1 });
+    Collider* cl = new Collider(Blue);
+    SpriteRenderer* sr = new SpriteRenderer("Grass.png", { 64,64 }, { 1,1 });
     Variables* vr = new Variables();
     vr->addString("Type", "Grass");
     grass->AddComponent(sr);
@@ -41,8 +41,8 @@ GameObject* CreateGrass(int x, int y) {
 
 GameObject* CreateRoad(int x, int y) {
     GameObject* road = new GameObject(x-1, y - 1);
-    Collider* cl = new Collider(sf::Color::Blue);
-    SpriteRenderer* sr = new SpriteRenderer("blocks_22.png", { 64,64 }, { 1,1 });
+    Collider* cl = new Collider(Blue);
+    SpriteRenderer* sr = new SpriteRenderer("Road.png", { 64,64 }, { 1,1 });
     Variables* vr = new Variables();
     vr->addString("Type", "Grass");
     road->AddComponent(sr);
@@ -54,7 +54,7 @@ GameObject* CreateRoad(int x, int y) {
 GameObject* CreateWater(int x, int y)
 {
     GameObject* water = new GameObject(x-1, y - 1);
-    SpriteRenderer* sr = new SpriteRenderer("blocks_69.png", { 64,64 }, { 1,1 });
+    SpriteRenderer* sr = new SpriteRenderer("Water.png", { 64,64 }, { 1,1 });
     Variables* vr = new Variables();
     vr->addString("Type", "Water");
     water->AddComponent(sr);
@@ -66,7 +66,7 @@ GameObject* CreateWaterHitbox(int x, int y)
 {
     GameObject* water = new GameObject(x, y);
     Variables* vr = new Variables();
-    Collider* cl = new Collider(sf::Color::Red);
+    Collider* cl = new Collider(Red);
     vr->addString("Type", "Water");
     water->AddComponent(vr);
     water->AddComponent(cl);
@@ -80,10 +80,10 @@ GameObject* CreateCar(int y, std::string sens)
         car = new GameObject(0, y);
     else
         car = new GameObject(14, y);
-    SpriteRenderer* sr = new SpriteRenderer("blocks_28.png", { 64,64 }, { 1,1 });
+    SpriteRenderer* sr = new SpriteRenderer("Car.png", { 64,64 }, { 1,1 });
     Movement* mv = new Movement(sens);
     Variables* vr = new Variables();
-    Collider* cl = new Collider(sf::Color::Red);
+    Collider* cl = new Collider(Red);
     vr->addString("Type", "Car");
     car->AddComponent(sr);
     car->AddComponent(vr);
@@ -99,10 +99,10 @@ GameObject* CreateBoat(int y, std::string sens)
         boat = new GameObject(0, y);
     else
         boat = new GameObject(14, y);
-    SpriteRenderer* sr = new SpriteRenderer("cercueil2.png", { 64,64 }, { 1,1 });
+    SpriteRenderer* sr = new SpriteRenderer("Boat.png", { 64,64 }, { 1,1 });
     Movement* mv = new Movement(sens);
     Variables* vr = new Variables();
-    Collider* cl = new Collider(sf::Color::Red);
+    Collider* cl = new Collider(Red);
     vr->addString("Type", "Boat");
     boat->AddComponent(sr);
     boat->AddComponent(vr);

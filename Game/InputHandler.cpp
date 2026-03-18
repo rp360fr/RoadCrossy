@@ -122,9 +122,6 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
     }
 }
 
-void InputHandler::TestDeath()
-{
-}
 
 
 
@@ -205,7 +202,10 @@ void InputHandler::RestartGame()
     InputManager::ClearKeyCallbacks();
     Event::ClearAllEvents();
     eventsCreated = false;
-
+    debugF1 = false;
+    debugF2 = false;
+    debugF3 = false;
+    debugF4 = false;
     // 2. Détruire et recréer les scènes
     for (Scene* scene : *scenesRef)
     {

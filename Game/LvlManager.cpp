@@ -11,7 +11,6 @@ Scene* CreateMenuDepart(std::vector<Scene*>* lstScene)
     Quit->setClickable(true);
     Launch->AddParamObject(Play);
     Launch->AddParamObject(Quit);
-
     InputManager::RegisterClickableObject(Play, [lstScene,Play,Quit](GameObject* obj) {
         std::cout << "Play cliqué !" << std::endl;
         if (lstScene->size() > 1) {
@@ -143,7 +142,7 @@ void createMap(int length, int width, Scene* scene)
                 scene->AddGroundObject(grass);
                 if ((j < path || j > path + 1) && i != 0)
                 {
-                    int r = rand() % 5; // 0 ou 1 = obstacle
+                    int r = rand() % 5;
                     if (r == 0)
                     {
                         GameObject* tree = CreateTree(j, i);
@@ -158,7 +157,7 @@ void createMap(int length, int width, Scene* scene)
             }
             if (map[i] == GRASS)
             {
-                path += (rand() % 3) - 1; // -1, 0 ou +1
+                path += (rand() % 3) - 1;
                 if (path < 2) path = 2;
                 if (path > length - 3) path = length - 3;
             }
