@@ -10,22 +10,29 @@ Scene::Scene(std::string name,sf::Vector2u size)
 
 void Scene::AddGroundObject(GameObject* obj)
 {
-	obj->setOwner(this);
-	ground.push_back(obj);
+	if (obj)
+	{
+		obj->setOwner(this);
+		ground.push_back(obj);
+	}
 }
 
 void Scene::AddGameObject(GameObject* obj, std::pair<int,int> pos)
 {
-
-	obj->setOwner(this);
-	Obstacles[pos.first+pos.second*15] = obj;
-	
+	if (obj)
+	{
+		obj->setOwner(this);
+		Obstacles[pos.first + pos.second * 15] = obj;
+	}
 }
 
 void Scene::AddParamObject(GameObject* obj)
 {
-	obj->setOwner(this);
-	objects.push_back(obj);
+	if (obj)
+	{
+		obj->setOwner(this);
+		objects.push_back(obj);
+	}
 }
 
 
@@ -108,19 +115,6 @@ void Scene::Update(sf::RenderWindow& window)
 	// 3. Nettoyer les objets marqués pour destruction
 	CleanupDestroyedObjects();
 
-	// 4. Nettoyer les objets inactifs
-	objects.erase(
-		std::remove_if(objects.begin(), objects.end(),
-			[](GameObject* obj) {
-				if (!obj->getActive()) {
-					std::cout << "[DEBUG] Suppression objet inactif" << std::endl;
-					delete obj;
-					return true;
-				}
-				return false;
-			}),
-		objects.end()
-	);
 }
 
 void Scene::Render(sf::RenderWindow& window)
@@ -190,5 +184,15 @@ void Scene::CleanupDestroyedObjects() {
 		else {
 			++it;
 		}
+	}
+	for (GameObject* obj : Obstacles)
+	{
+		if (obj)
+			if(obj->IsMarkedForDestruction())
+			{
+				std::cout << "delete";
+				Obstacles[obj->getTransform().placement] = nullptr;
+				delete obj;
+			}
 	}
 }

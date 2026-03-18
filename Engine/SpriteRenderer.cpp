@@ -51,7 +51,7 @@ void SpriteRenderer::Render(sf::RenderWindow& window)
 	float isoY = (x + y) * 16;
 	
 	sf::Vector2f transform = { isoX,isoY };
-	transform += owner->getTransform().deltaScrolling;
+	transform += *owner->getTransform().deltaScrolling;
 	sprite.setPosition(transform);
 	if (Special == false)
 	{

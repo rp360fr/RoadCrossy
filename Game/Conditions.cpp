@@ -68,6 +68,8 @@ void Conditions::DelPlayer(Scene* lvl)
 
 bool ChangeLayer(Scene* lvl, GameObject* player, char mv)
 {
+    if (!debugF1)
+        Debug::ChangeDebug(1);
     player->RemoveComponent<Movement>();
     bool test = false;
     int id = player->getTransform().placement;
@@ -140,23 +142,14 @@ void Conditions::MoveRight(GameObject* player,Scene* lvl)
     }
 }
 
-sf::Vector2f Conditions::scrollOffset = { 0, 0 };
+
 
 void Conditions::Scrolling(Scene* lvl)
 {
     if (debugF1)
     {
         sf::Vector2f delta = { scrolling(0, 2).x / 1000, scrolling(0, 1).y / 1000 };
-        scrollOffset += delta;
-
-        for (GameObject* obj : lvl->getGroundObj())
-            obj->getTransform().deltaScrolling = scrollOffset;
-        for (GameObject* obj : lvl->getObstaclesObj())
-            if (obj != nullptr)
-            {
-                obj->getTransform().deltaScrolling = scrollOffset;
-            }
-                
+        *scrollOffset += delta;         
     }
 }
 
@@ -178,9 +171,10 @@ CollideType Conditions::Collision(Scene* lvl)
     {
         if (obj && obj != player)
         {
+			const std::string& type = obj->GetComponent<Variables>()->getString("Type");
             if (obj->GetComponent<Collider>()->DoesCollide(player)) 
             {
-                if (obj->GetComponent<Variables>()->getString("Type") == "Car")
+                if (type == "Car" || type == "Train")
                     return CollideType::Dead;
             }
         }
@@ -223,7 +217,6 @@ void Conditions::Recalibrage(Scene* lvl)
 {
     std::vector<GameObject*>& list = lvl->getObstaclesObj();
     GameObject* player = lvl->GetPlayer();
-    int i = 0;
     for (GameObject* obj : list)
     {
         if (obj)
@@ -234,10 +227,10 @@ void Conditions::Recalibrage(Scene* lvl)
             }
             if (obj->GetComponent<Movement>())
             {
-                i++;
                 int pos = obj->getTransform().placement;
                 int cpt = obj->GetComponent<Movement>()->cpt;
                 int speed = obj->GetComponent<Movement>()->speed;
+				const std::string& type = obj->GetComponent<Variables>()->getString("Type");
                 std::string sens = obj->GetComponent<Movement>()->getSens();
                 if (cpt >= speed && obj != player)
                 {
@@ -245,12 +238,20 @@ void Conditions::Recalibrage(Scene* lvl)
                     {
                         if (obj->getTransform().placement == obj->getTransform().posBase + 14)
                         {
-                            sf::Clock delay;
-                            lvl->getObstaclesObj()[pos - 14] = obj;
-                            lvl->getObstaclesObj()[pos] = nullptr;
-                            obj->getTransform().placement = pos - 14;
-                            Conditions::Replace(obj, "Left");
-                            obj->GetComponent<Movement>()->speed = rand() % 250 + 100;
+                            if (type == "Train")
+                            {
+                                lvl->getObstaclesObj()[pos] = nullptr;
+                                obj->Destroy();
+                            }
+                            else
+                            {
+                                lvl->getObstaclesObj()[pos - 14] = obj;
+                                lvl->getObstaclesObj()[pos] = nullptr;
+                                obj->getTransform().placement = pos - 14;
+                                Conditions::Replace(obj, "Left");
+                                if (type == "Car" || type == "Boat")
+                                    obj->GetComponent<Movement>()->speed = rand() % 250 + 100;
+                            }
                         }
                         else
                         {
@@ -263,11 +264,17 @@ void Conditions::Recalibrage(Scene* lvl)
                     {
                         if (obj->getTransform().placement == obj->getTransform().posBase - 14)
                         {
+                            if (type == "Train")
+                            {
+                                lvl->getObstaclesObj()[pos] = nullptr;
+                                obj->Destroy();
+                            }
                             lvl->getObstaclesObj()[pos + 14] = obj;
                             lvl->getObstaclesObj()[pos] = nullptr;
                             obj->getTransform().placement = pos + 14;
                             Conditions::Replace(obj, "Right");
-                            obj->GetComponent<Movement>()->speed = rand() % 250 + 100;
+                            if (type == "Car" || type == "Boat")
+                                obj->GetComponent<Movement>()->speed = rand() % 250 + 100;
                         }
                         else
                         {
@@ -287,9 +294,10 @@ void Conditions::Recalibrage(Scene* lvl)
 void Conditions::Replace(GameObject* obj, std::string sens)
 {
     if(sens == "Right")
-        obj->getTransform().pos += { 15,0};
+        obj->getTransform().pos += { 15, 0 };
     else
     {
-        obj->getTransform().pos -= { 15,0 };
+        obj->getTransform().pos -= { 15, 0 };
     }
 }
+

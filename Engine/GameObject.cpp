@@ -8,13 +8,14 @@ GameObject::GameObject(sf::Vector2f position) //Constructeur (position de l'obje
     active = true;
 }
 
-GameObject::GameObject(int x, int y) //Constructeur (position de l'objet)
+GameObject::GameObject(int x, int y, sf::Vector2f* delta) //Constructeur (position de l'objet)
 {
     getTransform().placement = x + y * 15;
     getTransform().posBase = x + y * 15;
 
     this->getTransform().pos.x = x;
     this->getTransform().pos.y = y;
+	transform.deltaScrolling = delta;
     active = true;
 }
 
@@ -42,9 +43,7 @@ void GameObject::Update()
     {
         if (component != nullptr)
         {
-            
             component->Update();
-            
         }
         else
         {

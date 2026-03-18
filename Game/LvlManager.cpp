@@ -44,14 +44,12 @@ Scene* CreateGameOver()
     Scene* GameOver = new Scene("GameOver");
     GameObject* Retry = createRetry();
     GameObject* Quit = createQuit();
-    GameObject* fond = createFond("SpaceBackGround.png");
     GameObject* GameOverObject = new GameObject(sf::Vector2f( 0,0 ));
     AudioManager* ad = new AudioManager("GameOverSound.mp3");
     GameOverObject->AddComponent(ad);
     GameOver->SetLvLData(GameOverObject);
     Retry->setClickable(false);
     Quit->setClickable(false);
-    GameOver->AddParamObject(fond);
     GameOver->AddParamObject(Retry);
     GameOver->AddParamObject(Quit);
     InputManager::RegisterClickableObject(Retry, [Retry, Quit](GameObject* obj) {
@@ -75,59 +73,7 @@ Scene* CreateGameOver()
     return GameOver;
 }
 
-TileType map[50] =
-{
-    GRASS,
-    GRASS,
-    GRASS,
-    ROAD,
-    ROAD,
-    TRAIN,
-    WATER,
-    GRASS,
-    ROAD,
-    GRASS,
-    GRASS,
-    WATER,
-    GRASS,
-    ROAD,
-    GRASS,
-    GRASS,
-    WATER,
-    GRASS,
-    ROAD,
-    GRASS,
-    GRASS,
-    WATER,
-    GRASS,
-    ROAD,
-    GRASS,
-    TRAIN,
-    WATER,
-    GRASS,
-    ROAD,
-    GRASS,
-    GRASS,
-    WATER,
-    GRASS,
-    ROAD,
-    GRASS,
-    GRASS,
-    WATER,
-    GRASS,
-    ROAD,
-    TRAIN,
-    GRASS,
-    WATER,
-    GRASS,
-    ROAD,
-    GRASS,
-    GRASS,
-    WATER,
-    GRASS,
-    ROAD,
-    GRASS
-};
+
 
 void createMap(int length, int width, Scene* scene)
 {
@@ -136,7 +82,7 @@ void createMap(int length, int width, Scene* scene)
     {
         for (int j = 0; j < length; j++)
         {
-            if (map[i] == GRASS)
+            if (map[i] == TileType::GRASS)
             {
                 GameObject* grass = CreateGrass(j, i);
                 scene->AddGroundObject(grass);
@@ -154,20 +100,18 @@ void createMap(int length, int width, Scene* scene)
                         scene->AddGameObject(rock, { j, i });
                     }
                 }
-            }
-            if (map[i] == GRASS)
-            {
                 path += (rand() % 3) - 1;
                 if (path < 2) path = 2;
                 if (path > length - 3) path = length - 3;
             }
-            if (map[i] == ROAD)
+
+            else if (map[i] == TileType::ROAD)
             {
                 GameObject* road = CreateRoad(j, i);
                 scene->AddGroundObject(road);
             }
 
-            if (map[i] == WATER)
+            else if (map[i] == TileType::WATER)
             {
                 GameObject* water = CreateWater(j, i);
                 GameObject* hitbox = CreateWaterHitbox(j , i );
@@ -175,13 +119,18 @@ void createMap(int length, int width, Scene* scene)
                 scene->AddGroundObject(water);
                 scene->AddGroundObject(hitbox);
             }
-            if (map[i] == TRAIN)
+
+            else if (map[i] == TileType::TRAIN)
             {
+				std::cout << i << std::endl;
                 GameObject* sol = CreateRails(j, i);
                 scene->AddGroundObject(sol);
             }
         }
-        if (map[i] == GRASS)
+
+
+
+        if (map[i] == TileType::GRASS)
         {
             GameObject* gauche = CreateTree(0, i);
             scene->AddGameObject(gauche, { 0,i });
@@ -189,45 +138,51 @@ void createMap(int length, int width, Scene* scene)
             scene->AddGameObject(droite, { 14,i });
         }
 
-        if (map[i] == ROAD)
+        if (map[i] == TileType::ROAD)
         {
             if (rand() % 2 == 0)
             {
                 GameObject* voture = CreateCar(i, "Left");
                 scene->AddGameObject(voture, { 0,i });
+				map[i] = TileType::ROADL;
             }
             else
             {
                 GameObject* voture = CreateCar(i, "Right");
                 scene->AddGameObject(voture, { 14,i });
+				map[i] = TileType::ROADR;
             }
         }
 
-        if (map[i] == TRAIN)
+        if (map[i] == TileType::TRAIN)
         {
             if (rand() % 2 == 0)
             {
                 GameObject* trin = CreateTrain(i, "Left");
                 scene->AddGameObject(trin, { 0,i });
+				map[i] = TileType::TRAINL;
             }
             else
             {
                 GameObject* trin = CreateTrain(i, "Right");
-                scene->AddGameObject(trin, { 0,i });
+                scene->AddGameObject(trin, { 14,i });
+				map[i] = TileType::TRAINR;
             }
             
         }
-        if (map[i] == WATER)
+        if (map[i] == TileType::WATER)
         {
             if (rand() % 2 == 0)
             {
                 GameObject* Boat = CreateBoat(i, "Left");
                 scene->AddGameObject(Boat, { 0,i });
+				map[i] = TileType::WATERL;
             }
             else
             {
                 GameObject* Boat = CreateBoat(i, "Right");
                 scene->AddGameObject(Boat, { 14,i });
+				map[i] = TileType::WATERR;
             }
         }
     }
@@ -240,6 +195,7 @@ void createMap(int length, int width, Scene* scene)
 
 Scene* CreateGameLvL()
 {
+	map = CreateMapTab();
     Scene* lvl1 = new Scene("LvL");
     GameObject* lvlObject = new GameObject(sf::Vector2f(0,0));
     GameObject* player = createPlayer(5,0);

@@ -59,6 +59,17 @@ void InputHandler::SetupMenuInputs(Scene* menu)
 
 void InputHandler::SetupLvLInputs(Scene* lvl)
 {
+    struct SpawnLigne
+    {
+        int mapIndex;
+        int minIntervalSec;
+        int maxIntervalSec;
+        sf::Clock clock;
+        int nextSpawnSec;
+        std::function<GameObject* ()> factory;         
+    };
+    static sf::Clock TrainClock;
+    TrainClock.restart();
     if (lvl == nullptr)
     {
         std::cout << "ERREUR: lvl est nullptr dans SetupLvLInputs" << std::endl;
@@ -104,7 +115,34 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
                     Event::SetEventTrue(1);
                 
             });
+        static int TrainTime = rand() % 5 + 5;
 
+        //Gestion et Creation des Obstacles 
+        Event::CreateEvent(-2,[lvl]()
+            {
+				
+                static sf::Clock CarClock;
+				static sf::Clock BoatClock;
+                
+                if (TrainClock.getElapsedTime().asSeconds() >= TrainTime)
+                {
+
+					GameObject* train1 = CreateTrain(5, map[5]);
+                    train1->Start();
+
+                    GameObject* train2 = CreateTrain(25, map[25]);
+                    train2->Start();
+
+                    GameObject* train3 = CreateTrain(39, map[39]);
+                    train3->Start();
+
+					lvl->AddGameObject(train1,{sens(map[5]),5});
+					lvl->AddGameObject(train2, {sens(map[25]),25});
+					lvl->AddGameObject(train3, {sens(map[39]),39});
+                    TrainTime = rand() % 5 + 5;
+					TrainClock.restart();
+                }
+			});
 
         //Fin
         Event::CreateEvent(1, []()
@@ -225,7 +263,7 @@ void InputHandler::RestartGame()
     scenesRef->push_back(Menu);
     scenesRef->push_back(LvL);
     scenesRef->push_back(GameOver);
-    Conditions::scrollOffset = { 0,0 };
+    InitScrollOffset();
 
 
     engineRef->getSceneModule()->SetActiveScene(Menu);
@@ -235,3 +273,5 @@ void InputHandler::RestartGame()
 
     std::cout << "=== JEU REINITIALISE ===\n\n\n\n" << std::endl;
 }
+
+

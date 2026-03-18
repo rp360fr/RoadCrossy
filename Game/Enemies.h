@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine.h"
 #include "Scene.h"
+#include "Extern.h"
 #include "Color.h"
 #include <fstream>
 #include <sstream>
@@ -16,4 +17,5 @@ GameObject* CreateWaterHitbox(int x, int y);
 GameObject* CreateBoat(int y, std::string sens);
 GameObject* CreateCar(int y,std::string sens);
 GameObject* CreateTrain(int y, std::string sens);
+GameObject* CreateTrain(int y, TileType);
 GameObject* CreateRails(int x, int y);

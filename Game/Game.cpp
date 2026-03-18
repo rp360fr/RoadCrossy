@@ -14,6 +14,7 @@ static bool isLevelInitialized = false;
 int main()
 {
     srand(time(NULL));
+    InitScrollOffset();
     std::vector<Scene*>* lstScene = new std::vector<Scene*>;
     Engine engine({ 800, 800 }, "ShootEmUp");
 

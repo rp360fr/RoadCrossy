@@ -21,7 +21,7 @@ class Conditions
 {
 	
 public:
-	static sf::Vector2f scrollOffset;
+	
 	static void MoveUp(GameObject* player, Scene* lvl);
 	static void MoveDown(GameObject* player, Scene* lvl);
 	static void MoveLeft(GameObject* player, Scene* lvl);

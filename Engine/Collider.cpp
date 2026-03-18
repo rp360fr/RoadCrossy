@@ -35,7 +35,7 @@ void Collider::Render(sf::RenderWindow& window)
 	if (color == sf::Color::Red)
 		showHitbox.setOrigin({ 0, -32 });
 	sf::Vector2f transform = { isoX,isoY };
-	transform += owner->getTransform().deltaScrolling;
+	transform += *owner->getTransform().deltaScrolling;
 	showHitbox.setPosition(transform);
 	showHitbox.setPointCount(4);
 
