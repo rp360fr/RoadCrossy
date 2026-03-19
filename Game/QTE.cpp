@@ -15,6 +15,7 @@ ArrowMiniGame::ArrowMiniGame()
     generateSequence(sequenceLength);
     text = nullptr;
     timerObj = nullptr;
+    Temp = nullptr;
 
     //    if (!font.openFromFile("./Assets/ArrowSymbols.ttf"))
     //        std::cerr << "Impossible de charger la police !\n";
@@ -130,22 +131,33 @@ void ArrowMiniGame::update(Scene* lvl)
     }
 
     drawSequence(lvl);
-
+    std::stringstream ss;
+    
+    
+    ss << (int)remainingTime;
+    std::cout << ss.str()<<std::endl;
     // Timer
     if (timerObj == nullptr)
     {
         timerObj = new GameObject(sf::Vector2f{ 10.f, 5.f });
-        Text* timerComp = new Text("Timer", 20, sf::Color::Yellow, "PressStart2P-Regular.ttf");
-        timerObj->AddComponent(timerComp); // ← manquait dans ton code original
-        lvl->AddParamObject(timerObj);     // ← AddParamObject, pas AddGameObject
-        timerObj->Start();
+       
+       
+        Temp = new GameObject(sf::Vector2f{ 150.f,5.f });
+       
     }
-    else
-    {
-        std::stringstream ss;
-        ss << "Temps: " << (int)remainingTime;
-        timerObj->GetComponent<Text>()->setText(ss.str());
-    }
+    Text* timerComp = new Text("Timer :", 20, sf::Color::Yellow, "PressStart2P-Regular.ttf");
+    timerObj->AddComponent(timerComp);
+    lvl->AddParamObject(timerObj);
+    timerObj->Start();
+    Text* temp = new Text("", 20, sf::Color::Yellow, "PressStart2P-Regular.ttf");
+    Temp->AddComponent(temp);
+    
+    lvl->AddParamObject(Temp);
+
+    Temp->Start();
+
+    Temp->GetComponent<Text>()->SetText(ss.str());
+    /*temp->Destroy();*/
 }
 
 void ArrowMiniGame::hide(Scene * lvl)

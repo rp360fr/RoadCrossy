@@ -118,6 +118,8 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
                     engineRef->getSceneModule()->SetActiveScene(qte);
                     InputHandler::SetupSceneInputs(qte, "QTE");
                     qte->Start();
+                   
+
                 }
             });
 
@@ -281,7 +283,7 @@ void InputHandler::SetupQTEInputs(Scene* qte)
                     eventsCreated = false;
                     engineRef->getSceneModule()->SetActiveScene(lvl);
                     InputHandler::SetupSceneInputs(lvl, "LvL");
-					Event::ResetEvent(2); // ← réarmer la mort pour la prochaine fois
+					Event::ResetEvent(2); 
                 }
                 else
                 {

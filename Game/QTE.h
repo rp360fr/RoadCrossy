@@ -15,12 +15,17 @@ public:
 	
     GameObject* getText() { return text; }
     GameObject* getTimerObj() { return timerObj; }
+    GameObject* getTemp() { return Temp; }
     void clearPtrs() { text = nullptr; timerObj = nullptr; }
     void hide(Scene* lvl);
-    
+    int GetsequenceLength() {
+        return sequenceLength
+            ;
+    }
+    int sequenceLength;
 private:
     std::vector<GameObject*> arrowObjects;
-    int sequenceLength;
+   
     std::vector<sf::Keyboard::Key> sequence;  // séquence de touches
     size_t currentIndex = 0;                   // où on en est dans la séquence
     float remainingTime;
@@ -32,6 +37,7 @@ private:
     sf::Keyboard::Key lastKeyPressed = sf::Keyboard::Key::Unknown;
     GameObject* text = nullptr;
     GameObject* timerObj = nullptr;
+    GameObject* Temp = nullptr;
     
      float windowWidth = 800.f;
      float windowHeight = 800.f;

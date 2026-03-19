@@ -34,6 +34,10 @@ void Text::Start()
 {
 
 }
+void Text::Destroy() {
+	
+	this->text.setString("");
+}
 
 void Text::Update()
 {

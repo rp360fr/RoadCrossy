@@ -84,9 +84,10 @@ public:
 	std::string getText() { return txt; }
 	sf::Text GetText() { return text; }
 	sf::FloatRect getBounds() { return text.getLocalBounds(); }
-
+	void Destroy();
 	//Set
 	void setText(std::string text) { txt = text; }
+	void SetText(std::string txt) { text.setString(txt); }
 
 	//Autres
 	void Start() override;
