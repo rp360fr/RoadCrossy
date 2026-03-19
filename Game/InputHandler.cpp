@@ -1,9 +1,11 @@
 ﻿// InputHandler.cpp
 #include "InputHandler.h"
+#include "QTE.h"
+
 Engine* InputHandler::engineRef = nullptr;
 std::vector<Scene*>* InputHandler::scenesRef = nullptr;
 bool InputHandler::eventsCreated = false;
-
+ArrowMiniGame* InputHandler::qteGame = nullptr;
 void InputHandler::Initialize(Engine* engine, std::vector<Scene*>* scenes)
 {
     engineRef = engine;
@@ -36,7 +38,10 @@ void InputHandler::SetupSceneInputs(Scene* scene, std::string sceneName)
     else if (sceneName == "LvL1" || sceneName == "LvL2" || sceneName == "LvL")
     {
         SetupLvLInputs(scene);
-    }
+    }else if (sceneName == "QTE")
+    {
+        SetupQTEInputs(scene);
+	}
 
     std::cout << "Inputs configures pour: " << sceneName << std::endl;
 }
@@ -177,38 +182,25 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
             {
                 Conditions::Scrolling(lvl);
                 if (Conditions::Collision(lvl) == CollideType::Dead)
-                    Event::SetEventTrue(1);
+                    Event::SetEventTrue(2);
                 Conditions::Recalibrage(lvl);
                 if (Conditions::testWin(lvl))
                     Event::SetEventTrue(1);
                 
             });
 
-        Event::CreateEvent(-2,[lvl]()
+        Event::CreateEvent(2, []()
             {
-				for (int i = 0; i < spawnLignes.size(); ++i)
+                Scene* qte = InputHandler::getThisScene(scenesRef, "Qte");
+                if (qte != nullptr)
                 {
-                    if(spawnLignes[i].CreateObstacle)
-                    if (spawnLignes[i].clock.getElapsedTime().asSeconds() >= spawnLignes[i].nextSpawnSec)
-                    {
-						std::cout << "Spawn obstacle ligne " << spawnLignes[i].mapId << "sens" << TileTypeToString(map[spawnLignes[i].mapId]) << " en pos " << sens(map[spawnLignes[i].mapId]) << " " << spawnLignes[i].mapId <<  std::endl;
-                        spawnLignes[i].CreateObstacle();
-                        spawnLignes[i].clock.restart();
-                        spawnLignes[i].nextSpawnSec = rand() % (spawnLignes[i].MinMaxTime.second-spawnLignes[i].MinMaxTime.first) + spawnLignes[i].MinMaxTime.first;
-                    }
+                    engineRef->getSceneModule()->SetActiveScene(qte);
+                    InputHandler::SetupSceneInputs(qte, "QTE");
+                    qte->Start();
                 }
-			});
-
-        Event::CreateEvent(1, []()
-            {
-                Scene* GameOver = InputHandler::getThisScene(scenesRef, "GameOver");
-                GameOver->getThisObjByText("Retry")->setClickable(true);
-                GameOver->getThisObjByText("Quit")->setClickable(true);
-                engineRef->getSceneModule()->SetActiveScene(GameOver);
-                GameOver->Start();
-                engineRef->setGameState(false);
             });
 
+    
         eventsCreated = true;
     }
 }
@@ -238,36 +230,43 @@ void InputHandler::MovePlayer(Scene* lvl)
         });
     InputManager::RegisterKeyPress("Up", [player, lvl]()
         {
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
             Conditions::MoveUp(player, lvl);
         });
 
 
     InputManager::RegisterKeyPress("S", [player, lvl]()
         {
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
             Conditions::MoveDown(player,lvl);
         });
     InputManager::RegisterKeyPress("Down", [player, lvl]()
         {
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
             Conditions::MoveDown(player, lvl);
         });
 
 
     InputManager::RegisterKeyPress("Q", [player, lvl]()
         {
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
             Conditions::MoveLeft(player, lvl);
         });
     InputManager::RegisterKeyPress("Left", [player, lvl]()
         {
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
             Conditions::MoveLeft(player, lvl);
         });
 
 
     InputManager::RegisterKeyPress("D", [player, lvl]()
         {
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
             Conditions::MoveRight(player, lvl);
         });
     InputManager::RegisterKeyPress("Right", [player, lvl]()
         {
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
             Conditions::MoveRight(player, lvl);
         });
 }
@@ -313,12 +312,13 @@ void InputHandler::RestartGame()
 
     Scene* Menu = CreateMenuDepart(scenesRef);
     Scene* LvL = CreateGameLvL();
-
+    Scene* Qte = CreateQtelvl();
     Scene* GameOver = CreateGameOver();
     scenesRef->push_back(Menu);
     scenesRef->push_back(LvL);
     scenesRef->push_back(GameOver);
-
+    scenesRef->push_back(Qte);
+    Conditions::scrollOffset = { 0,0 };
 
 
     engineRef->getSceneModule()->SetActiveScene(Menu);
@@ -329,4 +329,50 @@ void InputHandler::RestartGame()
     std::cout << "=== JEU REINITIALISE ===\n\n\n\n" << std::endl;
 }
 
+void InputHandler::SetupQTEInputs(Scene* qte)
+{
+    if (qteGame != nullptr)
+    {
+        delete qteGame;
+        qteGame = nullptr;
+    }
+    qteGame = new ArrowMiniGame();
 
+     // ← récupérer lvl
+
+    Event::CreateEvent(-1, [qte]() // ← capturer lvl
+        {
+            Scene* lvl = InputHandler::getThisScene(scenesRef, "LvL");
+            if (qteGame == nullptr) return;
+
+            qteGame->update(qte);
+
+            if (qteGame->isFinished())
+            {
+				qteGame->hide(qte);
+
+                bool won = qteGame->playerWon();
+                delete qteGame;
+                qteGame = nullptr;
+
+                // ← réarmer la mort pour la prochaine fois
+               
+                if (won)
+                {
+                    eventsCreated = false;
+                    engineRef->getSceneModule()->SetActiveScene(lvl);
+                    InputHandler::SetupSceneInputs(lvl, "LvL");
+					Event::ResetEvent(2); // ← réarmer la mort pour la prochaine fois
+                }
+                else
+                {
+                    Scene* GameOver = InputHandler::getThisScene(scenesRef, "GameOver");
+                    GameOver->getThisObjByText("Retry")->setClickable(true);
+                    GameOver->getThisObjByText("Quit")->setClickable(true);
+                    engineRef->getSceneModule()->SetActiveScene(GameOver);
+                    GameOver->Start();
+                    engineRef->setGameState(false);
+                }
+            }
+        });
+}

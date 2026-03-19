@@ -17,7 +17,7 @@ private:
 	GameObject* player = nullptr;
 	GameObject* LvLData = nullptr;
 public:
-
+	void RemoveParamObject(GameObject* obj);
 	//Constructeurs
 	Scene(std::string name, sf::Vector2u size = { 800,800 });
 

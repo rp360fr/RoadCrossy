@@ -80,9 +80,10 @@ public:
 	//Constructeurs
 	Text();
 	Text(std::string text, int size = 30, sf::Color color = sf::Color::White, std::string font = "arial.ttf");
-
+	void setColor(sf::Color color) { text.setFillColor(color); }
 	//Get
 	std::string getText() { return txt; }
+	sf::Text GetText() { return text; }
 	sf::FloatRect getBounds() { return text.getLocalBounds(); }
 
 	//Set

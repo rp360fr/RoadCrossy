@@ -18,8 +18,8 @@ public:
 	static void CreateEvent(int id, event evt);
 	static void ProcessEvent();
 	static void SetEventTrue(int id);
+	static void SetEventFalse(int id);
 
-
-
+	static void ResetEvent(int id);
 };
 

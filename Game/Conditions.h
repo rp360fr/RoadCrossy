@@ -13,6 +13,7 @@ enum class CollideType
 	Dead,
 	Block,
 	Boat,
+	Qte,
 	Null
 };
 

@@ -1,4 +1,4 @@
-#include "Scene.h"
+﻿#include "Scene.h"
 
 Scene::Scene(std::string name,sf::Vector2u size)
 {
@@ -86,7 +86,7 @@ void Scene::Start()
 
 void Scene::Update(sf::RenderWindow& window)
 {
-	// 1. Update tous les objets (sans supprimer pendant l'it�ration)
+	// 1. Update tous les objets (sans supprimer pendant l'itération)
 	for (GameObject* object : objects)
 	{
 		if (object && object->getActive())
@@ -112,13 +112,22 @@ void Scene::Update(sf::RenderWindow& window)
 	// 2. Render
 	Render(window);
 
-	// 3. Nettoyer les objets marqu�s pour destruction
+	// 3. Nettoyer les objets marqués pour destruction
 	CleanupDestroyedObjects();
 
 }
-
+void Scene::RemoveParamObject(GameObject* obj)
+{
+	auto it = std::find(objects.begin(), objects.end(), obj);
+	if (it != objects.end())
+	{
+		delete* it;
+		objects.erase(it);
+	}
+}
 void Scene::Render(sf::RenderWindow& window)
 {
+	window.clear();
 	for (GameObject* object : objects)
 	{
 		object->Render(window);
@@ -127,28 +136,36 @@ void Scene::Render(sf::RenderWindow& window)
 	{
 		(*object)->Render(window);
 	}
+
+	GameObject* player = GetPlayer(); // ← sorti de la boucle, une seule fois
+
 	for (auto object = Obstacles.rbegin(); object != Obstacles.rend(); ++object)
 	{
-		if ((*object) != nullptr)
+		if ((*object) == nullptr) continue;
+
+		// Pas de joueur sur cette scène → rendu normal
+		if (player == nullptr)
 		{
-			GameObject* player = GetPlayer();
-
-			if (*object == player && player->getBato() != nullptr)
-			{
-				continue;
-			}
-
-			GameObject* bato = player->getBato();
-			if (*object == bato)
-			{
-				bato->Render(window);
-
-				player->Render(window);
-
-				continue;
-			}
 			(*object)->Render(window);
+			continue;
 		}
+
+		GameObject* bato = player->getBato();
+
+		// Le joueur est sur un bateau : on skip le joueur ici,
+		// il sera rendu après le bateau
+		if (*object == player && bato != nullptr)
+			continue;
+
+		// Le bateau : on le rend, puis le joueur par-dessus
+		if (bato != nullptr && *object == bato)
+		{
+			bato->Render(window);
+			player->Render(window);
+			continue;
+		}
+
+		(*object)->Render(window);
 	}
 	window.display();
 }
