@@ -29,6 +29,7 @@
 ### Contrôles
 
 - **Z / Q / S / D ou Up / Left / Down / Right**  : déplacements
+- **Up / Left / Down / Right** : choix des flèches dans le minijeu de sauvetage
 
 ### Interface
 
