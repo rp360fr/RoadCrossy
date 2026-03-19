@@ -7,7 +7,7 @@ class Text;
 class ArrowMiniGame 
 {
 public:
-    ArrowMiniGame();
+    ArrowMiniGame(int ArrowNumber);
 
     void update(Scene* lvl);
     bool isFinished() const;

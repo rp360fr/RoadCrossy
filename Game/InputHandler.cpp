@@ -6,6 +6,9 @@ Engine* InputHandler::engineRef = nullptr;
 std::vector<Scene*>* InputHandler::scenesRef = nullptr;
 bool InputHandler::eventsCreated = false;
 ArrowMiniGame* InputHandler::qteGame = nullptr;
+int InputHandler::ArrowNumbers = 5;
+
+
 void InputHandler::Initialize(Engine* engine, std::vector<Scene*>* scenes)
 {
     engineRef = engine;
@@ -64,6 +67,7 @@ void InputHandler::SetupMenuInputs(Scene* menu)
 
 void InputHandler::SetupLvLInputs(Scene* lvl)
 {
+    Invincibility.reset();
     struct SpawnLigne
     {
         int mapId;
@@ -186,7 +190,17 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
                 Conditions::Recalibrage(lvl);
                 if (Conditions::testWin(lvl))
                     Event::SetEventTrue(1);
-                
+                for (int i = 0; i < spawnLignes.size(); ++i)
+                {
+                    if (spawnLignes[i].CreateObstacle)
+                        if (spawnLignes[i].clock.getElapsedTime().asSeconds() >= spawnLignes[i].nextSpawnSec)
+                        {
+                            std::cout << "Spawn obstacle ligne " << spawnLignes[i].mapId << "sens" << TileTypeToString(map[spawnLignes[i].mapId]) << " en pos " << sens(map[spawnLignes[i].mapId]) << " " << spawnLignes[i].mapId << std::endl;
+                            spawnLignes[i].CreateObstacle();
+                            spawnLignes[i].clock.restart();
+                            spawnLignes[i].nextSpawnSec = rand() % (spawnLignes[i].MinMaxTime.second - spawnLignes[i].MinMaxTime.first) + spawnLignes[i].MinMaxTime.first;
+                        }
+                }
             });
 
         Event::CreateEvent(2, []()
@@ -318,7 +332,6 @@ void InputHandler::RestartGame()
     scenesRef->push_back(LvL);
     scenesRef->push_back(GameOver);
     scenesRef->push_back(Qte);
-    Conditions::scrollOffset = { 0,0 };
 
 
     engineRef->getSceneModule()->SetActiveScene(Menu);
@@ -336,7 +349,7 @@ void InputHandler::SetupQTEInputs(Scene* qte)
         delete qteGame;
         qteGame = nullptr;
     }
-    qteGame = new ArrowMiniGame();
+    qteGame = new ArrowMiniGame(ArrowNumbers);
 
      // ← récupérer lvl
 
@@ -359,10 +372,13 @@ void InputHandler::SetupQTEInputs(Scene* qte)
                
                 if (won)
                 {
+                    Conditions::Clear(lvl);
+                    Invincibility.restart();
                     eventsCreated = false;
                     engineRef->getSceneModule()->SetActiveScene(lvl);
                     InputHandler::SetupSceneInputs(lvl, "LvL");
 					Event::ResetEvent(2); // ← réarmer la mort pour la prochaine fois
+                    ArrowNumbers += 5;
                 }
                 else
                 {

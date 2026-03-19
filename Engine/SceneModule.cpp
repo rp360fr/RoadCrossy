@@ -48,8 +48,9 @@ void SceneModule::Update()
 			if (event->is<sf::Event::Closed>())
 				window.close();
 		}
-		InputManager::ProcessInput();
 		Event::ProcessEvent();
+		InputManager::ProcessInput();
+		
 
 		window.clear();
 

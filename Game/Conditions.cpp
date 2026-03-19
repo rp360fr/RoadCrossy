@@ -282,3 +282,19 @@ void Conditions::Replace(GameObject* obj, std::string sens)
     }
 }
 
+void Conditions::Clear(Scene* lvl)
+{
+    for (GameObject* obj : lvl->getObstaclesObj())
+    {
+        if (obj != nullptr && obj != lvl->GetPlayer())
+        {
+            const std::string& type = obj->GetComponent<Variables>()->getString("Type");
+            if (type == "Boat" || type == "Car")
+            {
+                lvl->getObstaclesObj()[obj->getTransform().placement] = nullptr;
+                obj->Destroy();
+            }
+        }
+            
+    }
+}

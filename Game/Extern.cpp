@@ -2,6 +2,8 @@
 
 std::vector <TileType> map = {};
 sf::Vector2f* scrollOffset = nullptr;
+sf::Clock Invincibility = sf::Clock();
+
 
 std::string TileTypeToString(TileType t)
 {

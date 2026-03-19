@@ -22,7 +22,7 @@ class Conditions
 {
 	
 public:
-	
+	static void Clear(Scene* lvl);
 	static void MoveUp(GameObject* player, Scene* lvl);
 	static void MoveDown(GameObject* player, Scene* lvl);
 	static void MoveLeft(GameObject* player, Scene* lvl);

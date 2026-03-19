@@ -7,6 +7,7 @@
 #include "Enemies.h"
 #include "LvlManager.h"
 #include "Conditions.h"
+#include "Extern.h"
 
 class InputHandler
 {
@@ -18,7 +19,7 @@ private:
     static Engine* engineRef;
     static std::vector<Scene*>* scenesRef;
     static ArrowMiniGame* qteGame;
-
+    static int ArrowNumbers;
 public:
     static void Initialize(Engine* engine, std::vector<Scene*>* scenes);
 

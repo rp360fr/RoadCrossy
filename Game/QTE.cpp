@@ -2,10 +2,10 @@
 #include <iostream>
 #include "Scene.h"
 
-ArrowMiniGame::ArrowMiniGame()
+ArrowMiniGame::ArrowMiniGame(int ArrowNumber)
 {
     srand(static_cast<unsigned int>(time(nullptr)));
-    sequenceLength = 4;      // 20 flèches
+    sequenceLength = ArrowNumber;      // 20 flèches
     remainingTime = 5.f;     // 20 secondes
     finished = false;
     currentIndex = 0;
@@ -14,13 +14,10 @@ ArrowMiniGame::ArrowMiniGame()
     windowHeight = 800.f;
     generateSequence(sequenceLength);
     text = nullptr;
-    timerObj = nullptr;
-
-    //    if (!font.openFromFile("./Assets/ArrowSymbols.ttf"))
-    //        std::cerr << "Impossible de charger la police !\n";
-    //    if (!font2.openFromFile("./Assets/3270NerdFont-Regular.ttf"))
-    //        std::cerr << "Impossible de charger la police !\n";
-
+    timerObj = new GameObject(sf::Vector2f{ 10.f, 5.f });
+    Text* timerComp = new Text("Temps : " + std::to_string((int)remainingTime), 20, sf::Color::Yellow, "PressStart2P-Regular.ttf");
+    timerObj->AddComponent(timerComp);
+    timerObj->Start();
     clock.restart();
 }
 
@@ -43,6 +40,7 @@ void ArrowMiniGame::generateSequence(unsigned int length)
 
 void ArrowMiniGame::drawSequence(Scene* lvl)
 {
+    lvl->AddParamObject(timerObj);
     const float startX = 10.f;
     const float y = 400.f;
     const float spacing = 50.f;
@@ -132,25 +130,16 @@ void ArrowMiniGame::update(Scene* lvl)
     drawSequence(lvl);
 
     // Timer
-    if (timerObj == nullptr)
-    {
-        timerObj = new GameObject(sf::Vector2f{ 10.f, 5.f });
-        Text* timerComp = new Text("Timer", 20, sf::Color::Yellow, "PressStart2P-Regular.ttf");
-        timerObj->AddComponent(timerComp); // ← manquait dans ton code original
-        lvl->AddParamObject(timerObj);     // ← AddParamObject, pas AddGameObject
-        timerObj->Start();
-    }
-    else
-    {
-        std::stringstream ss;
-        ss << "Temps: " << (int)remainingTime;
-        timerObj->GetComponent<Text>()->setText(ss.str());
-    }
+    std::vector<GameObject*> lstObj = lvl->getLstObj();
+    if(timerObj->GetComponent<Text>())
+        timerObj->RemoveComponent<Text>();
+    Text* timerComp = new Text("Temps : " + std::to_string(remainingTime), 20, sf::Color::Yellow, "PressStart2P-Regular.ttf");
+    timerObj->AddComponent(timerComp);
 }
 
 void ArrowMiniGame::hide(Scene * lvl)
 {
-
+    timerObj->RemoveComponent<Text>();
     for (GameObject* obj : arrowObjects)
     {
         if (obj != nullptr)

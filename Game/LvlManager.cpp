@@ -200,7 +200,6 @@ Scene* CreateGameLvL()
 
 Scene* CreateQtelvl() {
     Scene* Qte = new Scene("Qte");
-	GameObject* player = createPlayer(5, 0);
     
     return Qte;
 }
