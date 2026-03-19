@@ -173,21 +173,15 @@ void Scene::Render(sf::RenderWindow& window)
 
 void Scene::Destroy()
 {
-	for (GameObject* object : objects)
-	{
-		delete object;
-		std::cout << "delete";
-	}
-	for (GameObject* object : ground)
-	{
-		delete object;
-		std::cout << "delete";
-	}
-	for (GameObject* object : Obstacles)
-	{
-		delete object;
-		std::cout << "delete";
-	}
+
+	for (GameObject* obj : ground)  if(obj)  delete obj;
+	for (GameObject* obj : Obstacles) if (obj) delete obj;
+
+	objects.clear();
+	ground.clear();
+	std::fill(Obstacles.begin(), Obstacles.end(), nullptr);
+
+	if (LvLData) { delete LvLData; LvLData = nullptr; }
 }
 
 void Scene::CleanupDestroyedObjects() {
@@ -202,14 +196,16 @@ void Scene::CleanupDestroyedObjects() {
 			++it;
 		}
 	}
-	for (GameObject* obj : Obstacles)
+	for (auto& slot : Obstacles)
 	{
-		if (obj)
-			if(obj->IsMarkedForDestruction())
-			{
-				std::cout << "delete";
-				Obstacles[obj->getTransform().placement] = nullptr;
-				delete obj;
-			}
+		if (slot && slot->IsMarkedForDestruction())
+		{
+			GameObject* player = GetPlayer();
+			if (player && player->getBato() == slot)
+				player->setBato(nullptr);
+
+			delete slot;
+			slot = nullptr;
+		}
 	}
 }

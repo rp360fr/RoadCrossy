@@ -13,6 +13,7 @@ void InputHandler::Initialize(Engine* engine, std::vector<Scene*>* scenes)
 {
     engineRef = engine;
     scenesRef = scenes;
+
     if (engineRef == nullptr)
         std::cout << " Erreur Engine " << std::endl;
     else if (scenesRef == nullptr)
@@ -68,7 +69,7 @@ void InputHandler::SetupMenuInputs(Scene* menu)
 void InputHandler::SetupLvLInputs(Scene* lvl)
 {
     Invincibility.reset();
-    struct SpawnLigne
+    static struct SpawnLigne
     {
         int mapId;
         int Speed;
@@ -184,32 +185,51 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
         // Gestion d'event a chaque boucle
         Event::CreateEvent(-1, [lvl]()
             {
-                Conditions::Scrolling(lvl);
-                if (Conditions::Collision(lvl) == CollideType::Dead)
-                    Event::SetEventTrue(2);
-                Conditions::Recalibrage(lvl);
-                if (Conditions::testWin(lvl))
-                    Event::SetEventTrue(1);
-                for (int i = 0; i < spawnLignes.size(); ++i)
+                if (engineRef->getSceneModule()->GetActiveScene() == lvl)
                 {
-                    if (spawnLignes[i].CreateObstacle)
-                        if (spawnLignes[i].clock.getElapsedTime().asSeconds() >= spawnLignes[i].nextSpawnSec)
-                        {
-                            std::cout << "Spawn obstacle ligne " << spawnLignes[i].mapId << "sens" << TileTypeToString(map[spawnLignes[i].mapId]) << " en pos " << sens(map[spawnLignes[i].mapId]) << " " << spawnLignes[i].mapId << std::endl;
-                            spawnLignes[i].CreateObstacle();
-                            spawnLignes[i].clock.restart();
-                            spawnLignes[i].nextSpawnSec = rand() % (spawnLignes[i].MinMaxTime.second - spawnLignes[i].MinMaxTime.first) + spawnLignes[i].MinMaxTime.first;
-                        }
+                    Conditions::Scrolling(lvl);
+                    if (Conditions::Collision(lvl) == CollideType::Dead)
+                        Event::SetEventTrue(2);
+                    Conditions::Recalibrage(lvl);
+                    if (Conditions::testWin(lvl))
+                        Event::SetEventTrue(1);
+                    for (int i = 0; i < spawnLignes.size(); ++i)
+                    {
+                        if (spawnLignes[i].CreateObstacle)
+                            if (spawnLignes[i].clock.getElapsedTime().asSeconds() >= spawnLignes[i].nextSpawnSec)
+                            {
+                                std::cout << "Spawn obstacle ligne " << spawnLignes[i].mapId << "sens" << TileTypeToString(map[spawnLignes[i].mapId]) << " en pos " << sens(map[spawnLignes[i].mapId]) << " " << spawnLignes[i].mapId << std::endl;
+                                spawnLignes[i].CreateObstacle();
+                                spawnLignes[i].clock.restart();
+                                spawnLignes[i].nextSpawnSec = rand() % (spawnLignes[i].MinMaxTime.second - spawnLignes[i].MinMaxTime.first) + spawnLignes[i].MinMaxTime.first;
+                            }
+                    }
                 }
             });
 
+
+        Event::CreateEvent(1, []()
+            {
+                Scene* GameOver = InputHandler::getThisScene(scenesRef, "GameOver");
+                GameOver->getThisObjByText("Retry")->setClickable(true);
+                GameOver->getThisObjByText("Quit")->setClickable(true);
+                engineRef->getSceneModule()->SetActiveScene(GameOver);
+                GameOver->Start();
+                engineRef->setGameState(false);
+            });
+
+
         Event::CreateEvent(2, []()
             {
+                for (int i = 0; i < spawnLignes.size(); ++i)
+                {
+                    spawnLignes[i].clock.reset();
+                }
                 Scene* qte = InputHandler::getThisScene(scenesRef, "Qte");
                 if (qte != nullptr)
                 {
                     engineRef->getSceneModule()->SetActiveScene(qte);
-                    InputHandler::SetupSceneInputs(qte, "QTE");
+                    InputHandler::SetupSceneInputs(qte,"QTE");
                     qte->Start();
                 }
             });
@@ -312,7 +332,7 @@ void InputHandler::RestartGame()
     debugF2 = false;
     debugF3 = false;
     debugF4 = false;
-
+    ArrowNumbers = 5;
     // 2. Détruire et recréer les scènes
     for (Scene* scene : *scenesRef)
     {
@@ -353,7 +373,7 @@ void InputHandler::SetupQTEInputs(Scene* qte)
 
      // ← récupérer lvl
 
-    Event::CreateEvent(-1, [qte]() // ← capturer lvl
+    Event::CreateEvent(-2, [qte]() // ← capturer lvl
         {
             Scene* lvl = InputHandler::getThisScene(scenesRef, "LvL");
             if (qteGame == nullptr) return;
@@ -369,16 +389,17 @@ void InputHandler::SetupQTEInputs(Scene* qte)
                 qteGame = nullptr;
 
                 // ← réarmer la mort pour la prochaine fois
-               
                 if (won)
                 {
+                    
                     Conditions::Clear(lvl);
                     Invincibility.restart();
                     eventsCreated = false;
                     engineRef->getSceneModule()->SetActiveScene(lvl);
                     InputHandler::SetupSceneInputs(lvl, "LvL");
-					Event::ResetEvent(2); // ← réarmer la mort pour la prochaine fois
+					Event::SetEventFalse(2); // ← réarmer la mort pour la prochaine fois
                     ArrowNumbers += 5;
+
                 }
                 else
                 {
