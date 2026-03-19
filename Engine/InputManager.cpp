@@ -111,6 +111,20 @@ void InputManager::ProcessInput()
     bool leftMousePressed = IsMouseButtonPressed(sf::Mouse::Button::Left);
     bool wasLeftMousePressed = previousMouseStates[sf::Mouse::Button::Left];
     
+    sf::Vector2f mousePos = GetMousePosition();
+
+    for (GameObject* obj : clickableObjects)
+    {
+        if (obj != nullptr && IsPointInObject(obj, mousePos))
+        {
+			obj->GetComponent<Text>()->setColor(sf::Color::Yellow);
+        }
+        else
+        {
+            obj->GetComponent<Text>()->setColor(sf::Color::Red);
+        }
+    }
+
     if (leftMousePressed && !wasLeftMousePressed)
     {
         sf::Vector2f mousePos = GetMousePosition();
