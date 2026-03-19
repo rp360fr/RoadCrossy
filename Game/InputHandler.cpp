@@ -6,7 +6,7 @@ Engine* InputHandler::engineRef = nullptr;
 std::vector<Scene*>* InputHandler::scenesRef = nullptr;
 bool InputHandler::eventsCreated = false;
 ArrowMiniGame* InputHandler::qteGame = nullptr;
-int InputHandler::ArrowNumbers = 5;
+int InputHandler::ArrowNumbers = 4;
 
 
 void InputHandler::Initialize(Engine* engine, std::vector<Scene*>* scenes)
@@ -68,7 +68,8 @@ void InputHandler::SetupMenuInputs(Scene* menu)
 
 void InputHandler::SetupLvLInputs(Scene* lvl)
 {
-    Invincibility.reset();
+	lvl->GetLvLData()->GetComponent<AudioManager>()->Play();
+    Invincibility.restart();
     static struct SpawnLigne
     {
         int mapId;
@@ -219,17 +220,19 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
             });
 
 
-        Event::CreateEvent(2, []()
+        Event::CreateEvent(2, [lvl]()
             {
+                lvl->GetLvLData()->GetComponent<AudioManager>()->Pause();
                 for (int i = 0; i < spawnLignes.size(); ++i)
                 {
-                    spawnLignes[i].clock.reset();
+                    spawnLignes[i].clock.stop();
                 }
                 Scene* qte = InputHandler::getThisScene(scenesRef, "Qte");
                 if (qte != nullptr)
                 {
                     engineRef->getSceneModule()->SetActiveScene(qte);
                     InputHandler::SetupSceneInputs(qte,"QTE");
+					qte->GetLvLData()->GetComponent<AudioManager>()->Play();
                     qte->Start();
                 }
             });
@@ -259,48 +262,48 @@ void InputHandler::MovePlayer(Scene* lvl)
 
     InputManager::RegisterKeyPress("Z", [player,lvl]()
         {
-            if(engineRef->getSceneModule()->GetActiveScene() == lvl)
+            if(engineRef->getSceneModule()->GetActiveScene() == lvl && Invincibility.getElapsedTime().asMilliseconds() > 300)
                 Conditions::MoveUp(player,lvl);
         });
     InputManager::RegisterKeyPress("Up", [player, lvl]()
         {
-            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl && Invincibility.getElapsedTime().asMilliseconds() > 300)
             Conditions::MoveUp(player, lvl);
         });
 
 
     InputManager::RegisterKeyPress("S", [player, lvl]()
         {
-            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl && Invincibility.getElapsedTime().asMilliseconds() > 300)
             Conditions::MoveDown(player,lvl);
         });
     InputManager::RegisterKeyPress("Down", [player, lvl]()
         {
-            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl && Invincibility.getElapsedTime().asMilliseconds() > 300)
             Conditions::MoveDown(player, lvl);
         });
 
 
     InputManager::RegisterKeyPress("Q", [player, lvl]()
         {
-            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl && Invincibility.getElapsedTime().asMilliseconds() > 300)
             Conditions::MoveLeft(player, lvl);
         });
     InputManager::RegisterKeyPress("Left", [player, lvl]()
         {
-            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl && Invincibility.getElapsedTime().asMilliseconds() > 300)
             Conditions::MoveLeft(player, lvl);
         });
 
 
     InputManager::RegisterKeyPress("D", [player, lvl]()
         {
-            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl && Invincibility.getElapsedTime().asMilliseconds() > 300)
             Conditions::MoveRight(player, lvl);
         });
     InputManager::RegisterKeyPress("Right", [player, lvl]()
         {
-            if (engineRef->getSceneModule()->GetActiveScene() == lvl)
+            if (engineRef->getSceneModule()->GetActiveScene() == lvl && Invincibility.getElapsedTime().asMilliseconds() > 300)
             Conditions::MoveRight(player, lvl);
         });
 }
@@ -371,9 +374,8 @@ void InputHandler::SetupQTEInputs(Scene* qte)
     }
     qteGame = new ArrowMiniGame(ArrowNumbers);
 
-     // ← récupérer lvl
 
-    Event::CreateEvent(-2, [qte]() // ← capturer lvl
+    Event::CreateEvent(-2, [qte]()
         {
             Scene* lvl = InputHandler::getThisScene(scenesRef, "LvL");
             if (qteGame == nullptr) return;
@@ -388,18 +390,26 @@ void InputHandler::SetupQTEInputs(Scene* qte)
                 delete qteGame;
                 qteGame = nullptr;
 
-                // ← réarmer la mort pour la prochaine fois
                 if (won)
                 {
-                    
+					qte->GetLvLData()->GetComponent<AudioManager>()->Stop();
+					GameObject* player = lvl->GetPlayer();
+                    int playerPos = (player->getTransform().placement / 15) +1;
+                    while (map[playerPos] != TileType::GRASS)
+                    {
+                        playerPos++;
+                    }
+					lvl->getObstaclesObj()[player->getTransform().placement] = nullptr;
+					player->getTransform().placement = playerPos*15 + player->getTransform().placement%15;
+                    lvl->getObstaclesObj()[player->getTransform().placement = playerPos * 15 + player->getTransform().placement % 15] = player;
                     Conditions::Clear(lvl);
                     Invincibility.restart();
                     eventsCreated = false;
                     engineRef->getSceneModule()->SetActiveScene(lvl);
                     InputHandler::SetupSceneInputs(lvl, "LvL");
-					Event::SetEventFalse(2); // ← réarmer la mort pour la prochaine fois
-                    ArrowNumbers += 5;
-
+					Event::SetEventFalse(2);
+                    ArrowNumbers += 4;
+                    player->getTransform().pos = { (float)(player->getTransform().placement % 15),(float)(player->getTransform().placement / 15) };
                 }
                 else
                 {

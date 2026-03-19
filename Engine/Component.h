@@ -115,6 +115,7 @@ public:
 	void Start() override;
 	void Update() override;
 	void Play();
+	void Stop();
 	void Render(sf::RenderWindow& window) override;
 	void Pause();
 };

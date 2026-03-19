@@ -6,7 +6,7 @@ ArrowMiniGame::ArrowMiniGame(int ArrowNumber)
 {
     srand(static_cast<unsigned int>(time(nullptr)));
     sequenceLength = ArrowNumber;      // 20 flèches
-    remainingTime = 5.f;     // 20 secondes
+    remainingTime = 6.f;     // 20 secondes
     finished = false;
     currentIndex = 0;
     won = false;

@@ -45,7 +45,7 @@ Scene* CreateGameOver()
     GameObject* Retry = createRetry();
     GameObject* Quit = createQuit();
     GameObject* GameOverObject = new GameObject(sf::Vector2f( 0,0 ));
-    AudioManager* ad = new AudioManager("GameOverSound.mp3");
+    AudioManager* ad = new AudioManager("GameOver.mp3");
     GameOverObject->AddComponent(ad);
     GameOver->SetLvLData(GameOverObject);
     Retry->setClickable(false);
@@ -190,6 +190,8 @@ Scene* CreateGameLvL()
 	map = CreateMapTab();
     Scene* lvl1 = new Scene("LvL");
     GameObject* lvlObject = new GameObject(sf::Vector2f(0,0));
+    AudioManager* ad = new AudioManager("GameMusic.mp3", 0);
+	lvlObject->AddComponent(ad);
     GameObject* player = createPlayer(5,0);
     lvl1->AddGameObject(player, { 5,0 });
     lvl1->SetPlayer(player);
@@ -200,6 +202,9 @@ Scene* CreateGameLvL()
 
 Scene* CreateQtelvl() {
     Scene* Qte = new Scene("Qte");
-    
+	GameObject* lvlObject = new GameObject(sf::Vector2f(0, 0));
+    AudioManager* ad = new AudioManager("MiniGame.mp3", 0);
+	lvlObject->AddComponent(ad);
+	Qte->SetLvLData(lvlObject);
     return Qte;
 }

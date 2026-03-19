@@ -32,6 +32,10 @@ void AudioManager::Pause()
 	sound.pause();
 }
 
+void AudioManager::Stop()
+{
+	sound.stop();
+}
 void AudioManager::Render(sf::RenderWindow& window)
 {
 
