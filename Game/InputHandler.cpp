@@ -82,7 +82,7 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
             SpawnLigne sl;
 			sl.mapId = mapId;
             sl.Speed = spd;
-            sl.MinMaxTime = { 10,15 };
+            sl.MinMaxTime = { 11,12 };
             sl.clock = sf::Clock();
             sl.nextSpawnSec = 0;
             sl.CreateObstacle = [i, lvl, spd]()
@@ -122,7 +122,7 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
             SpawnLigne sl;
             sl.mapId = mapId;
             sl.Speed = spd;
-            sl.MinMaxTime = { 5,7 };
+            sl.MinMaxTime = { 4,5 };
             sl.clock = sf::Clock();
             sl.nextSpawnSec = 0;
             sl.CreateObstacle = [i, lvl, spd]()
@@ -201,7 +201,6 @@ void InputHandler::SetupLvLInputs(Scene* lvl)
 
         Event::CreateEvent(1, []()
             {
-                Event::ClearAllEvents();
                 Scene* GameOver = InputHandler::getThisScene(scenesRef, "GameOver");
                 GameOver->getThisObjByText("Retry")->setClickable(true);
                 GameOver->getThisObjByText("Quit")->setClickable(true);

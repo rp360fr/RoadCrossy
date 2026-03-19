@@ -48,6 +48,7 @@ public:
 	sf::FloatRect getBounds() { return sprite.getGlobalBounds(); }
 	bool getVisible() { return visible; }
 	std::string getTexture() { return texturePath; }
+	sf::Sprite getSprite() { return sprite; }
 
 
 	//Set

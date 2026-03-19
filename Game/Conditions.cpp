@@ -148,7 +148,7 @@ void Conditions::Scrolling(Scene* lvl)
 {
     if (debugF1)
     {
-        sf::Vector2f delta = { scrolling(0, 2).x / 1000, scrolling(0, 1).y / 1000 };
+        sf::Vector2f delta = { scrolling(0, 2).x / 1200, scrolling(0, 1).y / 1200 };
         *scrollOffset += delta;         
     }
 }
@@ -163,9 +163,13 @@ bool Conditions::testWin(Scene* lvl)
 CollideType Conditions::Collision(Scene* lvl)
 {
     GameObject* player = lvl->GetPlayer();
+    int placement = player->getTransform().placement;
+    sf::Vector2f posPlayer = player->GetComponent<SpriteRenderer>()->getSprite().getPosition();
     std::vector<GameObject*>& list = lvl->getObstaclesObj();
     std::vector<GameObject*>& listGround = lvl->getGroundObj();
-    if (player->getTransform().placement % 15 == 0 || player->getTransform().placement % 15 == 15 && player->getBato())
+    if (placement % 15 == 0 || placement % 15 == 15 && player->getBato())
+        return CollideType::Dead;
+    if (posPlayer.x < -64 || posPlayer.y > 864)
         return CollideType::Dead;
     for (GameObject* obj : list)
     {

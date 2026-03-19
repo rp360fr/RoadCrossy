@@ -20,12 +20,12 @@ void Collider::Render(sf::RenderWindow& window)
 	float x, y;
 	if (owner->getBato())
 	{
-		x = 20 - owner->getBato()->GetComponent<Collider>()->getHitbox().getPosition().x;
+		x = 23 - owner->getBato()->GetComponent<Collider>()->getHitbox().getPosition().x;
 		y = -owner->getBato()->GetComponent<Collider>()->getHitbox().getPosition().y;
 	}
 	else
 	{
-		x = 20 - hitbox.getPosition().x;
+		x = 23 - hitbox.getPosition().x;
 		y = -hitbox.getPosition().y;
 	}
 	sf::ConvexShape showHitbox;

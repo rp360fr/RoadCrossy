@@ -34,8 +34,7 @@ std::string TileTypeToString(TileType t)
 
 void InitScrollOffset()
 {
-    if (!scrollOffset)
-        scrollOffset = new sf::Vector2f({ 0, 0 });
+    scrollOffset = new sf::Vector2f({ 0, 0 });
 }
 
 sf::Vector2f scrolling(int x, int y)
@@ -66,7 +65,7 @@ std::vector<TileType> CreateMapTab()
     TileType::ROAD,
     TileType::TRAIN,
     TileType::WATER,
-    TileType::GRASS,
+    TileType::WATER,
     TileType::ROAD,
     TileType::GRASS,
     TileType::GRASS,
@@ -89,9 +88,9 @@ std::vector<TileType> CreateMapTab()
     TileType::GRASS,
     TileType::ROAD,
     TileType::GRASS,
-    TileType::GRASS,
     TileType::WATER,
-    TileType::GRASS,
+    TileType::WATER,
+    TileType::WATER,
     TileType::ROAD,
     TileType::GRASS,
     TileType::GRASS,

@@ -38,12 +38,12 @@ void SpriteRenderer::Render(sf::RenderWindow& window)
 	float y;
 	if (owner->getBato())
 	{
-		x = 20 - owner->getBato()->getTransform().pos.x;
+		x = 23 - owner->getBato()->getTransform().pos.x;
 		y = -owner->getBato()->getTransform().pos.y;
 	}
 	else
 	{
-		x = 20 - owner->getTransform().pos.x;
+		x = 23 - owner->getTransform().pos.x;
 		y = -owner->getTransform().pos.y;
 	}
 	
@@ -51,8 +51,14 @@ void SpriteRenderer::Render(sf::RenderWindow& window)
 	float isoY = (x + y) * 16;
 	
 	sf::Vector2f transform = { isoX,isoY };
-	transform += *owner->getTransform().deltaScrolling;
-	sprite.setPosition(transform);
+	if(owner->getTransform().deltaScrolling)
+		transform += *owner->getTransform().deltaScrolling;
+
+
+	if (Special)
+		sprite.setPosition({ owner->getTransform().pos.x,owner->getTransform().pos.y });
+	else
+		sprite.setPosition(transform);
 	if (Special == false)
 	{
 		if (!texture.isRepeated())
@@ -113,8 +119,7 @@ void SpriteRenderer::Render(sf::RenderWindow& window)
 	}
 	else
 	{
-		sprite.setTextureRect(sf::IntRect({ currentFrame * size.x, 0 }, { size.x, size.x }));
-		sprite.setPosition({ 650,500 });
+		sprite.setTextureRect(sf::IntRect({ 0, 0 }, { size.x, size.y }));
 	}
 	if(visible == true)
 		window.draw(sprite);

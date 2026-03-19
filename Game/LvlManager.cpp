@@ -164,7 +164,11 @@ void createMap(int length, int width, Scene* scene)
         }
         if (map[i] == TileType::WATER)
         {
-            if (rand() % 2 == 0)
+            if (map[i - 1] == TileType::WATERL)
+                map[i] = TileType::WATERR;
+            else if (map[i - 1] == TileType::WATERR)
+                map[i] = TileType::WATERL;
+            else if (rand() % 2 == 0)
             {
 				map[i] = TileType::WATERL;
             }
